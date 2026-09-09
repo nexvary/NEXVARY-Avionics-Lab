@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexvaryAvionicsLab VERSION 1.4.0 LANGUAGES CXX)
+project(NexvaryAvionicsLab VERSION 1.5.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -56,7 +56,7 @@ if(NEXVARY_BUILD_QT_HMI)
         FILES
             qml/Main.qml qml/Theme.js
             qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml
-            qml/InstrumentTile.qml qml/MetricBox.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml
+            qml/InstrumentTile.qml qml/MetricBox.qml qml/MfdTape.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml
             qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml
             qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/FaultLabPage.qml
     )

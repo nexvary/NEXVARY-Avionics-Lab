@@ -15,13 +15,8 @@ Item {
     ColumnLayout {
         anchors.fill: parent; anchors.margins: 14; spacing: 12
         GridLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 116
-            Layout.minimumHeight: 116
-            Layout.maximumHeight: 116
-            columns: 6
-            columnSpacing: 10
-            rowSpacing: 0
+            Layout.fillWidth: true; Layout.preferredHeight:116; Layout.minimumHeight:116; Layout.maximumHeight:116
+            columns: 6; columnSpacing:10; rowSpacing:0
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("system_readiness"); value:page.readiness()+"%"; subtitle:cockpit.activeAlertCount===0?page.t("systems_nominal"):page.t("attention_required"); iconText:"✓"; accent:cockpit.activeAlertCount===0?Theme.green:Theme.amber }
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("active_alerts"); value:String(cockpit.activeAlertCount); subtitle:cockpit.activeAlertCount===0?page.t("no_active_alerts"):page.t("attention_required"); iconText:"!"; accent:cockpit.activeAlertCount===0?Theme.green:Theme.amber }
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("verification_status"); value:(cockpit.twinFaultCount===0&&cockpit.activeAlertCount===0)?"READY":"ATTENTION"; subtitle:page.t("runtime_verification"); iconText:"V"; accent:(cockpit.twinFaultCount===0&&cockpit.activeAlertCount===0)?Theme.green:Theme.amber }
@@ -31,11 +26,7 @@ Item {
         }
 
         RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 410
-            Layout.minimumHeight: 400
-            Layout.maximumHeight: 420
-            spacing: 12
+            Layout.fillWidth:true; Layout.preferredHeight:410; Layout.minimumHeight:400; Layout.maximumHeight:420; spacing:12
             Rectangle {
                 Layout.fillWidth:true; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.gold
                 ColumnLayout {
@@ -70,19 +61,19 @@ Item {
             }
 
             Rectangle {
-                Layout.preferredWidth:580; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.gold
+                Layout.preferredWidth:610; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.gold
                 ColumnLayout {
                     anchors.fill:parent; anchors.margins:14; spacing:8
                     RowLayout { Layout.fillWidth:true
                         Text { text:page.t("primary_flight_display"); color:Theme.gold; font.pixelSize:18; font.bold:true; Layout.fillWidth:true }
-                        Text { text:"MODE: ATT"; color:Theme.cyan; font.pixelSize:10 }
+                        Text { text:"MODE: ATT  •  LIVE SYNTHETIC"; color:Theme.cyan; font.pixelSize:10 }
                     }
                     RowLayout {
-                        Layout.fillWidth:true; Layout.fillHeight:true; spacing:8
-                        ColumnLayout { Layout.preferredWidth:135; Layout.fillHeight:true; spacing:8
-                            MetricBox { Layout.fillWidth:true; Layout.fillHeight:true; label:page.t("altitude_m"); value:page.fmt("altitude_m",0); accent:Theme.cyan }
-                            MetricBox { Layout.fillWidth:true; Layout.fillHeight:true; label:page.t("airspeed_kph"); value:page.fmt("airspeed_kph",0); accent:Theme.cyan }
-                            MetricBox { Layout.fillWidth:true; Layout.fillHeight:true; label:page.t("imu_roll_deg"); value:page.fmt("imu_roll_deg",1); accent:Theme.silver }
+                        Layout.fillWidth:true; Layout.fillHeight:true; spacing:9
+                        ColumnLayout {
+                            Layout.preferredWidth:132; Layout.fillHeight:true; spacing:8
+                            MfdTape { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("altitude_m"); currentValue:page.sensor("altitude_m").value; majorStep:100; decimals:0; unit:"m"; accent:Theme.cyan }
+                            MfdTape { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("airspeed_kph"); currentValue:page.sensor("airspeed_kph").value; majorStep:10; decimals:0; unit:"km/h"; accent:Theme.cyan }
                         }
                         AttitudeIndicator { Layout.fillWidth:true; Layout.fillHeight:true; pitch:page.sensor("imu_pitch_deg").value; roll:page.sensor("imu_roll_deg").value }
                         ColumnLayout { Layout.preferredWidth:145; Layout.fillHeight:true; spacing:7
@@ -97,11 +88,7 @@ Item {
         }
 
         RowLayout {
-            Layout.fillWidth:true
-            Layout.fillHeight:true
-            Layout.preferredHeight: 200
-            Layout.minimumHeight: 180
-            spacing:12
+            Layout.fillWidth:true; Layout.fillHeight:true; Layout.preferredHeight:200; Layout.minimumHeight:180; spacing:12
             Rectangle {
                 Layout.fillWidth:true; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.border
                 ColumnLayout { anchors.fill:parent; anchors.margins:12; spacing:6

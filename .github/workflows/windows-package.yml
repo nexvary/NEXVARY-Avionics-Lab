@@ -39,7 +39,10 @@ jobs:
         run: cmake --build build-win --config Release --target nexvary_avionics_hmi qt_bridge_tests
 
       - name: Run Qt bridge verification
-        run: ctest --test-dir build-win -C Release --output-on-failure -R qt_bridge_tests
+        shell: pwsh
+        run: |
+          $env:PATH = "C:\Qt\6.8.3\msvc2022_64\bin;$env:PATH"
+          ctest --test-dir build-win -C Release --output-on-failure -R qt_bridge_tests
 
       - name: Deploy Qt runtime
         shell: pwsh
@@ -48,6 +51,7 @@ jobs:
           Copy-Item build-win\Release\nexvary_avionics_hmi.exe package\nexvary_avionics_hmi.exe
           & 'C:\Qt\6.8.3\msvc2022_64\bin\windeployqt.exe' --release --qmldir qml --compiler-runtime package\nexvary_avionics_hmi.exe
           if (!(Test-Path package\nexvary_avionics_hmi.exe)) { throw 'Packaged HMI executable missing' }
+          if (!(Test-Path package\Qt6Core.dll)) { throw 'Qt runtime deployment incomplete' }
 
       - name: Create portable ZIP
         shell: pwsh
@@ -59,7 +63,9 @@ jobs:
       - name: Build one-click installer
         shell: pwsh
         run: |
-          & '${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe' packaging\windows\NEXVARY-Avionics-Lab.iss
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { throw 'Inno Setup compiler not found' }
+          & $iscc packaging\windows\NEXVARY-Avionics-Lab.iss
           if (!(Test-Path dist-installer\NEXVARY-Avionics-Lab-Setup.exe)) { throw 'Installer was not generated' }
 
       - name: Upload Windows release artifacts

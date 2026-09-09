@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexvaryAvionicsLab VERSION 0.5.0 LANGUAGES CXX)
+project(NexvaryAvionicsLab VERSION 0.6.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,7 @@ add_library(avionics_core
     src/sim/ScenarioEngine.cpp
     src/app/AvionicsLab.cpp
     src/app/ConsoleCockpit.cpp
+    src/hmi/CockpitViewModel.cpp
 )
 
 target_include_directories(avionics_core PUBLIC src)
@@ -31,14 +32,8 @@ add_executable(nexvary_avionics_lab src/main.cpp)
 target_link_libraries(nexvary_avionics_lab PRIVATE avionics_core)
 
 enable_testing()
-add_executable(core_tests tests/test_core.cpp)
-target_link_libraries(core_tests PRIVATE avionics_core)
-add_test(NAME core_tests COMMAND core_tests)
-
-add_executable(simulation_tests tests/test_simulation.cpp)
-target_link_libraries(simulation_tests PRIVATE avionics_core)
-add_test(NAME simulation_tests COMMAND simulation_tests)
-
-add_executable(alert_tests tests/test_alerts.cpp)
-target_link_libraries(alert_tests PRIVATE avionics_core)
-add_test(NAME alert_tests COMMAND alert_tests)
+foreach(test_name IN ITEMS core simulation alerts hmi)
+    add_executable(${test_name}_tests tests/test_${test_name}.cpp)
+    target_link_libraries(${test_name}_tests PRIVATE avionics_core)
+    add_test(NAME ${test_name}_tests COMMAND ${test_name}_tests)
+endforeach()

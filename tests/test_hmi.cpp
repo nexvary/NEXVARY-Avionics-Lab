@@ -9,6 +9,7 @@ int main() {
     AvionicsLab nominal{ScenarioKind::Nominal};
     const auto page = vm.build(nominal.step());
     assert(page.tiles.size() == 8);
+    for (const auto& tile : page.tiles) assert(tile.state == "NOMINAL");
     assert(!page.annunciators.empty());
     assert(page.annunciators.front() == "SYSTEMS NOMINAL");
 

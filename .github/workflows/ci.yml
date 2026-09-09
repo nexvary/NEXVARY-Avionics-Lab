@@ -7,11 +7,12 @@ on:
 jobs:
   build-and-test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
       - name: Build
@@ -24,3 +25,23 @@ jobs:
       - name: Smoke test (Windows)
         if: runner.os == 'Windows'
         run: ./build/Release/nexvary_avionics_lab.exe --scenario power-transient --ticks 25 --replay
+
+  qt-hmi-linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Qt 6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev qt6-declarative-dev qml6-module-qtquick qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtqml-workerscript
+      - name: Configure Qt HMI
+        run: cmake -S . -B build-qt -DCMAKE_BUILD_TYPE=Release -DNEXVARY_BUILD_QT_HMI=ON
+      - name: Build Qt HMI
+        run: cmake --build build-qt --config Release --target nexvary_avionics_hmi
+      - name: Run core tests with Qt configuration
+        run: ctest --test-dir build-qt --output-on-failure
+      - name: Headless QML smoke test
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+        run: ./build-qt/nexvary_avionics_hmi --smoke

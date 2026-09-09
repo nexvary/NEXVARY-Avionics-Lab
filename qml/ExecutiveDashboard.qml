@@ -15,7 +15,13 @@ Item {
     ColumnLayout {
         anchors.fill: parent; anchors.margins: 14; spacing: 12
         GridLayout {
-            Layout.fillWidth: true; Layout.preferredHeight: 116; columns: 6; columnSpacing: 10; rowSpacing: 0
+            Layout.fillWidth: true
+            Layout.preferredHeight: 116
+            Layout.minimumHeight: 116
+            Layout.maximumHeight: 116
+            columns: 6
+            columnSpacing: 10
+            rowSpacing: 0
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("system_readiness"); value:page.readiness()+"%"; subtitle:cockpit.activeAlertCount===0?page.t("systems_nominal"):page.t("attention_required"); iconText:"✓"; accent:cockpit.activeAlertCount===0?Theme.green:Theme.amber }
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("active_alerts"); value:String(cockpit.activeAlertCount); subtitle:cockpit.activeAlertCount===0?page.t("no_active_alerts"):page.t("attention_required"); iconText:"!"; accent:cockpit.activeAlertCount===0?Theme.green:Theme.amber }
             StatusCard { Layout.fillWidth:true; Layout.fillHeight:true; title:page.t("verification_status"); value:(cockpit.twinFaultCount===0&&cockpit.activeAlertCount===0)?"READY":"ATTENTION"; subtitle:page.t("runtime_verification"); iconText:"V"; accent:(cockpit.twinFaultCount===0&&cockpit.activeAlertCount===0)?Theme.green:Theme.amber }
@@ -25,7 +31,11 @@ Item {
         }
 
         RowLayout {
-            Layout.fillWidth: true; Layout.preferredHeight: 455; spacing: 12
+            Layout.fillWidth: true
+            Layout.preferredHeight: 410
+            Layout.minimumHeight: 400
+            Layout.maximumHeight: 420
+            spacing: 12
             Rectangle {
                 Layout.fillWidth:true; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.gold
                 ColumnLayout {
@@ -40,10 +50,11 @@ Item {
                         Repeater {
                             model:cockpit.twinRows
                             delegate: Rectangle {
-                                required property int index; required property var modelData
-                                width:190; height:84; radius:8; color:"#081820"; border.width:1; border.color:Theme.stateColor(modelData.state)
+                                required property int index
+                                required property var modelData
+                                width:190; height:78; radius:8; color:"#081820"; border.width:1; border.color:Theme.stateColor(modelData.state)
                                 x:index%2===0?8:parent.width-width-8
-                                y:22+Math.floor(index/2)*104
+                                y:18+Math.floor(index/2)*92
                                 ColumnLayout { anchors.fill:parent; anchors.margins:9; spacing:2
                                     RowLayout { Layout.fillWidth:true
                                         Text { text:"●"; color:Theme.stateColor(modelData.state) }
@@ -86,7 +97,11 @@ Item {
         }
 
         RowLayout {
-            Layout.fillWidth:true; Layout.fillHeight:true; spacing:12
+            Layout.fillWidth:true
+            Layout.fillHeight:true
+            Layout.preferredHeight: 200
+            Layout.minimumHeight: 180
+            spacing:12
             Rectangle {
                 Layout.fillWidth:true; Layout.fillHeight:true; radius:10; color:Theme.panel; border.color:Theme.border
                 ColumnLayout { anchors.fill:parent; anchors.margins:12; spacing:6
@@ -95,7 +110,10 @@ Item {
                         Text { text:cockpit.eventCount+" "+page.t("events"); color:Theme.muted; font.pixelSize:10 }
                     }
                     ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.eventRows; clip:true; spacing:2
-                        delegate: Rectangle { required property var modelData; width:ListView.view.width; height:31; color:index%2?"#07141b":"#091820"
+                        delegate: Rectangle {
+                            required property int index
+                            required property var modelData
+                            width:ListView.view.width; height:31; color:index%2?"#07141b":"#091820"
                             RowLayout { anchors.fill:parent; anchors.margins:6
                                 Text { text:modelData.severity; color:modelData.severity==="FAULT"?Theme.red:(modelData.severity==="WARN"?Theme.amber:Theme.green); Layout.preferredWidth:65; font.bold:true; font.pixelSize:9 }
                                 Text { text:modelData.source; color:Theme.cyan; Layout.preferredWidth:82; font.pixelSize:9 }

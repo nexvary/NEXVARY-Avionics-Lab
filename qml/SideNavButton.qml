@@ -6,19 +6,19 @@ import "Theme.js" as Theme
 Button {
     id: control
     property string iconKind: "dashboard"
-    implicitHeight: 62
-    implicitWidth: 176
+    implicitHeight: 49
+    implicitWidth: 184
     checkable: true
     contentItem: RowLayout {
-        spacing: 12
-        NavIcon { kind: control.iconKind; iconColor: control.checked ? Theme.gold : "#9eb8c7"; Layout.preferredWidth: 28; Layout.preferredHeight: 28 }
-        Text { text: control.text; color: control.checked ? Theme.gold : Theme.text; font.pixelSize: 12; font.bold: control.checked; Layout.fillWidth: true; wrapMode: Text.Wrap }
+        spacing: 10
+        NavIcon { kind: control.iconKind; iconColor: control.checked ? Theme.gold : "#8fa8b3"; Layout.preferredWidth: 22; Layout.preferredHeight: 22 }
+        Text { text: control.text; color: control.checked ? Theme.gold : Theme.text; font.pixelSize: 11; font.bold: control.checked; Layout.fillWidth: true; elide: Text.ElideRight }
     }
     background: Rectangle {
-        color: control.checked ? "#152119" : (control.hovered ? "#0a171e" : "transparent")
+        color: control.checked ? "#0d181a" : (control.hovered ? "#0a151b" : "transparent")
         border.width: control.checked ? 1 : 0
-        border.color: control.checked ? Theme.gold : "transparent"
-        radius: 8
-        Rectangle { visible: control.checked; width: 4; anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom; color: Theme.gold; radius: 2 }
+        border.color: control.checked ? "#5b4b25" : "transparent"
+        radius: Theme.radius
+        Rectangle { visible: control.checked; width: 2; anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom; color: Theme.gold }
     }
 }

@@ -1,6 +1,6 @@
 #include "plugin/PluginRegistry.hpp"
 #include <algorithm>
-
+#include <utility>
 namespace nexvary::avionics {
 bool PluginRegistry::registerPlugin(PluginDescriptor descriptor){if(descriptor.id.empty()||descriptor.name.empty()||descriptor.version.empty()||find(descriptor.id))return false;plugins_.push_back(std::move(descriptor));return true;}
 bool PluginRegistry::remove(std::string_view id){const auto before=plugins_.size();plugins_.erase(std::remove_if(plugins_.begin(),plugins_.end(),[id](const auto& p){return p.id==id&&!p.builtIn;}),plugins_.end());return plugins_.size()!=before;}

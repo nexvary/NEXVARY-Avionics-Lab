@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['qml/**','src/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml']
+    paths: ['qml/**','src/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml','scripts/verify_manifest.py']
 jobs:
   package-windows:
     runs-on: windows-latest
@@ -22,23 +22,26 @@ jobs:
         shell: pwsh
         run: cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
       - name: Build Windows Qt HMI
-        run: cmake --build build-win --config Release --target nexvary_avionics_hmi qt_bridge_tests release_identity_tests
-      - name: Run Qt bridge and release identity verification
+        run: cmake --build build-win --config Release --target nexvary_avionics_hmi qt_bridge_tests nexvary_release_manifest release_identity_tests release_manifest_tests provider_tests dictionary_tests plugin_registry_tests campaign_tests timeline_tests verifier_tests instrument_catalog_tests
+      - name: Run Stage 1700 Windows verification
         shell: pwsh
         run: |
           $env:PATH = "C:\Qt\6.8.3\msvc2022_64\bin;$env:PATH"
-          ctest --test-dir build-win -C Release --output-on-failure -R "qt_bridge_tests|release_identity_tests"
-      - name: Deploy Qt runtime
+          ctest --test-dir build-win -C Release --output-on-failure
+      - name: Deploy Qt runtime and provenance
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force package | Out-Null
           Copy-Item build-win\Release\nexvary_avionics_hmi.exe package\nexvary_avionics_hmi.exe
+          ./build-win/Release/nexvary_release_manifest.exe package/release-manifest.json
+          python scripts/verify_manifest.py package/release-manifest.json
           & 'C:\Qt\6.8.3\msvc2022_64\bin\windeployqt.exe' --release --qmldir qml --compiler-runtime package\nexvary_avionics_hmi.exe
           if (!(Test-Path package\nexvary_avionics_hmi.exe)) { throw 'Packaged HMI executable missing' }
           if (!(Test-Path package\Qt6Core.dll)) { throw 'Qt runtime deployment incomplete' }
+          if (!(Test-Path package\release-manifest.json)) { throw 'Release manifest missing from package' }
       - name: Create portable ZIP
         shell: pwsh
-        run: Compress-Archive -Path package\* -DestinationPath NEXVARY-Avionics-Lab-v2.3.0-Portable.zip -Force
+        run: Compress-Archive -Path package\* -DestinationPath NEXVARY-Avionics-Lab-v3.0.0-Portable.zip -Force
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
       - name: Build one-click installer
@@ -50,8 +53,8 @@ jobs:
           if (!(Test-Path dist-installer\NEXVARY-Avionics-Lab-Setup.exe)) { throw 'Installer was not generated' }
       - uses: actions/upload-artifact@v4
         with:
-          name: NEXVARY-Avionics-Lab-Windows-v2.3.0-Stage1250
+          name: NEXVARY-Avionics-Lab-Windows-v3.0.0-Stage1700
           path: |
             dist-installer/NEXVARY-Avionics-Lab-Setup.exe
-            NEXVARY-Avionics-Lab-v2.3.0-Portable.zip
+            NEXVARY-Avionics-Lab-v3.0.0-Portable.zip
           if-no-files-found: error

@@ -1,5 +1,6 @@
 #include "qt/CockpitBridge.hpp"
 #include <QVariantMap>
+#include <QVariantList>
 #include <cassert>
 
 using namespace nexvary::avionics;
@@ -21,12 +22,22 @@ int main() {
     assert(bridge.twinRows().size() == 5);
     assert(bridge.twinNominalCount() == 5);
     assert(bridge.faultPresets().size() == 3);
+    assert(bridge.presentationFaultPresets().size() == 3);
+    assert(bridge.performanceSeries().size() == 4);
     assert(bridge.activeTrainingFaultCount() == 0);
 
     for (int i = 0; i < 80; ++i) bridge.step();
     auto bus = findRow(bridge.trendRows(), QStringLiteral("bus_voltage_v"));
     assert(bus.value("samples").toULongLong() == 60);
     assert(bus.value("quality").toDouble() == 100.0);
+
+    const auto performance = bridge.performanceSeries();
+    assert(performance.size() == 4);
+    for (const auto& item : performance) {
+        const auto row = item.toMap();
+        assert(!row.value("id").toString().isEmpty());
+        assert(!row.value("values").toList().isEmpty());
+    }
 
     bridge.setTrendWindow(20);
     assert(bridge.trendWindow() == 20);
@@ -47,11 +58,15 @@ int main() {
     assert(bridge.activeFaultRows().size() == 1);
     auto powerTwin = findRow(bridge.twinRows(), QStringLiteral("power"));
     assert(powerTwin.value("state").toString() == QStringLiteral("DEGRADED"));
+    auto preset = findRow(bridge.presentationFaultPresets(), QStringLiteral("low-power-bus"));
+    assert(preset.value("active").toBool());
 
     bridge.clearTrainingFaults();
     assert(bridge.activeTrainingFaultCount() == 0);
     powerTwin = findRow(bridge.twinRows(), QStringLiteral("power"));
     assert(powerTwin.value("state").toString() == QStringLiteral("NOMINAL"));
+    preset = findRow(bridge.presentationFaultPresets(), QStringLiteral("low-power-bus"));
+    assert(!preset.value("active").toBool());
 
     bridge.applyTrainingFault(QStringLiteral("imu-dropout"));
     flightTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
@@ -63,7 +78,7 @@ int main() {
     assert(bridge.rtl());
     const auto arabicTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
     assert(!arabicTwin.value("label").toString().isEmpty());
-    const auto presets = bridge.faultPresets();
+    const auto presets = bridge.presentationFaultPresets();
     assert(!presets.first().toMap().value("label").toString().isEmpty());
     return 0;
 }

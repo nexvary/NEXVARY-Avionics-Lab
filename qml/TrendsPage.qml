@@ -7,7 +7,20 @@ Item {
         RowLayout { Layout.fillWidth:true
             Text { text:cockpit.text("trends"); color:Theme.gold; font.pixelSize:24; font.bold:true; Layout.fillWidth:true }
             Text { text:cockpit.text("window"); color:Theme.muted }
-            ComboBox { id:w; model:[20,60,120,0]; currentIndex:1; Layout.preferredWidth:110; onActivated:cockpit.setTrendWindow(Number(currentText)); contentItem:Text{text:w.displayText; color:Theme.text; verticalAlignment:Text.AlignVCenter; horizontalAlignment:Text.AlignHCenter}; background:Rectangle{color:Theme.panel; radius:6; border.color:Theme.border} }
+            ComboBox {
+                id:w
+                model:[20,60,120,0]
+                currentIndex:1
+                Layout.preferredWidth:110
+                onActivated: cockpit.setTrendWindow(Number(currentText))
+                contentItem: Text {
+                    text:w.displayText
+                    color:Theme.text
+                    verticalAlignment:Text.AlignVCenter
+                    horizontalAlignment:Text.AlignHCenter
+                }
+                background: Rectangle { color:Theme.panel; radius:6; border.color:Theme.border }
+            }
         }
         Rectangle { Layout.fillWidth:true; Layout.preferredHeight:245; radius:10; color:Theme.panel; border.color:Theme.border
             PerformancePanel { anchors.fill:parent }

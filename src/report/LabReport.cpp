@@ -3,21 +3,110 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iomanip>
-#include <limits>
 #include <sstream>
 #include <stdexcept>
 
 namespace nexvary::avionics {
-LabReportData LabReport::analyze(std::string_view scenario,const TelemetryRecorder& recorder,const EventLog& log){
-    LabReportData r; r.scenario=std::string(scenario); r.frameCount=recorder.size(); r.eventCount=log.size();
-    const auto summary=TelemetryArchive::inspect(recorder.frames()); r.sensorSampleCount=summary.sensorSampleCount; r.invalidSampleCount=summary.invalidSampleCount; r.sequenceMonotonic=summary.sequenceMonotonic; r.timeMonotonic=summary.timeMonotonic; r.checksum=summary.checksum;
-    struct Acc{std::size_t samples=0,valid=0,invalid=0;double min=std::numeric_limits<double>::infinity(),max=-std::numeric_limits<double>::infinity(),sum=0.0;};
-    std::map<std::string,Acc> acc;
-    for(const auto&frame:recorder.frames())for(const auto&[name,s]:frame.sensors){auto&a=acc[name];++a.samples;if(!s.valid){++a.invalid;continue;}++a.valid;a.min=std::min(a.min,s.value);a.max=std::max(a.max,s.value);a.sum+=s.value;}
-    for(const auto&[name,a]:acc){SensorStatistic s;s.samples=a.samples;s.validSamples=a.valid;s.invalidSamples=a.invalid;if(a.valid){s.minimum=a.min;s.maximum=a.max;s.mean=a.sum/static_cast<double>(a.valid);}r.sensors.emplace(name,s);}return r;
+
+LabReportData LabReport::analyze(
+    std::string_view scenario,
+    const TelemetryRecorder& recorder,
+    const EventLog& log,
+    std::size_t trendWindowFrames) {
+    LabReportData report;
+    report.scenario = std::string(scenario);
+    report.frameCount = recorder.size();
+    report.eventCount = log.size();
+    report.trendWindowFrames = trendWindowFrames == 0
+        ? recorder.size()
+        : std::min(trendWindowFrames, recorder.size());
+
+    const auto summary = TelemetryArchive::inspect(recorder.frames());
+    report.sensorSampleCount = summary.sensorSampleCount;
+    report.invalidSampleCount = summary.invalidSampleCount;
+    report.sequenceMonotonic = summary.sequenceMonotonic;
+    report.timeMonotonic = summary.timeMonotonic;
+    report.checksum = summary.checksum;
+    report.sensors = TelemetryTrendAnalyzer::analyze(recorder.frames(), trendWindowFrames);
+    return report;
 }
-std::string LabReport::toJson(const LabReportData&r){nlohmann::json j{{"schema","nexvary-avionics-verification/v1"},{"scope","synthetic-training"},{"scenario",r.scenario},{"frame_count",r.frameCount},{"event_count",r.eventCount},{"sensor_sample_count",r.sensorSampleCount},{"invalid_sample_count",r.invalidSampleCount},{"sequence_monotonic",r.sequenceMonotonic},{"time_monotonic",r.timeMonotonic},{"checksum",r.checksum}};j["sensors"]=nlohmann::json::object();for(const auto&[n,s]:r.sensors)j["sensors"][n]={{"samples",s.samples},{"valid_samples",s.validSamples},{"invalid_samples",s.invalidSamples},{"minimum",s.minimum},{"maximum",s.maximum},{"mean",s.mean}};return j.dump(2);}
-std::string LabReport::toMarkdown(const LabReportData&r){std::ostringstream o;o<<"# NEXVARY Avionics Verification Report\n\nSynthetic training/simulation data only. No live-aircraft control interface.\n\n"<<"- Scenario: `"<<r.scenario<<"`\n- Frames: "<<r.frameCount<<"\n- Events: "<<r.eventCount<<"\n- Sensor samples: "<<r.sensorSampleCount<<"\n- Invalid samples: "<<r.invalidSampleCount<<"\n- Sequence monotonic: "<<(r.sequenceMonotonic?"PASS":"FAIL")<<"\n- Time monotonic: "<<(r.timeMonotonic?"PASS":"FAIL")<<"\n- Checksum: `"<<r.checksum<<"`\n\n| Sensor | Samples | Valid | Invalid | Min | Max | Mean |\n|---|---:|---:|---:|---:|---:|---:|\n";o<<std::fixed<<std::setprecision(3);for(const auto&[n,s]:r.sensors)o<<'|'<<n<<'|'<<s.samples<<'|'<<s.validSamples<<'|'<<s.invalidSamples<<'|'<<s.minimum<<'|'<<s.maximum<<'|'<<s.mean<<"|\n";return o.str();}
-static void writeText(const std::string&p,const std::string&v){std::ofstream f(p,std::ios::binary|std::ios::trunc);if(!f)throw std::runtime_error("unable to open report output");f<<v;if(!f)throw std::runtime_error("unable to write report output");}
-void LabReport::writeJson(const std::string&p,const LabReportData&r){writeText(p,toJson(r));} void LabReport::writeMarkdown(const std::string&p,const LabReportData&r){writeText(p,toMarkdown(r));}
+
+std::string LabReport::toJson(const LabReportData& report) {
+    nlohmann::json json{
+        {"schema", "nexvary-avionics-verification/v2"},
+        {"scope", "synthetic-training"},
+        {"scenario", report.scenario},
+        {"frame_count", report.frameCount},
+        {"event_count", report.eventCount},
+        {"sensor_sample_count", report.sensorSampleCount},
+        {"invalid_sample_count", report.invalidSampleCount},
+        {"trend_window_frames", report.trendWindowFrames},
+        {"sequence_monotonic", report.sequenceMonotonic},
+        {"time_monotonic", report.timeMonotonic},
+        {"checksum", report.checksum}
+    };
+
+    json["sensors"] = nlohmann::json::object();
+    for (const auto& [name, sensor] : report.sensors) {
+        json["sensors"][name] = {
+            {"unit", sensor.unit},
+            {"samples", sensor.samples},
+            {"valid_samples", sensor.validSamples},
+            {"invalid_samples", sensor.invalidSamples},
+            {"missing_samples", sensor.missingSamples},
+            {"has_valid_samples", sensor.hasValidSamples},
+            {"minimum", sensor.minimum},
+            {"maximum", sensor.maximum},
+            {"mean", sensor.mean},
+            {"latest", sensor.latest},
+            {"delta", sensor.delta},
+            {"slope_per_second", sensor.slopePerSecond}
+        };
+    }
+    return json.dump(2);
 }
+
+std::string LabReport::toMarkdown(const LabReportData& report) {
+    std::ostringstream out;
+    out << "# NEXVARY Avionics Verification Report\n\n"
+        << "Synthetic training/simulation data only. No live-aircraft control interface.\n\n"
+        << "- Scenario: `" << report.scenario << "`\n"
+        << "- Frames: " << report.frameCount << "\n"
+        << "- Events: " << report.eventCount << "\n"
+        << "- Sensor samples: " << report.sensorSampleCount << "\n"
+        << "- Invalid samples: " << report.invalidSampleCount << "\n"
+        << "- Trend window: " << report.trendWindowFrames << " frame(s)\n"
+        << "- Sequence monotonic: " << (report.sequenceMonotonic ? "PASS" : "FAIL") << "\n"
+        << "- Time monotonic: " << (report.timeMonotonic ? "PASS" : "FAIL") << "\n"
+        << "- Checksum: `" << report.checksum << "`\n\n"
+        << "| Sensor | Unit | Samples | Valid | Invalid | Missing | Min | Max | Mean | Latest | Delta | Slope/s |\n"
+        << "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|\n";
+
+    out << std::fixed << std::setprecision(3);
+    for (const auto& [name, sensor] : report.sensors) {
+        out << '|' << name << '|' << sensor.unit << '|' << sensor.samples << '|'
+            << sensor.validSamples << '|' << sensor.invalidSamples << '|' << sensor.missingSamples << '|'
+            << sensor.minimum << '|' << sensor.maximum << '|' << sensor.mean << '|'
+            << sensor.latest << '|' << sensor.delta << '|' << sensor.slopePerSecond << "|\n";
+    }
+    return out.str();
+}
+
+namespace {
+void writeText(const std::string& path, const std::string& value) {
+    std::ofstream file(path, std::ios::binary | std::ios::trunc);
+    if (!file) throw std::runtime_error("unable to open report output");
+    file << value;
+    if (!file) throw std::runtime_error("unable to write report output");
+}
+} // namespace
+
+void LabReport::writeJson(const std::string& path, const LabReportData& report) {
+    writeText(path, toJson(report));
+}
+
+void LabReport::writeMarkdown(const std::string& path, const LabReportData& report) {
+    writeText(path, toMarkdown(report));
+}
+
+} // namespace nexvary::avionics

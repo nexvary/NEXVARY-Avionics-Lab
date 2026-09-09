@@ -94,7 +94,7 @@ ApplicationWindow {
                     }
                     ColumnLayout { spacing:1
                         Text { text:"TICK "+cockpit.tick; color:Theme.silver; font.family:"Consolas"; font.pixelSize:11; font.bold:true }
-                        Text { text:"BUILD 2.0 • STAGE 1100"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:8 }
+                        Text { text:"BUILD 2.2 • STAGE 1200"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:8 }
                     }
                     Rectangle { Layout.preferredWidth:190; Layout.preferredHeight:42; color:"#071713"; border.color:cockpit.activeAlertCount===0?Theme.green:Theme.amber; radius:Theme.radius
                         RowLayout{anchors.fill:parent;anchors.margins:8
@@ -124,11 +124,11 @@ ApplicationWindow {
 
             Rectangle { Layout.fillWidth:true; Layout.preferredHeight:28; color:"#030b10"; border.color:"#13252e"
                 RowLayout { anchors.fill:parent; anchors.margins:6
-                    Text { text:"NEXVARY AVIONICS LAB  /  AEROSPACE TRAINING PLATFORM"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
+                    Text { text:"NEXVARY AVIONICS LAB  /  AEROSPACE ENGINEERING WORKBENCH"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
                     Item { Layout.fillWidth:true }
                     Text { text:cockpit.text("simulation_only"); color:Theme.muted; font.pixelSize:8 }
                     Item { Layout.fillWidth:true }
-                    Text { text:"OFFLINE  •  RUNTIME EVIDENCE  •  SYNTHETIC DATA"; color:Theme.green; font.family:"Consolas"; font.pixelSize:7 }
+                    Text { text:"OFFLINE • TIME-CORRELATED EVIDENCE • SYNTHETIC DATA"; color:Theme.green; font.family:"Consolas"; font.pixelSize:7 }
                 }
             }
         }

@@ -33,20 +33,25 @@ QVariantList CockpitBridge::presentationFaultPresets() const {
 
 QVariantList CockpitBridge::performanceSeries() const {
     struct Definition { const char* id; };
-    static constexpr std::array<Definition, 4> definitions{{
+    static constexpr std::array<Definition, 8> definitions{{
+        {"altitude_m"}, {"airspeed_kph"}, {"imu_pitch_deg"}, {"imu_roll_deg"},
         {"cpu_temp_c"}, {"bus_voltage_v"}, {"hydraulic_pressure_pct"}, {"fuel_level_pct"}
     }};
 
     QVariantList rows;
     const auto& frames = lab_.recorder().frames();
-    const std::size_t begin = frames.size() > 60 ? frames.size() - 60 : 0;
+    const std::size_t endExclusive = replayMode_
+        ? std::min(frames.size(), static_cast<std::size_t>(std::max(0, replayIndex_) + 1))
+        : frames.size();
+    const std::size_t requestedWindow = trendWindow_ == 0 ? endExclusive : static_cast<std::size_t>(trendWindow_);
+    const std::size_t begin = endExclusive > requestedWindow ? endExclusive - requestedWindow : 0;
 
     for (const auto& definition : definitions) {
         QVariantList values;
         double minimum = std::numeric_limits<double>::infinity();
         double maximum = -std::numeric_limits<double>::infinity();
         QString unit;
-        for (std::size_t i = begin; i < frames.size(); ++i) {
+        for (std::size_t i = begin; i < endExclusive; ++i) {
             const auto sensor = frames[i].sensors.find(definition.id);
             if (sensor == frames[i].sensors.end() || !sensor->second.valid) continue;
             const double value = sensor->second.value;

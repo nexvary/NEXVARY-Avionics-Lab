@@ -3,8 +3,10 @@
 #include "sim/ScenarioEngine.hpp"
 #include "sim/TrainingFaultCatalog.hpp"
 #include "twin/DigitalTwin.hpp"
+#include <QDateTime>
 #include <QVariantMap>
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <stdexcept>
 
@@ -85,9 +87,15 @@ int CockpitBridge::activeAlertCount() const noexcept {
 }
 
 bool CockpitBridge::replayMode() const noexcept { return replayMode_; }
+bool CockpitBridge::replayPaused() const noexcept { return replayPaused_; }
 int CockpitBridge::replayIndex() const noexcept { return replayIndex_; }
 int CockpitBridge::replayMaximum() const noexcept {
     return lab_.recorder().size() > 0 ? static_cast<int>(lab_.recorder().size() - 1) : 0;
+}
+QString CockpitBridge::replayTime() const {
+    const auto frame = lab_.recorder().frame(static_cast<std::size_t>(std::clamp(replayIndex_, 0, replayMaximum())));
+    if (!frame) return QStringLiteral("T+0.0 s");
+    return QStringLiteral("T+%1 s").arg(static_cast<double>(frame->simTime.count()) / 1000.0, 0, 'f', 1);
 }
 QString CockpitBridge::language() const { return language_ == UiLanguage::Arabic ? QStringLiteral("ar") : QStringLiteral("en"); }
 bool CockpitBridge::rtl() const noexcept { return UiLocale::isRtl(language_); }
@@ -99,7 +107,7 @@ QStringList CockpitBridge::scenarios() const {
 
 void CockpitBridge::step() {
     if (replayMode_) {
-        if (replayIndex_ < replayMaximum()) ++replayIndex_;
+        if (!replayPaused_ && replayIndex_ < replayMaximum()) ++replayIndex_;
         showReplayFrame();
         return;
     }
@@ -108,6 +116,7 @@ void CockpitBridge::step() {
 
 void CockpitBridge::resetLab() {
     replayMode_ = false;
+    replayPaused_ = false;
     replayIndex_ = 0;
     lab_.reset();
     refresh(lab_.step());
@@ -116,6 +125,7 @@ void CockpitBridge::resetLab() {
 void CockpitBridge::setScenario(const QString& name) {
     try {
         replayMode_ = false;
+        replayPaused_ = false;
         replayIndex_ = 0;
         lab_.setScenario(ScenarioEngine::fromName(name.toStdString()));
         lab_.reset();
@@ -139,12 +149,19 @@ QString CockpitBridge::text(const QString& key) const {
 void CockpitBridge::setReplayMode(bool enabled) {
     if (enabled && lab_.recorder().size() == 0) return;
     replayMode_ = enabled;
+    replayPaused_ = enabled;
     if (enabled) {
         replayIndex_ = 0;
         showReplayFrame();
     } else {
         refresh(lab_.snapshot());
     }
+}
+
+void CockpitBridge::setReplayPaused(bool paused) {
+    if (!replayMode_ || replayPaused_ == paused) return;
+    replayPaused_ = paused;
+    emit dataChanged();
 }
 
 void CockpitBridge::seekReplay(int index) {
@@ -163,12 +180,14 @@ void CockpitBridge::setTrendWindow(int frames) {
 
 void CockpitBridge::applyTrainingFault(const QString& presetId) {
     replayMode_ = false;
+    replayPaused_ = false;
     if (!lab_.applyTrainingFault(presetId.toStdString())) return;
     refresh(lab_.step());
 }
 
 void CockpitBridge::clearTrainingFaults() {
     replayMode_ = false;
+    replayPaused_ = false;
     lab_.clearTrainingFaults();
     refresh(lab_.step());
 }
@@ -263,6 +282,9 @@ void CockpitBridge::refresh(const LabSnapshot& snapshot) {
         item["severity"] = QString::fromLatin1(to_string(event.severity));
         item["source"] = QString::fromStdString(event.source);
         item["message"] = QString::fromStdString(event.message);
+        const auto epochMs = std::chrono::duration_cast<std::chrono::milliseconds>(event.timestamp.time_since_epoch()).count();
+        item["epochMs"] = static_cast<qlonglong>(epochMs);
+        item["time"] = QDateTime::fromMSecsSinceEpoch(static_cast<qint64>(epochMs)).toString(QStringLiteral("HH:mm:ss.zzz"));
         eventRows_.push_back(item);
     }
 

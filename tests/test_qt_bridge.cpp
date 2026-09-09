@@ -23,7 +23,7 @@ int main() {
     assert(bridge.twinNominalCount() == 5);
     assert(bridge.faultPresets().size() == 3);
     assert(bridge.presentationFaultPresets().size() == 3);
-    assert(bridge.performanceSeries().size() == 4);
+    assert(bridge.performanceSeries().size() == 8);
     assert(bridge.activeTrainingFaultCount() == 0);
 
     for (int i = 0; i < 80; ++i) bridge.step();
@@ -32,12 +32,25 @@ int main() {
     assert(bus.value("quality").toDouble() == 100.0);
 
     const auto performance = bridge.performanceSeries();
-    assert(performance.size() == 4);
+    assert(performance.size() == 8);
     for (const auto& item : performance) {
         const auto row = item.toMap();
         assert(!row.value("id").toString().isEmpty());
         assert(!row.value("values").toList().isEmpty());
     }
+
+    bridge.setReplayMode(true);
+    assert(bridge.replayMode());
+    assert(bridge.replayPaused());
+    assert(!bridge.replayTime().isEmpty());
+    const int pausedIndex = bridge.replayIndex();
+    bridge.step();
+    assert(bridge.replayIndex() == pausedIndex);
+    bridge.setReplayPaused(false);
+    bridge.step();
+    assert(bridge.replayIndex() == pausedIndex + 1);
+    bridge.setReplayPaused(true);
+    bridge.setReplayMode(false);
 
     bridge.setTrendWindow(20);
     assert(bridge.trendWindow() == 20);

@@ -33,8 +33,10 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int twinFaultCount READ twinFaultCount NOTIFY dataChanged)
     Q_PROPERTY(int twinUnknownCount READ twinUnknownCount NOTIFY dataChanged)
     Q_PROPERTY(bool replayMode READ replayMode NOTIFY dataChanged)
+    Q_PROPERTY(bool replayPaused READ replayPaused NOTIFY dataChanged)
     Q_PROPERTY(int replayIndex READ replayIndex NOTIFY dataChanged)
     Q_PROPERTY(int replayMaximum READ replayMaximum NOTIFY dataChanged)
+    Q_PROPERTY(QString replayTime READ replayTime NOTIFY dataChanged)
     Q_PROPERTY(QString language READ language NOTIFY languageChanged)
     Q_PROPERTY(bool rtl READ rtl NOTIFY languageChanged)
     Q_PROPERTY(QStringList scenarios READ scenarios CONSTANT)
@@ -65,8 +67,10 @@ public:
     int twinFaultCount() const noexcept;
     int twinUnknownCount() const noexcept;
     bool replayMode() const noexcept;
+    bool replayPaused() const noexcept;
     int replayIndex() const noexcept;
     int replayMaximum() const noexcept;
+    QString replayTime() const;
     QString language() const;
     bool rtl() const noexcept;
     QStringList scenarios() const;
@@ -77,6 +81,7 @@ public:
     Q_INVOKABLE void setLanguage(const QString& code);
     Q_INVOKABLE QString text(const QString& key) const;
     Q_INVOKABLE void setReplayMode(bool enabled);
+    Q_INVOKABLE void setReplayPaused(bool paused);
     Q_INVOKABLE void seekReplay(int index);
     Q_INVOKABLE void setTrendWindow(int frames);
     Q_INVOKABLE void applyTrainingFault(const QString& presetId);
@@ -103,6 +108,7 @@ private:
     QVariantList twinRows_;
     QStringList annunciators_;
     bool replayMode_{false};
+    bool replayPaused_{false};
     int replayIndex_{0};
     int trendWindow_{60};
     int twinNominalCount_{0};

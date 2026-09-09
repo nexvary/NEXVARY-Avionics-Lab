@@ -49,22 +49,20 @@ endforeach()
 if(NEXVARY_BUILD_QT_HMI)
     find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
     set(CMAKE_AUTOMOC ON)
-    qt_add_executable(nexvary_avionics_hmi src/qt/main_qt.cpp src/qt/CockpitBridge.cpp src/qt/CockpitBridge.hpp)
+    set(NEXVARY_QT_BRIDGE_SOURCES src/qt/CockpitBridge.cpp src/qt/CockpitBridgeMinisterial.cpp src/qt/CockpitBridge.hpp)
+    qt_add_executable(nexvary_avionics_hmi src/qt/main_qt.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
     qt_add_resources(nexvary_avionics_hmi "qml_resources"
         PREFIX "/"
         FILES
-            qml/Main.qml
-            qml/InstrumentTile.qml
-            qml/MinisterialButton.qml
-            qml/StatusCard.qml
-            qml/SideNavButton.qml
-            qml/AttitudeIndicator.qml
-            qml/TelemetrySparkline.qml
-            qml/Theme.js
+            qml/Main.qml qml/Theme.js
+            qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml
+            qml/InstrumentTile.qml qml/MetricBox.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml
+            qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml
+            qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/FaultLabPage.qml
     )
     target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
 
-    add_executable(qt_bridge_tests tests/test_qt_bridge.cpp src/qt/CockpitBridge.cpp src/qt/CockpitBridge.hpp)
+    add_executable(qt_bridge_tests tests/test_qt_bridge.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
     target_link_libraries(qt_bridge_tests PRIVATE avionics_core Qt6::Core)
     add_test(NAME qt_bridge_tests COMMAND qt_bridge_tests)
 endif()

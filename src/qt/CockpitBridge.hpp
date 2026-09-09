@@ -16,7 +16,9 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList trendRows READ trendRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList twinRows READ twinRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList faultPresets READ faultPresets NOTIFY languageChanged)
+    Q_PROPERTY(QVariantList presentationFaultPresets READ presentationFaultPresets NOTIFY dataChanged)
     Q_PROPERTY(QVariantList activeFaultRows READ activeFaultRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList performanceSeries READ performanceSeries NOTIFY dataChanged)
     Q_PROPERTY(QStringList annunciators READ annunciators NOTIFY dataChanged)
     Q_PROPERTY(QString scenario READ scenario NOTIFY dataChanged)
     Q_PROPERTY(qulonglong tick READ tick NOTIFY dataChanged)
@@ -46,7 +48,9 @@ public:
     QVariantList trendRows() const;
     QVariantList twinRows() const;
     QVariantList faultPresets() const;
+    QVariantList presentationFaultPresets() const;
     QVariantList activeFaultRows() const;
+    QVariantList performanceSeries() const;
     QStringList annunciators() const;
     QString scenario() const;
     qulonglong tick() const noexcept;

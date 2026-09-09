@@ -5,13 +5,13 @@ import "Theme.js" as Theme
 
 Button {
     id: control
-    property string glyph: "•"
+    property string iconKind: "dashboard"
     implicitHeight: 62
     implicitWidth: 176
     checkable: true
     contentItem: RowLayout {
         spacing: 12
-        Text { text: control.glyph; color: control.checked ? Theme.gold : "#9eb8c7"; font.pixelSize: 22; Layout.preferredWidth: 28; horizontalAlignment: Text.AlignHCenter }
+        NavIcon { kind: control.iconKind; iconColor: control.checked ? Theme.gold : "#9eb8c7"; Layout.preferredWidth: 28; Layout.preferredHeight: 28 }
         Text { text: control.text; color: control.checked ? Theme.gold : Theme.text; font.pixelSize: 12; font.bold: control.checked; Layout.fillWidth: true; wrapMode: Text.Wrap }
     }
     background: Rectangle {

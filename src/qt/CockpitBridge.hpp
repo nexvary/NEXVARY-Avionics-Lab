@@ -15,11 +15,14 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList eventRows READ eventRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList trendRows READ trendRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList twinRows READ twinRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList faultPresets READ faultPresets NOTIFY languageChanged)
+    Q_PROPERTY(QVariantList activeFaultRows READ activeFaultRows NOTIFY dataChanged)
     Q_PROPERTY(QStringList annunciators READ annunciators NOTIFY dataChanged)
     Q_PROPERTY(QString scenario READ scenario NOTIFY dataChanged)
     Q_PROPERTY(qulonglong tick READ tick NOTIFY dataChanged)
     Q_PROPERTY(int recordedFrames READ recordedFrames NOTIFY dataChanged)
     Q_PROPERTY(int activeAlertCount READ activeAlertCount NOTIFY dataChanged)
+    Q_PROPERTY(int activeTrainingFaultCount READ activeTrainingFaultCount NOTIFY dataChanged)
     Q_PROPERTY(int sensorCount READ sensorCount NOTIFY dataChanged)
     Q_PROPERTY(int eventCount READ eventCount NOTIFY dataChanged)
     Q_PROPERTY(int trendWindow READ trendWindow NOTIFY dataChanged)
@@ -42,11 +45,14 @@ public:
     QVariantList eventRows() const;
     QVariantList trendRows() const;
     QVariantList twinRows() const;
+    QVariantList faultPresets() const;
+    QVariantList activeFaultRows() const;
     QStringList annunciators() const;
     QString scenario() const;
     qulonglong tick() const noexcept;
     int recordedFrames() const noexcept;
     int activeAlertCount() const noexcept;
+    int activeTrainingFaultCount() const noexcept;
     int sensorCount() const noexcept;
     int eventCount() const noexcept;
     int trendWindow() const noexcept;
@@ -69,6 +75,8 @@ public:
     Q_INVOKABLE void setReplayMode(bool enabled);
     Q_INVOKABLE void seekReplay(int index);
     Q_INVOKABLE void setTrendWindow(int frames);
+    Q_INVOKABLE void applyTrainingFault(const QString& presetId);
+    Q_INVOKABLE void clearTrainingFaults();
 
 signals:
     void dataChanged();

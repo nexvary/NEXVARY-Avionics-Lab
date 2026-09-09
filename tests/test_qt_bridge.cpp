@@ -20,6 +20,8 @@ int main() {
     assert(!bridge.trendRows().isEmpty());
     assert(bridge.twinRows().size() == 5);
     assert(bridge.twinNominalCount() == 5);
+    assert(bridge.faultPresets().size() == 3);
+    assert(bridge.activeTrainingFaultCount() == 0);
 
     for (int i = 0; i < 80; ++i) bridge.step();
     auto bus = findRow(bridge.trendRows(), QStringLiteral("bus_voltage_v"));
@@ -35,13 +37,33 @@ int main() {
     for (int i = 0; i < 15; ++i) bridge.step();
     const auto pitch = findRow(bridge.trendRows(), QStringLiteral("imu_pitch_deg"));
     assert(pitch.value("invalid").toULongLong() > 0);
-    const auto flightTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
+    auto flightTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
     assert(flightTwin.value("state").toString() == QStringLiteral("FAULT"));
     assert(bridge.twinFaultCount() > 0);
+
+    bridge.setScenario(QStringLiteral("nominal"));
+    bridge.applyTrainingFault(QStringLiteral("low-power-bus"));
+    assert(bridge.activeTrainingFaultCount() == 1);
+    assert(bridge.activeFaultRows().size() == 1);
+    auto powerTwin = findRow(bridge.twinRows(), QStringLiteral("power"));
+    assert(powerTwin.value("state").toString() == QStringLiteral("DEGRADED"));
+
+    bridge.clearTrainingFaults();
+    assert(bridge.activeTrainingFaultCount() == 0);
+    powerTwin = findRow(bridge.twinRows(), QStringLiteral("power"));
+    assert(powerTwin.value("state").toString() == QStringLiteral("NOMINAL"));
+
+    bridge.applyTrainingFault(QStringLiteral("imu-dropout"));
+    flightTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
+    assert(flightTwin.value("state").toString() == QStringLiteral("FAULT"));
+    bridge.resetLab();
+    assert(bridge.activeTrainingFaultCount() == 0);
 
     bridge.setLanguage(QStringLiteral("ar"));
     assert(bridge.rtl());
     const auto arabicTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
     assert(!arabicTwin.value("label").toString().isEmpty());
+    const auto presets = bridge.faultPresets();
+    assert(!presets.first().toMap().value("label").toString().isEmpty());
     return 0;
 }

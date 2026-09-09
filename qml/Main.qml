@@ -97,6 +97,7 @@ ApplicationWindow {
             Button { text: root.t("replay"); checkable: true; checked: root.selectedPage === 4; onClicked: root.selectedPage = 4 }
             Button { text: root.t("trends"); checkable: true; checked: root.selectedPage === 5; onClicked: root.selectedPage = 5 }
             Button { text: root.t("digital_twin"); checkable: true; checked: root.selectedPage === 6; onClicked: root.selectedPage = 6 }
+            Button { text: root.t("fault_lab"); checkable: true; checked: root.selectedPage === 7; onClicked: root.selectedPage = 7 }
 
             Item { Layout.fillWidth: true }
 
@@ -399,6 +400,94 @@ ApplicationWindow {
                                         Text { text: root.t("issues") + ": " + modelData.issues; color: modelData.issues > 0 ? "#ffb000" : "#8fa5ae" }
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item {
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 12
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 62
+                        radius: 8
+                        color: "#071014"
+                        border.width: 1
+                        border.color: "#ffb000"
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            Text { text: root.t("fault_lab_notice"); color: "#ffcf66"; wrapMode: Text.Wrap; Layout.fillWidth: true }
+                            Text { text: root.t("active_training_faults") + ": " + cockpit.activeTrainingFaultCount; color: cockpit.activeTrainingFaultCount > 0 ? "#ff5a5f" : "#39ff9b"; font.bold: true }
+                            Button { text: root.t("clear_faults"); enabled: cockpit.activeTrainingFaultCount > 0; onClicked: cockpit.clearTrainingFaults() }
+                        }
+                    }
+
+                    GridLayout {
+                        Layout.fillWidth: true
+                        columns: 3
+                        columnSpacing: 12
+                        rowSpacing: 12
+                        Repeater {
+                            model: cockpit.faultPresets
+                            delegate: Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 170
+                                radius: 9
+                                color: "#081216"
+                                border.width: 1
+                                border.color: "#52646d"
+                                ColumnLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 14
+                                    spacing: 8
+                                    Text { text: modelData.label; color: "#f1c75b"; font.pixelSize: 17; font.bold: true; Layout.fillWidth: true }
+                                    Text { text: modelData.detail; color: "#d4e2e7"; wrapMode: Text.Wrap; Layout.fillWidth: true; Layout.fillHeight: true }
+                                    Text { text: modelData.sensor + " | " + modelData.mode; color: "#7fdcff"; font.pixelSize: 11 }
+                                    Button { text: root.t("apply_fault"); Layout.fillWidth: true; onClicked: cockpit.applyTrainingFault(modelData.id) }
+                                }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 38
+                        color: "#071014"
+                        border.width: 1
+                        border.color: "#52646d"
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            Text { text: root.t("active_training_faults"); color: "#f1c75b"; Layout.fillWidth: true }
+                            Text { text: cockpit.activeTrainingFaultCount; color: cockpit.activeTrainingFaultCount > 0 ? "#ff5a5f" : "#39ff9b"; font.bold: true }
+                        }
+                    }
+
+                    ListView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        spacing: 6
+                        clip: true
+                        model: cockpit.activeFaultRows
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: ListView.view.width
+                            height: 54
+                            color: "#0b1115"
+                            border.width: 1
+                            border.color: "#ff5a5f"
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                Text { text: modelData.label; color: "#ffcf66"; font.bold: true; Layout.fillWidth: true }
+                                Text { text: modelData.sensor; color: "#d4e2e7"; Layout.preferredWidth: 180 }
+                                Text { text: modelData.mode; color: "#ff5a5f"; Layout.preferredWidth: 120 }
                             }
                         }
                     }

@@ -15,6 +15,7 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "replay") return ar ? "مختبر الإعادة" : "REPLAY LAB";
     if (key == "trends") return ar ? "الاتجاهات" : "TRENDS";
     if (key == "digital_twin") return ar ? "التوأم الرقمي" : "DIGITAL TWIN";
+    if (key == "fault_lab") return ar ? "مختبر الأعطال" : "FAULT LAB";
     if (key == "power") return ar ? "الطاقة" : "POWER";
     if (key == "compute") return ar ? "الحوسبة" : "COMPUTE";
     if (key == "flight_sensors") return ar ? "حساسات الطيران" : "FLIGHT SENSORS";
@@ -41,6 +42,7 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "systems_nominal") return ar ? "جميع الأنظمة في الحالة الاسمية" : "SYSTEMS NOMINAL";
     if (key == "replay_mode") return ar ? "وضع إعادة التسجيل" : "REPLAY MODE";
     if (key == "active_alerts") return ar ? "الإنذارات النشطة" : "ACTIVE ALERTS";
+    if (key == "active_training_faults") return ar ? "أعطال التدريب النشطة" : "ACTIVE TRAINING FAULTS";
     if (key == "recorded_frames") return ar ? "الإطارات المسجلة" : "RECORDED FRAMES";
     if (key == "sensor_count") return ar ? "عدد الحساسات" : "SENSOR COUNT";
     if (key == "event_count") return ar ? "عدد الأحداث" : "EVENT COUNT";
@@ -48,6 +50,15 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "back") return ar ? "رجوع" : "BACK";
     if (key == "enter_replay") return ar ? "بدء الإعادة" : "ENTER REPLAY";
     if (key == "exit_replay") return ar ? "خروج من الإعادة" : "EXIT REPLAY";
+    if (key == "apply_fault") return ar ? "تطبيق العطل" : "APPLY FAULT";
+    if (key == "clear_faults") return ar ? "مسح الأعطال" : "CLEAR FAULTS";
+    if (key == "fault_imu_dropout") return ar ? "فقد حساس الميل الطولي" : "IMU PITCH DROPOUT";
+    if (key == "fault_imu_dropout_detail") return ar ? "يجعل قناة الميل الطولي غير صالحة داخل المحاكاة فقط." : "Marks the synthetic pitch channel invalid for training.";
+    if (key == "fault_low_power") return ar ? "انخفاض ناقل الطاقة" : "LOW POWER BUS";
+    if (key == "fault_low_power_detail") return ar ? "يضبط جهد ناقل الطاقة الاصطناعي على قيمة منخفضة تدريبية." : "Overrides the synthetic power bus with a bounded low-voltage training value.";
+    if (key == "fault_compute_hot") return ar ? "ارتفاع حرارة الحوسبة" : "COMPUTE OVER-TEMPERATURE";
+    if (key == "fault_compute_hot_detail") return ar ? "يضبط حرارة الحوسبة الاصطناعية أعلى من حد التحذير التدريبي." : "Overrides synthetic compute temperature above the training warning threshold.";
+    if (key == "fault_lab_notice") return ar ? "Presets تدريبية محدودة فقط؛ لا يمكن إدخال قناة أو قيمة عشوائية ولا توجد واجهة تحكم بعتاد حقيقي." : "Bounded training presets only; arbitrary channels/values and live hardware control are not available.";
     if (key == "altitude_m") return ar ? "الارتفاع" : "ALTITUDE";
     if (key == "airspeed_kph") return ar ? "السرعة الجوية" : "AIRSPEED";
     if (key == "imu_pitch_deg") return ar ? "الميل الطولي" : "PITCH";

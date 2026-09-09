@@ -1,4 +1,6 @@
 #include "app/AvionicsLab.hpp"
+#include "sim/TrainingFaultCatalog.hpp"
+#include <string>
 
 namespace nexvary::avionics {
 
@@ -8,7 +10,8 @@ AvionicsLab::AvionicsLab(ScenarioKind scenario) : scenario_(scenario) {
 
 LabSnapshot AvionicsLab::step(std::chrono::milliseconds delta) {
     clock_.advance(delta);
-    scenario_.step(clock_, bus_, faults_);
+    scenario_.step(clock_, bus_, scenarioFaults_);
+    trainingFaults_.apply(bus_);
     const auto issues = health_.evaluate(bus_);
     alerts_.update(issues, clock_.tick());
     recorder_.record(clock_.tick(), clock_.elapsed(), bus_);
@@ -26,7 +29,8 @@ void AvionicsLab::reset() {
     bus_.clear();
     recorder_.clear();
     alerts_ = AlertManager{};
-    faults_.clear();
+    scenarioFaults_.clear();
+    trainingFaults_.clear();
     clock_.reset();
     lastActiveAlerts_ = 0;
     log_.push(Severity::Info, "lab", "simulation reset");
@@ -36,6 +40,25 @@ void AvionicsLab::setScenario(ScenarioKind scenario) {
     scenario_.setScenario(scenario);
     log_.push(Severity::Info, "scenario", std::string("scenario selected: ") + ScenarioEngine::toString(scenario));
 }
+
+bool AvionicsLab::applyTrainingFault(std::string_view presetId) {
+    const auto preset = TrainingFaultCatalog::find(presetId);
+    if (!preset) {
+        log_.push(Severity::Warning, "fault_lab", "rejected unknown training fault preset");
+        return false;
+    }
+    trainingFaults_.set(preset->fault);
+    log_.push(Severity::Info, "fault_lab", std::string("training fault applied: ") + preset->id);
+    return true;
+}
+
+void AvionicsLab::clearTrainingFaults() {
+    if (trainingFaults_.active().empty()) return;
+    trainingFaults_.clear();
+    log_.push(Severity::Info, "fault_lab", "all training faults cleared");
+}
+
+std::vector<FaultSpec> AvionicsLab::activeTrainingFaults() const { return trainingFaults_.active(); }
 
 LabSnapshot AvionicsLab::snapshot() const {
     const auto issues = health_.evaluate(bus_);

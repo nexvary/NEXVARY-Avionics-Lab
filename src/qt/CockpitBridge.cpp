@@ -1,6 +1,7 @@
 #include "qt/CockpitBridge.hpp"
 #include "core/TelemetryTrend.hpp"
 #include "sim/ScenarioEngine.hpp"
+#include "sim/TrainingFaultCatalog.hpp"
 #include "twin/DigitalTwin.hpp"
 #include <QVariantMap>
 #include <algorithm>
@@ -8,6 +9,16 @@
 #include <stdexcept>
 
 namespace nexvary::avionics {
+namespace {
+QString faultModeText(FaultMode mode) {
+    switch (mode) {
+        case FaultMode::Invalidate: return QStringLiteral("INVALIDATE");
+        case FaultMode::Override: return QStringLiteral("OVERRIDE");
+        case FaultMode::Offset: return QStringLiteral("OFFSET");
+    }
+    return QStringLiteral("UNKNOWN");
+}
+}
 
 CockpitBridge::CockpitBridge(QObject* parent)
     : QObject(parent), lab_(ScenarioKind::Nominal) {
@@ -19,6 +30,41 @@ QVariantList CockpitBridge::sensorRows() const { return sensorRows_; }
 QVariantList CockpitBridge::eventRows() const { return eventRows_; }
 QVariantList CockpitBridge::trendRows() const { return trendRows_; }
 QVariantList CockpitBridge::twinRows() const { return twinRows_; }
+
+QVariantList CockpitBridge::faultPresets() const {
+    QVariantList rows;
+    for (const auto& preset : TrainingFaultCatalog::presets()) {
+        QVariantMap item;
+        item["id"] = QString::fromStdString(preset.id);
+        item["label"] = QString::fromStdString(UiLocale::text(language_, preset.labelKey));
+        item["detail"] = QString::fromStdString(UiLocale::text(language_, preset.detailKey));
+        item["sensor"] = QString::fromStdString(UiLocale::text(language_, preset.fault.sensor));
+        item["mode"] = faultModeText(preset.fault.mode);
+        rows.push_back(item);
+    }
+    return rows;
+}
+
+QVariantList CockpitBridge::activeFaultRows() const {
+    QVariantList rows;
+    for (const auto& fault : lab_.activeTrainingFaults()) {
+        QVariantMap item;
+        item["id"] = QString::fromStdString(fault.id);
+        item["sensor"] = QString::fromStdString(UiLocale::text(language_, fault.sensor));
+        item["mode"] = faultModeText(fault.mode);
+        QString label = QString::fromStdString(fault.id);
+        for (const auto& preset : TrainingFaultCatalog::presets()) {
+            if (preset.fault.id == fault.id) {
+                label = QString::fromStdString(UiLocale::text(language_, preset.labelKey));
+                break;
+            }
+        }
+        item["label"] = label;
+        rows.push_back(item);
+    }
+    return rows;
+}
+
 QStringList CockpitBridge::annunciators() const { return annunciators_; }
 QString CockpitBridge::scenario() const { return QString::fromUtf8(ScenarioEngine::toString(snapshot_.scenario)); }
 qulonglong CockpitBridge::tick() const noexcept { return snapshot_.tick; }
@@ -30,6 +76,7 @@ int CockpitBridge::twinNominalCount() const noexcept { return twinNominalCount_;
 int CockpitBridge::twinDegradedCount() const noexcept { return twinDegradedCount_; }
 int CockpitBridge::twinFaultCount() const noexcept { return twinFaultCount_; }
 int CockpitBridge::twinUnknownCount() const noexcept { return twinUnknownCount_; }
+int CockpitBridge::activeTrainingFaultCount() const noexcept { return static_cast<int>(lab_.activeTrainingFaults().size()); }
 
 int CockpitBridge::activeAlertCount() const noexcept {
     int count = 0;
@@ -112,6 +159,18 @@ void CockpitBridge::setTrendWindow(int frames) {
     trendWindow_ = normalized;
     refreshTrends();
     emit dataChanged();
+}
+
+void CockpitBridge::applyTrainingFault(const QString& presetId) {
+    replayMode_ = false;
+    if (!lab_.applyTrainingFault(presetId.toStdString())) return;
+    refresh(lab_.step());
+}
+
+void CockpitBridge::clearTrainingFaults() {
+    replayMode_ = false;
+    lab_.clearTrainingFaults();
+    refresh(lab_.step());
 }
 
 void CockpitBridge::showReplayFrame() {

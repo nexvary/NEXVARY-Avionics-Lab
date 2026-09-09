@@ -21,8 +21,8 @@ jobs:
       - name: Configure Windows Qt HMI
         shell: pwsh
         run: cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
-      - name: Build Windows Qt HMI
-        run: cmake --build build-win --config Release --target nexvary_avionics_hmi qt_bridge_tests nexvary_release_manifest release_identity_tests release_manifest_tests provider_tests dictionary_tests plugin_registry_tests campaign_tests timeline_tests verifier_tests instrument_catalog_tests
+      - name: Build complete Windows release configuration
+        run: cmake --build build-win --config Release
       - name: Run Stage 1700 Windows verification
         shell: pwsh
         run: |

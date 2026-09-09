@@ -1,0 +1,9 @@
+{
+  "schema": "nexvary-training-profile/v1",
+  "scenario": "nominal",
+  "ticks": 100,
+  "step_ms": 100,
+  "export_session": "nominal-session.json",
+  "report_json": "nominal-report.json",
+  "report_markdown": "nominal-report.md"
+}

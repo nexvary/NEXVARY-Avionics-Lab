@@ -1,0 +1,9 @@
+{
+  "schema": "nexvary-training-profile/v1",
+  "scenario": "power-transient",
+  "ticks": 80,
+  "step_ms": 100,
+  "export_session": "power-training-session.json",
+  "report_json": "power-training-report.json",
+  "report_markdown": "power-training-report.md"
+}

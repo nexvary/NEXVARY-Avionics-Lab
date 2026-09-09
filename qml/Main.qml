@@ -15,6 +15,12 @@ ApplicationWindow {
     property int selectedPage: 0
     property string workMode: "EXECUTIVE"
 
+    onSelectedPageChanged: {
+        if(root.selectedPage===0) root.workMode="EXECUTIVE"
+        else if(root.selectedPage===5) root.workMode="ENGINEERING"
+        else if(root.selectedPage===8) root.workMode="DIAGNOSTIC"
+    }
+
     function setWorkMode(mode){
         root.workMode=mode
         if(mode==="EXECUTIVE") root.selectedPage=0

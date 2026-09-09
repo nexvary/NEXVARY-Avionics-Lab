@@ -58,9 +58,9 @@ Item {
                     }
                     Rectangle { Layout.fillWidth:true; height:1; color:Theme.border }
                     RowLayout { Layout.fillWidth:true; Layout.fillHeight:true; spacing:5
-                        MfdTape { Layout.preferredWidth:92; Layout.fillHeight:true; label:cockpit.rtl?"الارتفاع":"ALT"; value:page.sensor("altitude_m").value; unit:page.sensor("altitude_m").unit; span:600; step:100; accent:Theme.cyan }
+                        MfdTape { Layout.preferredWidth:92; Layout.fillHeight:true; title:cockpit.rtl?"الارتفاع":"ALT"; currentValue:page.sensor("altitude_m").value; unit:page.sensor("altitude_m").unit; majorStep:100; decimals:0; accent:Theme.cyan }
                         AttitudeIndicator { Layout.fillWidth:true; Layout.fillHeight:true; pitch:page.sensor("imu_pitch_deg").value; roll:page.sensor("imu_roll_deg").value }
-                        MfdTape { Layout.preferredWidth:92; Layout.fillHeight:true; label:cockpit.rtl?"السرعة":"SPD"; value:page.sensor("airspeed_kph").value; unit:page.sensor("airspeed_kph").unit; span:160; step:20; accent:Theme.cyan }
+                        MfdTape { Layout.preferredWidth:92; Layout.fillHeight:true; title:cockpit.rtl?"السرعة":"SPD"; currentValue:page.sensor("airspeed_kph").value; unit:page.sensor("airspeed_kph").unit; majorStep:20; decimals:0; accent:Theme.cyan }
                         ColumnLayout { Layout.preferredWidth:125; Layout.fillHeight:true; spacing:4
                             MetricBox{Layout.fillWidth:true;Layout.fillHeight:true;label:"PWR BUS";value:page.fmt("bus_voltage_v",1);accent:page.sensor("bus_voltage_v").valid?Theme.green:Theme.red}
                             MetricBox{Layout.fillWidth:true;Layout.fillHeight:true;label:"CPU TEMP";value:page.fmt("cpu_temp_c",1);accent:Theme.green}

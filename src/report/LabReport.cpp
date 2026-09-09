@@ -1,6 +1,7 @@
 #include "report/LabReport.hpp"
 #include "core/TelemetryArchive.hpp"
 #include <nlohmann/json.hpp>
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <sstream>

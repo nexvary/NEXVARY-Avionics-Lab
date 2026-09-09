@@ -66,3 +66,20 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: ./build-qt/nexvary_avionics_hmi --smoke
+      - name: Capture real Qt HMI screenshots
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+        run: |
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/nexvary-mfd.png --page 0
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/nexvary-fault-lab-ar.png --page 7 --language ar
+          test -s build-qt/nexvary-mfd.png
+          test -s build-qt/nexvary-fault-lab-ar.png
+      - name: Upload Qt HMI screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexvary-avionics-hmi-screenshots
+          path: |
+            build-qt/nexvary-mfd.png
+            build-qt/nexvary-fault-lab-ar.png
+          if-no-files-found: error

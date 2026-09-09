@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexvaryAvionicsLab VERSION 0.11.0 LANGUAGES CXX)
+project(NexvaryAvionicsLab VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,6 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(cmake/Dependencies.cmake)
 option(NEXVARY_BUILD_QT_HMI "Build the Qt/QML cockpit training interface" OFF)
+option(NEXVARY_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer on supported compilers" OFF)
+option(NEXVARY_WARNINGS_AS_ERRORS "Treat project warnings as errors" OFF)
 
 add_library(avionics_core
     src/core/EventLog.cpp
@@ -27,14 +29,24 @@ add_library(avionics_core
     src/report/LabReport.cpp
     src/config/RunProfile.cpp
 )
-
 target_include_directories(avionics_core PUBLIC src)
 target_link_libraries(avionics_core PUBLIC nlohmann_json::nlohmann_json)
 
 if(MSVC)
     target_compile_options(avionics_core PRIVATE /W4 /permissive-)
+    if(NEXVARY_WARNINGS_AS_ERRORS)
+        target_compile_options(avionics_core PRIVATE /WX)
+    endif()
 else()
     target_compile_options(avionics_core PRIVATE -Wall -Wextra -Wpedantic)
+    if(NEXVARY_WARNINGS_AS_ERRORS)
+        target_compile_options(avionics_core PRIVATE -Werror)
+    endif()
+endif()
+
+if(NEXVARY_ENABLE_SANITIZERS AND NOT MSVC)
+    target_compile_options(avionics_core PUBLIC -fsanitize=address,undefined -fno-omit-frame-pointer)
+    target_link_options(avionics_core PUBLIC -fsanitize=address,undefined)
 endif()
 
 add_executable(nexvary_avionics_lab src/main.cpp)
@@ -57,9 +69,7 @@ if(NEXVARY_BUILD_QT_HMI)
     )
     qt_add_resources(nexvary_avionics_hmi "qml_resources"
         PREFIX "/"
-        FILES
-            qml/Main.qml
-            qml/InstrumentTile.qml
+        FILES qml/Main.qml qml/InstrumentTile.qml
     )
     target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
 endif()

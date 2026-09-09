@@ -1,17 +1,20 @@
 .pragma library
-var bg = "#02070b"
-var panel = "#071218"
-var panel2 = "#0b1921"
-var border = "#314750"
-var gold = "#f2c95c"
-var silver = "#c8d5dc"
-var text = "#dce8ed"
-var muted = "#7f929b"
-var green = "#35f59a"
-var cyan = "#61cbff"
-var amber = "#ffb326"
-var red = "#ff5a63"
-var radius = 10
+var bg = "#010609"
+var panel = "#061017"
+var panel2 = "#09151c"
+var panel3 = "#0c1b23"
+var border = "#2d3c44"
+var grid = "#13242d"
+var gold = "#c9a54d"
+var silver = "#b9c5ca"
+var text = "#d9e2e6"
+var muted = "#71838c"
+var green = "#39e59a"
+var cyan = "#4bb8e9"
+var blue = "#4f88e8"
+var amber = "#e3a33b"
+var red = "#ef5b62"
+var radius = 3
 function stateColor(state) {
     if (state === "NOMINAL") return green
     if (state === "DEGRADED") return amber

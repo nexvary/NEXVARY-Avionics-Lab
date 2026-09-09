@@ -16,34 +16,26 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install Qt acquisition tool
         run: python -m pip install --disable-pip-version-check aqtinstall
-
       - name: Install Qt 6 for MSVC 2022
         shell: pwsh
         run: |
           aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 -O C:\Qt
           if (!(Test-Path 'C:\Qt\6.8.3\msvc2022_64\bin\windeployqt.exe')) { throw 'Qt deployment tool not found' }
-
       - name: Configure Windows Qt HMI
         shell: pwsh
-        run: |
-          cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
-
+        run: cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
       - name: Build Windows Qt HMI
         run: cmake --build build-win --config Release --target nexvary_avionics_hmi qt_bridge_tests
-
       - name: Run Qt bridge verification
         shell: pwsh
         run: |
           $env:PATH = "C:\Qt\6.8.3\msvc2022_64\bin;$env:PATH"
           ctest --test-dir build-win -C Release --output-on-failure -R qt_bridge_tests
-
       - name: Deploy Qt runtime
         shell: pwsh
         run: |
@@ -52,14 +44,11 @@ jobs:
           & 'C:\Qt\6.8.3\msvc2022_64\bin\windeployqt.exe' --release --qmldir qml --compiler-runtime package\nexvary_avionics_hmi.exe
           if (!(Test-Path package\nexvary_avionics_hmi.exe)) { throw 'Packaged HMI executable missing' }
           if (!(Test-Path package\Qt6Core.dll)) { throw 'Qt runtime deployment incomplete' }
-
       - name: Create portable ZIP
         shell: pwsh
         run: Compress-Archive -Path package\* -DestinationPath NEXVARY-Avionics-Lab-Portable.zip -Force
-
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
-
       - name: Build one-click installer
         shell: pwsh
         run: |
@@ -67,11 +56,10 @@ jobs:
           if (!(Test-Path $iscc)) { throw 'Inno Setup compiler not found' }
           & $iscc packaging\windows\NEXVARY-Avionics-Lab.iss
           if (!(Test-Path dist-installer\NEXVARY-Avionics-Lab-Setup.exe)) { throw 'Installer was not generated' }
-
       - name: Upload Windows release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: NEXVARY-Avionics-Lab-Windows-Stage950
+          name: NEXVARY-Avionics-Lab-Windows-Stage1100
           path: |
             dist-installer/NEXVARY-Avionics-Lab-Setup.exe
             NEXVARY-Avionics-Lab-Portable.zip

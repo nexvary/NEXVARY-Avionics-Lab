@@ -21,6 +21,15 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "sensors") return ar ? "الحساسات" : "SENSORS";
     if (key == "events") return ar ? "سجل الأحداث" : "EVENT LOG";
     if (key == "replay") return ar ? "مختبر الإعادة" : "REPLAY LAB";
+    if (key == "trends") return ar ? "الاتجاهات" : "TRENDS";
+    if (key == "window") return ar ? "نافذة التحليل" : "ANALYSIS WINDOW";
+    if (key == "latest") return ar ? "الأحدث" : "LATEST";
+    if (key == "mean") return ar ? "المتوسط" : "MEAN";
+    if (key == "delta") return ar ? "التغير" : "DELTA";
+    if (key == "slope") return ar ? "المعدل/ث" : "SLOPE/S";
+    if (key == "quality") return ar ? "جودة البيانات" : "DATA QUALITY";
+    if (key == "minimum") return ar ? "الأدنى" : "MIN";
+    if (key == "maximum") return ar ? "الأقصى" : "MAX";
     if (key == "scenario") return ar ? "السيناريو" : "SCENARIO";
     if (key == "tick") return ar ? "النبضة" : "TICK";
     if (key == "language") return ar ? "ENGLISH" : "العربية";

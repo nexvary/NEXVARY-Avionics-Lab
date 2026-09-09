@@ -14,7 +14,7 @@ using namespace nexvary::avionics;
 
 int main(int argc, char** argv) {
     CLI::App app{"NEXVARY Avionics Lab — training/simulation only"};
-    app.set_version_flag("--version", "NEXVARY Avionics Lab 1.1.0");
+    app.set_version_flag("--version", "NEXVARY Avionics Lab 1.2.0");
 
     std::string scenarioName{"nominal"};
     std::string profilePath;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexvaryAvionicsLab VERSION 1.1.0 LANGUAGES CXX)
+project(NexvaryAvionicsLab VERSION 1.2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -63,6 +63,7 @@ endforeach()
 if(NEXVARY_BUILD_QT_HMI)
     find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
     set(CMAKE_AUTOMOC ON)
+
     qt_add_executable(nexvary_avionics_hmi
         src/qt/main_qt.cpp
         src/qt/CockpitBridge.cpp
@@ -73,4 +74,12 @@ if(NEXVARY_BUILD_QT_HMI)
         FILES qml/Main.qml qml/InstrumentTile.qml
     )
     target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
+
+    add_executable(qt_bridge_tests
+        tests/test_qt_bridge.cpp
+        src/qt/CockpitBridge.cpp
+        src/qt/CockpitBridge.hpp
+    )
+    target_link_libraries(qt_bridge_tests PRIVATE avionics_core Qt6::Core)
+    add_test(NAME qt_bridge_tests COMMAND qt_bridge_tests)
 endif()

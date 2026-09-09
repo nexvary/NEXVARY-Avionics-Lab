@@ -1,142 +1,21 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
-ApplicationWindow {
-    id: root
-    width: 1440
-    height: 900
-    visible: true
-    title: cockpit.text("app_title")
-    property int selectedPage: 0
-
-    function t(key) {
-        const dependency = cockpit.language
-        return cockpit.text(key)
-    }
-
-    LayoutMirroring.enabled: cockpit.rtl
-    LayoutMirroring.childrenInherit: true
-
-    background: Rectangle { color: "#03070a" }
-
-    Timer {
-        interval: 250
-        running: true
-        repeat: true
-        onTriggered: cockpit.step()
-    }
-
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 18
-        spacing: 12
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 92
-            radius: 9
-            color: "#071014"
-            border.width: 1
-            border.color: "#52646d"
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: 14
-                spacing: 16
-
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    Text { text: root.t("app_title"); color: "#f1c75b"; font.pixelSize: 25; font.bold: true }
-                    Text { text: root.t("training") + "  |  " + cockpit.scenario; color: "#39ff9b"; font.pixelSize: 13 }
-                }
-                Text { text: root.t("tick") + ": " + cockpit.tick; color: "#d4e2e7"; font.pixelSize: 16 }
-                ComboBox {
-                    id: scenarioBox
-                    model: cockpit.scenarios
-                    Layout.preferredWidth: 190
-                    onActivated: cockpit.setScenario(currentText)
-                }
-                Button {
-                    text: root.t("language")
-                    onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar")
-                }
-            }
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 8
-            Button { text: root.t("mfd"); checkable: true; checked: root.selectedPage === 0; onClicked: root.selectedPage = 0 }
-            Button { text: root.t("systems"); checkable: true; checked: root.selectedPage === 1; onClicked: root.selectedPage = 1 }
-            Button { text: root.t("alerts"); checkable: true; checked: root.selectedPage === 2; onClicked: root.selectedPage = 2 }
-            Item { Layout.fillWidth: true }
-        }
-
-        StackLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            currentIndex: root.selectedPage
-
-            Item {
-                GridLayout {
-                    anchors.fill: parent
-                    columns: 4
-                    columnSpacing: 12
-                    rowSpacing: 12
-                    Repeater {
-                        model: cockpit.tiles
-                        delegate: InstrumentTile {
-                            Layout.fillWidth: true
-                            tileLabel: modelData.label
-                            tileValue: modelData.value
-                            tileState: modelData.state
-                        }
-                    }
-                }
-            }
-
-            Item {
-                Rectangle {
-                    anchors.fill: parent
-                    radius: 8
-                    color: "#071014"
-                    border.color: "#52646d"
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 18
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: root.t("systems"); color: "#f1c75b"; font.pixelSize: 28; font.bold: true }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: cockpit.annunciators.length === 1 ? cockpit.annunciators[0] : cockpit.annunciators.length + " ACTIVE ALERTS"; color: cockpit.annunciators.length === 1 ? "#39ff9b" : "#ffb000"; font.pixelSize: 22 }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: cockpit.scenario; color: "#d4e2e7"; font.pixelSize: 16 }
-                    }
-                }
-            }
-
-            Item {
-                ListView {
-                    anchors.fill: parent
-                    spacing: 8
-                    model: cockpit.annunciators
-                    delegate: Rectangle {
-                        required property string modelData
-                        width: ListView.view.width
-                        height: 62
-                        radius: 6
-                        color: "#101519"
-                        border.width: 1
-                        border.color: modelData.indexOf("NOMINAL") >= 0 || modelData.indexOf("الاسمية") >= 0 ? "#39ff9b" : "#ffb000"
-                        Text { anchors.fill: parent; anchors.margins: 14; text: modelData; color: "#e4edf0"; font.pixelSize: 16; verticalAlignment: Text.AlignVCenter; wrapMode: Text.Wrap }
-                    }
-                }
-            }
-        }
-
-        Text {
-            Layout.fillWidth: true
-            text: root.t("simulation_only")
-            color: "#748990"
-            font.pixelSize: 11
-            horizontalAlignment: Text.AlignHCenter
-        }
-    }
+ApplicationWindow { id:root; width:1440; height:900; visible:true; title:cockpit.text("app_title"); property int selectedPage:0
+function t(k){const dependency=cockpit.language;return cockpit.text(k)} LayoutMirroring.enabled:cockpit.rtl; LayoutMirroring.childrenInherit:true; background:Rectangle{color:"#03070a"}
+Timer{interval:250;running:true;repeat:true;onTriggered:cockpit.step()}
+ColumnLayout{anchors.fill:parent;anchors.margins:18;spacing:12
+Rectangle{Layout.fillWidth:true;Layout.preferredHeight:92;radius:9;color:"#071014";border.width:1;border.color:"#52646d";RowLayout{anchors.fill:parent;anchors.margins:14;spacing:16
+ColumnLayout{Layout.fillWidth:true;Text{text:root.t("app_title");color:"#f1c75b";font.pixelSize:25;font.bold:true}Text{text:root.t("training")+" | "+cockpit.scenario;color:"#39ff9b"}}
+Text{text:root.t("tick")+": "+cockpit.tick;color:"#d4e2e7"}ComboBox{model:cockpit.scenarios;Layout.preferredWidth:190;onActivated:cockpit.setScenario(currentText)}Button{text:root.t("language");onClicked:cockpit.setLanguage(cockpit.rtl?"en":"ar")}}}
+RowLayout{Layout.fillWidth:true;spacing:8
+Button{text:root.t("mfd");checkable:true;checked:root.selectedPage===0;onClicked:root.selectedPage=0}Button{text:root.t("systems");checkable:true;checked:root.selectedPage===1;onClicked:root.selectedPage=1}Button{text:root.t("sensors");checkable:true;checked:root.selectedPage===2;onClicked:root.selectedPage=2}Button{text:root.t("events");checkable:true;checked:root.selectedPage===3;onClicked:root.selectedPage=3}Button{text:root.t("replay");checkable:true;checked:root.selectedPage===4;onClicked:root.selectedPage=4}Item{Layout.fillWidth:true}Button{text:root.t("back");enabled:root.selectedPage>0;onClicked:root.selectedPage=Math.max(0,root.selectedPage-1)}Button{text:root.t("reset");onClicked:cockpit.resetLab()}}
+StackLayout{Layout.fillWidth:true;Layout.fillHeight:true;currentIndex:root.selectedPage
+Item{GridLayout{anchors.fill:parent;columns:4;columnSpacing:12;rowSpacing:12;Repeater{model:cockpit.tiles;delegate:InstrumentTile{Layout.fillWidth:true;tileLabel:modelData.label;tileValue:modelData.value;tileState:modelData.state}}}}
+Item{GridLayout{anchors.centerIn:parent;columns:2;columnSpacing:18;rowSpacing:18;Repeater{model:[{l:root.t("active_alerts"),v:cockpit.activeAlertCount},{l:root.t("recorded_frames"),v:cockpit.recordedFrames},{l:root.t("sensor_count"),v:cockpit.sensorCount},{l:root.t("event_count"),v:cockpit.eventCount}];delegate:Rectangle{required property var modelData;width:280;height:150;radius:8;color:"#071014";border.color:modelData.v===0?"#39ff9b":"#52646d";Column{anchors.centerIn:parent;spacing:12;Text{anchors.horizontalCenter:parent.horizontalCenter;text:modelData.l;color:"#8fa5ae"}Text{anchors.horizontalCenter:parent.horizontalCenter;text:modelData.v;color:"#f1c75b";font.pixelSize:34;font.bold:true}}}}}
+Item{ListView{anchors.fill:parent;spacing:6;model:cockpit.sensorRows;delegate:Rectangle{required property var modelData;width:ListView.view.width;height:58;color:"#081216";border.color:modelData.valid?"#39ff9b":"#ff5a5f";RowLayout{anchors.fill:parent;anchors.margins:12;Text{text:modelData.label;color:"#d4e2e7";Layout.fillWidth:true}Text{text:Number(modelData.value).toFixed(2)+" "+modelData.unit;color:modelData.valid?"#39ff9b":"#ff5a5f";font.bold:true}}}}}
+Item{ListView{anchors.fill:parent;spacing:6;model:cockpit.eventRows;delegate:Rectangle{required property var modelData;width:ListView.view.width;height:64;color:"#081216";border.color:modelData.severity==="FAULT"?"#ff5a5f":(modelData.severity==="WARN"?"#ffb000":"#52646d");RowLayout{anchors.fill:parent;anchors.margins:12;Text{text:modelData.severity;color:"#f1c75b";Layout.preferredWidth:80}Text{text:modelData.source;color:"#7fdcff";Layout.preferredWidth:120}Text{text:modelData.message;color:"#d4e2e7";Layout.fillWidth:true;wrapMode:Text.Wrap}}}}}
+Item{ColumnLayout{anchors.fill:parent;spacing:14;RowLayout{Layout.fillWidth:true;Button{text:cockpit.replayMode?root.t("exit_replay"):root.t("enter_replay");onClicked:cockpit.setReplayMode(!cockpit.replayMode)}Text{text:cockpit.replayIndex+" / "+cockpit.replayMaximum;color:"#d4e2e7";Layout.fillWidth:true}Slider{from:0;to:Math.max(1,cockpit.replayMaximum);value:cockpit.replayIndex;enabled:cockpit.replayMode&&cockpit.replayMaximum>0;Layout.preferredWidth:500;onMoved:cockpit.seekReplay(Math.round(value))}}GridLayout{Layout.fillWidth:true;Layout.fillHeight:true;columns:4;Repeater{model:cockpit.tiles;delegate:InstrumentTile{Layout.fillWidth:true;tileLabel:modelData.label;tileValue:modelData.value;tileState:modelData.state}}}}}
+}
+Text{Layout.fillWidth:true;text:root.t("simulation_only");color:"#748990";font.pixelSize:11;horizontalAlignment:Text.AlignHCenter}}
 }

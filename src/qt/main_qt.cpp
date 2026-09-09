@@ -19,6 +19,11 @@ int main(int argc, char* argv[]) {
         cockpit.setLanguage(arguments.at(languageIndex + 1));
     }
 
+    const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));
+    if (screenshotIndex >= 0) {
+        for (int i = 0; i < 80; ++i) cockpit.step();
+    }
+
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("cockpit"), &cockpit);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
@@ -32,7 +37,6 @@ int main(int argc, char* argv[]) {
         if (ok && page >= 0 && page <= 7) root->setProperty("selectedPage", page);
     }
 
-    const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));
     if (screenshotIndex >= 0) {
         if (screenshotIndex + 1 >= arguments.size()) return 5;
         auto* window = qobject_cast<QQuickWindow*>(root);

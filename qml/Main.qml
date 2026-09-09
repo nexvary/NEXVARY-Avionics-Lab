@@ -118,7 +118,7 @@ ApplicationWindow {
 
                     ColumnLayout {
                         Text { text:cockpit.text("tick")+": "+cockpit.tick; color:Theme.silver; font.pixelSize:14; font.bold:true }
-                        Text { text:"BUILD 1.4 • STAGE 900"; color:Theme.muted; font.pixelSize:9 }
+                        Text { text:"BUILD 1.5 • STAGE 950"; color:Theme.muted; font.pixelSize:9 }
                     }
 
                     Rectangle {

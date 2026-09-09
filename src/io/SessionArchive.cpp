@@ -1,0 +1,17 @@
+#include "io/SessionArchive.hpp"
+#include <nlohmann/json.hpp>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
+namespace nexvary::avionics { namespace { using json=nlohmann::json;
+Severity severityFromString(const std::string& v){ if(v=="INFO")return Severity::Info; if(v=="WARN")return Severity::Warning; if(v=="FAULT")return Severity::Fault; throw std::runtime_error("unknown severity"); }
+json sensorToJson(const SensorSample&s){return json{{"value",s.value},{"unit",s.unit},{"valid",s.valid}};}
+SensorSample sensorFromJson(const json&v){return {v.at("value").get<double>(),v.at("unit").get<std::string>(),v.at("valid").get<bool>()};}
+}
+std::string SessionArchive::serialize(std::string_view scenario,const TelemetryRecorder&r,const EventLog&log){json root;root["schema"]=Schema;root["scope"]="training-simulation";root["scenario"]=scenario;root["frames"]=json::array();for(const auto&f:r.frames()){json sensors=json::object();for(const auto&[n,s]:f.sensors)sensors[n]=sensorToJson(s);root["frames"].push_back({{"sequence",f.sequence},{"sim_time_ms",f.simTime.count()},{"sensors",std::move(sensors)}});}root["events"]=json::array();for(const auto&e:log.snapshot()){auto ms=std::chrono::duration_cast<std::chrono::milliseconds>(e.timestamp.time_since_epoch()).count();root["events"].push_back({{"timestamp_ms",ms},{"severity",to_string(e.severity)},{"source",e.source},{"message",e.message}});}return root.dump(2);}
+SessionDocument SessionArchive::parse(std::string_view text){auto root=json::parse(text.begin(),text.end());if(!root.is_object()||root.value("schema",std::string{})!=Schema)throw std::runtime_error("unsupported session schema");if(!root.contains("frames")||!root["frames"].is_array()||!root.contains("events")||!root["events"].is_array())throw std::runtime_error("missing session arrays");if(root["frames"].size()>MaxFrames||root["events"].size()>MaxEvents)throw std::runtime_error("session record limit exceeded");SessionDocument d;d.schema=root.at("schema").get<std::string>();d.scenario=root.at("scenario").get<std::string>();for(const auto&sf:root["frames"]){const auto&ss=sf.at("sensors");if(!ss.is_object()||ss.size()>MaxSensorsPerFrame)throw std::runtime_error("sensor limit exceeded");TelemetryFrame f;f.sequence=sf.at("sequence").get<std::uint64_t>();f.simTime=std::chrono::milliseconds{sf.at("sim_time_ms").get<std::int64_t>()};for(auto it=ss.begin();it!=ss.end();++it)f.sensors.emplace(it.key(),sensorFromJson(it.value()));d.frames.push_back(std::move(f));}for(const auto&se:root["events"]){auto ms=se.at("timestamp_ms").get<std::int64_t>();auto dur=std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::milliseconds{ms});d.events.push_back({std::chrono::system_clock::time_point{dur},severityFromString(se.at("severity").get<std::string>()),se.at("source").get<std::string>(),se.at("message").get<std::string>()});}return d;}
+void SessionArchive::writeFile(const std::string&p,std::string_view s,const TelemetryRecorder&r,const EventLog&l){std::ofstream o(p,std::ios::binary|std::ios::trunc);if(!o)throw std::runtime_error("open output failed");o<<serialize(s,r,l);if(!o)throw std::runtime_error("write failed");}
+SessionDocument SessionArchive::readFile(const std::string&p){if(std::filesystem::file_size(p)>MaxFileBytes)throw std::runtime_error("session exceeds 50 MiB");std::ifstream i(p,std::ios::binary);if(!i)throw std::runtime_error("open input failed");std::ostringstream b;b<<i.rdbuf();return parse(b.str());}
+}

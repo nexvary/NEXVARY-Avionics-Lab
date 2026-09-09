@@ -1,64 +1,11 @@
 #include "app/AvionicsLab.hpp"
 #include "app/ConsoleCockpit.hpp"
+#include "io/SessionArchive.hpp"
 #include "sim/ScenarioEngine.hpp"
+#include <CLI/CLI.hpp>
 #include <chrono>
 #include <exception>
 #include <iostream>
 #include <string>
-
 using namespace nexvary::avionics;
-
-int main(int argc, char** argv) {
-    std::string scenarioName = "nominal";
-    int ticks = 40;
-    bool replay = false;
-
-    for (int i = 1; i < argc; ++i) {
-        const std::string arg = argv[i];
-        if (arg == "--scenario" && i + 1 < argc) scenarioName = argv[++i];
-        else if (arg == "--ticks" && i + 1 < argc) ticks = std::stoi(argv[++i]);
-        else if (arg == "--replay") replay = true;
-        else if (arg == "--list-scenarios") {
-            for (const auto& name : ScenarioEngine::names()) std::cout << name << '\n';
-            return 0;
-        } else if (arg == "--help") {
-            std::cout << "NEXVARY Avionics Lab (training/simulation only)\n"
-                         "  --scenario <name>    nominal | power-transient | sensor-dropout | thermal-rise\n"
-                         "  --ticks <n>          simulation ticks (default 40)\n"
-                         "  --replay             replay recorded frame summaries\n"
-                         "  --list-scenarios     list built-in scenarios\n";
-            return 0;
-        }
-    }
-
-    if (ticks < 1 || ticks > 100000) {
-        std::cerr << "ticks must be between 1 and 100000\n";
-        return 2;
-    }
-
-    try {
-        AvionicsLab lab(ScenarioEngine::fromName(scenarioName));
-        LabSnapshot last;
-        for (int i = 0; i < ticks; ++i) last = lab.step(std::chrono::milliseconds{100});
-        ConsoleCockpit::render(std::cout, last);
-        std::cout << " RECORDED FRAMES: " << lab.recorder().size()
-                  << " | EVENT COUNT: " << lab.eventLog().size() << "\n";
-
-        if (replay) {
-            ReplayCursor cursor(lab.recorder());
-            std::size_t count = 0;
-            while (auto frame = cursor.next()) {
-                if (count % 10 == 0 || !cursor.hasNext()) {
-                    std::cout << " REPLAY seq=" << frame->sequence
-                              << " time_ms=" << frame->simTime.count()
-                              << " sensors=" << frame->sensors.size() << '\n';
-                }
-                ++count;
-            }
-        }
-        return 0;
-    } catch (const std::exception& ex) {
-        std::cerr << "error: " << ex.what() << '\n';
-        return 1;
-    }
-}
+int main(int argc,char**argv){CLI::App app{"NEXVARY Avionics Lab — training/simulation only"};app.set_version_flag("--version","NEXVARY Avionics Lab 0.9.0");std::string scenarioName="nominal",exportPath,inspectPath;int ticks=40;bool replay=false,list=false;app.add_option("--scenario",scenarioName,"Synthetic scenario");app.add_option("--ticks",ticks,"Simulation ticks")->check(CLI::Range(1,100000));app.add_flag("--replay",replay,"Replay summaries");app.add_flag("--list-scenarios",list,"List scenarios");app.add_option("--export-json",exportPath,"Export JSON training session");app.add_option("--inspect-json",inspectPath,"Inspect JSON training session");CLI11_PARSE(app,argc,argv);if(list){for(const auto&n:ScenarioEngine::names())std::cout<<n<<'\n';return 0;}try{if(!inspectPath.empty()){auto d=SessionArchive::readFile(inspectPath);std::cout<<"SESSION schema="<<d.schema<<" scenario="<<d.scenario<<" frames="<<d.frames.size()<<" events="<<d.events.size()<<'\n';return 0;}AvionicsLab lab(ScenarioEngine::fromName(scenarioName));LabSnapshot last;for(int i=0;i<ticks;++i)last=lab.step(std::chrono::milliseconds{100});ConsoleCockpit::render(std::cout,last);std::cout<<" RECORDED FRAMES: "<<lab.recorder().size()<<" | EVENT COUNT: "<<lab.eventLog().size()<<"\n";if(replay){ReplayCursor c(lab.recorder());std::size_t count=0;while(auto f=c.next()){if(count%10==0||!c.hasNext())std::cout<<" REPLAY seq="<<f->sequence<<" time_ms="<<f->simTime.count()<<" sensors="<<f->sensors.size()<<'\n';++count;}}if(!exportPath.empty()){SessionArchive::writeFile(exportPath,scenarioName,lab.recorder(),lab.eventLog());std::cout<<" SESSION EXPORTED: "<<exportPath<<'\n';}return 0;}catch(const std::exception&ex){std::cerr<<"error: "<<ex.what()<<'\n';return 1;}}

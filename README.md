@@ -1,26 +1,29 @@
-# NEXVARY AVIONICS LAB
+# NEXVARY Avionics Lab
 
-A safe, non-weaponized avionics training and simulation platform focused on:
+**NEXVARY Avionics Lab** is a cross-platform C++20 training and simulation platform for learning avionics software architecture, deterministic telemetry, system-health monitoring, fault handling, recording/replay, and cockpit HMI data modeling.
 
-- cockpit/HMI experimentation
-- synthetic sensor telemetry
-- system-health monitoring
-- watchdog/fault-handling concepts
-- event logging and replay
-- digital-twin foundations
-- automated verification
+It is **not** flight-certified software and does not implement targeting, weapons control, or operational combat functions.
 
-> This repository is for education, research, simulation, reliability engineering, and defensive aerospace software practice. It intentionally excludes weapon control, targeting, guidance, or real-world combat functions.
+## Current engineering level: Stage 250 core
 
-## Status
+The Stage 001–250 release train provides:
 
-**v0.1.0 — Foundation Core**
+- thread-safe synthetic Sensor Bus
+- deterministic Simulation Clock
+- System Health evaluation
+- Watchdog and Event Log
+- persistent Alert Manager
+- Fault Injection (`invalidate`, `override`, `offset`)
+- four safe synthetic scenarios
+- Telemetry Recorder and Replay Cursor
+- unified `AvionicsLab` orchestration layer
+- cockpit-friendly `LabSnapshot` data model
+- cross-platform training console
+- Windows + Ubuntu CI and three test executables
 
-The first milestone is dependency-light C++20 so CI can validate the architecture before adding a graphical cockpit.
+See [`docs/STAGES_001_250.md`](docs/STAGES_001_250.md) for the release-gate ledger.
 
 ## Build
-
-### Windows / Linux / macOS
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -28,22 +31,25 @@ cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-Run:
+## Run
 
 ```bash
-./build/nexvary_avionics_lab
+./build/nexvary_avionics_lab --scenario nominal --ticks 40
+./build/nexvary_avionics_lab --scenario power-transient --ticks 25 --replay
+./build/nexvary_avionics_lab --list-scenarios
 ```
 
-On Windows with a multi-config generator:
+On Windows with a multi-config generator the executable is normally under `build/Release/`.
 
-```powershell
-.\build\Release\nexvary_avionics_lab.exe
-```
+## Built-in scenarios
 
-## Architecture
+- `nominal`
+- `power-transient`
+- `sensor-dropout`
+- `thermal-rise`
 
-See `docs/ARCHITECTURE.md`.
+All scenarios are synthetic and intended only for software training and reliability testing.
 
-## Next milestone
+## Next engineering train
 
-v0.2.0 adds the first **Cockpit System Monitor** UI with Qt 6/QML, while keeping `avionics_core` independent from the UI.
+Stage 251+ will build the optional Qt/QML cockpit HMI, MFD layout system, localization/RTL foundation, richer scenario authoring, and visual release gates while preserving the portable simulation core.

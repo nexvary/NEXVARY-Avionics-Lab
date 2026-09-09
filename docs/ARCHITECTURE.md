@@ -1,28 +1,25 @@
-# Architecture — v0.1
+# Architecture
 
-The project begins with strict separation between the simulation core and future user interfaces.
+NEXVARY Avionics Lab is a training/simulation software platform. It deliberately keeps synthetic data generation, fault handling, health evaluation, recording, and presentation separate so each layer can be tested independently.
 
 ```text
-NEXVARY AVIONICS LAB
-|
-+-- avionics_core
-|   +-- SensorBus
-|   +-- SystemHealth
-|   +-- Watchdog
-|   +-- EventLog
-|
-+-- CLI demonstrator
-|
-+-- Tests
-|
-+-- Future Qt/QML Cockpit UI
+ScenarioEngine -> SensorBus -> SystemHealth -> AlertManager
+      |              |                           |
+FaultInjector        +------> TelemetryRecorder  |
+      |                                          |
+SimulationClock ------------------------------> AvionicsLab
+                                                 |
+                                          LabSnapshot
+                                                 |
+                                         ConsoleCockpit
+                                      (future Qt/QML HMI)
 ```
 
 ## Design rules
 
-1. Core logic must not depend on the GUI.
-2. Synthetic/test data is the default.
-3. Every subsystem exposes health state and faults.
-4. Faults are logged rather than silently ignored.
-5. CI must pass on Windows and Linux before a release tag.
-6. Safety-related concepts are demonstrated as software-engineering patterns, not represented as certified avionics.
+1. **Synthetic by default:** no live aircraft buses, targeting systems, or weapons interfaces.
+2. **Deterministic simulation:** time advances only through `SimulationClock`.
+3. **Fail-observable behavior:** injected faults remain visible through health and alert layers.
+4. **Separation of concerns:** presentation code does not own simulation logic.
+5. **Portable core:** the CI-supported core uses standard C++20 and CMake on Windows and Linux.
+6. **HMI-ready snapshots:** `LabSnapshot` is the boundary intended for future Qt/QML MFD presentation.

@@ -1,43 +1,64 @@
-#include "core/EventLog.hpp"
-#include "core/SensorBus.hpp"
-#include "core/SystemHealth.hpp"
-#include "core/Watchdog.hpp"
+#include "app/AvionicsLab.hpp"
+#include "app/ConsoleCockpit.hpp"
+#include "sim/ScenarioEngine.hpp"
 #include <chrono>
+#include <exception>
 #include <iostream>
+#include <string>
 
 using namespace nexvary::avionics;
 
-int main() {
-    std::cout << "NEXVARY AVIONICS LAB v0.1.0\n";
-    std::cout << "TRAINING / SIMULATION CORE\n\n";
+int main(int argc, char** argv) {
+    std::string scenarioName = "nominal";
+    int ticks = 40;
+    bool replay = false;
 
-    SensorBus bus;
-    EventLog log;
-    Watchdog watchdog(std::chrono::milliseconds(1500));
-    SystemHealth health;
-
-    bus.publish("cpu_temp_c", {58.5, "C", true});
-    bus.publish("bus_voltage_v", {27.4, "V", true});
-    bus.publish("imu_pitch_deg", {2.1, "deg", true});
-    bus.publish("imu_roll_deg", {-1.2, "deg", true});
-
-    log.push(Severity::Info, "core", "simulation initialized");
-    watchdog.kick();
-
-    std::cout << "[SENSOR BUS]\n";
-    for (const auto& [name, sample] : bus.snapshot()) {
-        std::cout << "  " << name << " = " << sample.value << ' ' << sample.unit
-                  << (sample.valid ? " [OK]" : " [INVALID]") << '\n';
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+        if (arg == "--scenario" && i + 1 < argc) scenarioName = argv[++i];
+        else if (arg == "--ticks" && i + 1 < argc) ticks = std::stoi(argv[++i]);
+        else if (arg == "--replay") replay = true;
+        else if (arg == "--list-scenarios") {
+            for (const auto& name : ScenarioEngine::names()) std::cout << name << '\n';
+            return 0;
+        } else if (arg == "--help") {
+            std::cout << "NEXVARY Avionics Lab (training/simulation only)\n"
+                         "  --scenario <name>    nominal | power-transient | sensor-dropout | thermal-rise\n"
+                         "  --ticks <n>          simulation ticks (default 40)\n"
+                         "  --replay             replay recorded frame summaries\n"
+                         "  --list-scenarios     list built-in scenarios\n";
+            return 0;
+        }
     }
 
-    const auto issues = health.evaluate(bus);
-    std::cout << "\n[SYSTEM HEALTH] " << (issues.empty() ? "NOMINAL" : "ATTENTION") << '\n';
-    for (const auto& issue : issues) {
-        std::cout << "  [" << to_string(issue.severity) << "] "
-                  << issue.subsystem << ": " << issue.detail << '\n';
+    if (ticks < 1 || ticks > 100000) {
+        std::cerr << "ticks must be between 1 and 100000\n";
+        return 2;
     }
 
-    std::cout << "\n[EVENT LOG] " << log.size() << " event(s)\n";
-    std::cout << "[WATCHDOG] " << (watchdog.expired() ? "EXPIRED" : "ARMED") << '\n';
-    return 0;
+    try {
+        AvionicsLab lab(ScenarioEngine::fromName(scenarioName));
+        LabSnapshot last;
+        for (int i = 0; i < ticks; ++i) last = lab.step(std::chrono::milliseconds{100});
+        ConsoleCockpit::render(std::cout, last);
+        std::cout << " RECORDED FRAMES: " << lab.recorder().size()
+                  << " | EVENT COUNT: " << lab.eventLog().size() << "\n";
+
+        if (replay) {
+            ReplayCursor cursor(lab.recorder());
+            std::size_t count = 0;
+            while (auto frame = cursor.next()) {
+                if (count % 10 == 0 || !cursor.hasNext()) {
+                    std::cout << " REPLAY seq=" << frame->sequence
+                              << " time_ms=" << frame->simTime.count()
+                              << " sensors=" << frame->sensors.size() << '\n';
+                }
+                ++count;
+            }
+        }
+        return 0;
+    } catch (const std::exception& ex) {
+        std::cerr << "error: " << ex.what() << '\n';
+        return 1;
+    }
 }

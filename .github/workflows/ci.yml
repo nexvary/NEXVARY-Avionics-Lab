@@ -18,3 +18,9 @@ jobs:
         run: cmake --build build --config Release
       - name: Test
         run: ctest --test-dir build -C Release --output-on-failure
+      - name: Smoke test (Unix)
+        if: runner.os != 'Windows'
+        run: ./build/nexvary_avionics_lab --scenario power-transient --ticks 25 --replay
+      - name: Smoke test (Windows)
+        if: runner.os == 'Windows'
+        run: ./build/Release/nexvary_avionics_lab.exe --scenario power-transient --ticks 25 --replay

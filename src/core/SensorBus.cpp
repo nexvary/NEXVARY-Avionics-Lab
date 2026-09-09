@@ -19,4 +19,9 @@ std::map<std::string, SensorSample> SensorBus::snapshot() const {
     return sensors_;
 }
 
+void SensorBus::clear() {
+    std::scoped_lock lock(mutex_);
+    sensors_.clear();
+}
+
 } // namespace nexvary::avionics

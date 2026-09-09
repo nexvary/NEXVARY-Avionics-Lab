@@ -10,7 +10,7 @@ option(NEXVARY_WARNINGS_AS_ERRORS "Treat project warnings as errors" OFF)
 add_library(avionics_core
  src/core/EventLog.cpp src/core/SensorBus.cpp src/core/SystemHealth.cpp src/core/Watchdog.cpp
  src/core/AlertManager.cpp src/core/TelemetryRecorder.cpp src/core/TelemetryArchive.cpp src/core/TelemetryTrend.cpp
- src/sim/SimulationClock.cpp src/sim/FaultInjector.cpp src/sim/ScenarioEngine.cpp src/sim/TrainingFaultCatalog.cpp
+ src/sim/SimulationClock.cpp src/sim/FaultInjector.cpp src/sim/ScenarioEngine.cpp src/sim/TrainingFaultCatalog.cpp src/sim/NativeSyntheticProvider.cpp
  src/app/AvionicsLab.cpp src/app/ConsoleCockpit.cpp src/hmi/CockpitViewModel.cpp src/hmi/UiLocale.cpp
  src/io/SessionArchive.cpp src/report/LabReport.cpp src/config/RunProfile.cpp src/twin/DigitalTwin.cpp)
 target_include_directories(avionics_core PUBLIC src)
@@ -33,7 +33,7 @@ endif()
 add_executable(nexvary_avionics_lab src/main.cpp)
 target_link_libraries(nexvary_avionics_lab PRIVATE avionics_core CLI11::CLI11)
 enable_testing()
-foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity)
+foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity provider)
  add_executable(${test_name}_tests tests/test_${test_name}.cpp)
  target_link_libraries(${test_name}_tests PRIVATE avionics_core)
  add_test(NAME ${test_name}_tests COMMAND ${test_name}_tests)
@@ -43,11 +43,7 @@ if(NEXVARY_BUILD_QT_HMI)
  set(CMAKE_AUTOMOC ON)
  set(NEXVARY_QT_BRIDGE_SOURCES src/qt/CockpitBridge.cpp src/qt/CockpitBridgeMinisterial.cpp src/qt/CockpitBridge.hpp)
  qt_add_executable(nexvary_avionics_hmi src/qt/main_qt.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
- qt_add_resources(nexvary_avionics_hmi "qml_resources" PREFIX "/" FILES
-  qml/Main.qml qml/Theme.js qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml
-  qml/InstrumentTile.qml qml/MetricBox.qml qml/MfdTape.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml qml/TelemetryPlot.qml
-  qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml
-  qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/FaultLabPage.qml qml/VerificationCenter.qml)
+ qt_add_resources(nexvary_avionics_hmi "qml_resources" PREFIX "/" FILES qml/Main.qml qml/Theme.js qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml qml/InstrumentTile.qml qml/MetricBox.qml qml/MfdTape.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml qml/TelemetryPlot.qml qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/FaultLabPage.qml qml/VerificationCenter.qml)
  target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
  add_executable(qt_bridge_tests tests/test_qt_bridge.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
  target_link_libraries(qt_bridge_tests PRIVATE avionics_core Qt6::Core)

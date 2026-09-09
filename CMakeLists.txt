@@ -4,7 +4,6 @@ project(NexvaryAvionicsLab VERSION 1.4.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
 include(cmake/Dependencies.cmake)
 
 option(NEXVARY_BUILD_QT_HMI "Build the Qt/QML cockpit training interface" OFF)
@@ -12,28 +11,12 @@ option(NEXVARY_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorS
 option(NEXVARY_WARNINGS_AS_ERRORS "Treat project warnings as errors" OFF)
 
 add_library(avionics_core
-    src/core/EventLog.cpp
-    src/core/SensorBus.cpp
-    src/core/SystemHealth.cpp
-    src/core/Watchdog.cpp
-    src/core/AlertManager.cpp
-    src/core/TelemetryRecorder.cpp
-    src/core/TelemetryArchive.cpp
-    src/core/TelemetryTrend.cpp
-    src/sim/SimulationClock.cpp
-    src/sim/FaultInjector.cpp
-    src/sim/TrainingFaultCatalog.cpp
-    src/sim/ScenarioEngine.cpp
-    src/app/AvionicsLab.cpp
-    src/app/ConsoleCockpit.cpp
-    src/hmi/CockpitViewModel.cpp
-    src/hmi/UiLocale.cpp
-    src/io/SessionArchive.cpp
-    src/report/LabReport.cpp
-    src/config/RunProfile.cpp
-    src/twin/DigitalTwin.cpp
+    src/core/EventLog.cpp src/core/SensorBus.cpp src/core/SystemHealth.cpp src/core/Watchdog.cpp
+    src/core/AlertManager.cpp src/core/TelemetryRecorder.cpp src/core/TelemetryArchive.cpp src/core/TelemetryTrend.cpp
+    src/sim/SimulationClock.cpp src/sim/FaultInjector.cpp src/sim/ScenarioEngine.cpp src/sim/TrainingFaultCatalog.cpp
+    src/app/AvionicsLab.cpp src/app/ConsoleCockpit.cpp src/hmi/CockpitViewModel.cpp src/hmi/UiLocale.cpp
+    src/io/SessionArchive.cpp src/report/LabReport.cpp src/config/RunProfile.cpp src/twin/DigitalTwin.cpp
 )
-
 target_include_directories(avionics_core PUBLIC src)
 target_link_libraries(avionics_core PUBLIC nlohmann_json::nlohmann_json)
 
@@ -48,7 +31,6 @@ else()
         target_compile_options(avionics_core PRIVATE -Werror)
     endif()
 endif()
-
 if(NEXVARY_ENABLE_SANITIZERS AND NOT MSVC)
     target_compile_options(avionics_core PUBLIC -fsanitize=address,undefined -fno-omit-frame-pointer)
     target_link_options(avionics_core PUBLIC -fsanitize=address,undefined)
@@ -67,25 +49,22 @@ endforeach()
 if(NEXVARY_BUILD_QT_HMI)
     find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
     set(CMAKE_AUTOMOC ON)
-
-    qt_add_executable(nexvary_avionics_hmi
-        src/qt/main_qt.cpp
-        src/qt/CockpitBridge.cpp
-        src/qt/CockpitBridge.hpp
-    )
+    qt_add_executable(nexvary_avionics_hmi src/qt/main_qt.cpp src/qt/CockpitBridge.cpp src/qt/CockpitBridge.hpp)
     qt_add_resources(nexvary_avionics_hmi "qml_resources"
         PREFIX "/"
         FILES
             qml/Main.qml
             qml/InstrumentTile.qml
+            qml/MinisterialButton.qml
+            qml/StatusCard.qml
+            qml/SideNavButton.qml
+            qml/AttitudeIndicator.qml
+            qml/TelemetrySparkline.qml
+            qml/Theme.js
     )
     target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
 
-    add_executable(qt_bridge_tests
-        tests/test_qt_bridge.cpp
-        src/qt/CockpitBridge.cpp
-        src/qt/CockpitBridge.hpp
-    )
+    add_executable(qt_bridge_tests tests/test_qt_bridge.cpp src/qt/CockpitBridge.cpp src/qt/CockpitBridge.hpp)
     target_link_libraries(qt_bridge_tests PRIVATE avionics_core Qt6::Core)
     add_test(NAME qt_bridge_tests COMMAND qt_bridge_tests)
 endif()

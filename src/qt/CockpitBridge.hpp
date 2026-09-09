@@ -14,6 +14,7 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList sensorRows READ sensorRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList eventRows READ eventRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList trendRows READ trendRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList twinRows READ twinRows NOTIFY dataChanged)
     Q_PROPERTY(QStringList annunciators READ annunciators NOTIFY dataChanged)
     Q_PROPERTY(QString scenario READ scenario NOTIFY dataChanged)
     Q_PROPERTY(qulonglong tick READ tick NOTIFY dataChanged)
@@ -22,6 +23,10 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int sensorCount READ sensorCount NOTIFY dataChanged)
     Q_PROPERTY(int eventCount READ eventCount NOTIFY dataChanged)
     Q_PROPERTY(int trendWindow READ trendWindow NOTIFY dataChanged)
+    Q_PROPERTY(int twinNominalCount READ twinNominalCount NOTIFY dataChanged)
+    Q_PROPERTY(int twinDegradedCount READ twinDegradedCount NOTIFY dataChanged)
+    Q_PROPERTY(int twinFaultCount READ twinFaultCount NOTIFY dataChanged)
+    Q_PROPERTY(int twinUnknownCount READ twinUnknownCount NOTIFY dataChanged)
     Q_PROPERTY(bool replayMode READ replayMode NOTIFY dataChanged)
     Q_PROPERTY(int replayIndex READ replayIndex NOTIFY dataChanged)
     Q_PROPERTY(int replayMaximum READ replayMaximum NOTIFY dataChanged)
@@ -36,6 +41,7 @@ public:
     QVariantList sensorRows() const;
     QVariantList eventRows() const;
     QVariantList trendRows() const;
+    QVariantList twinRows() const;
     QStringList annunciators() const;
     QString scenario() const;
     qulonglong tick() const noexcept;
@@ -44,6 +50,10 @@ public:
     int sensorCount() const noexcept;
     int eventCount() const noexcept;
     int trendWindow() const noexcept;
+    int twinNominalCount() const noexcept;
+    int twinDegradedCount() const noexcept;
+    int twinFaultCount() const noexcept;
+    int twinUnknownCount() const noexcept;
     bool replayMode() const noexcept;
     int replayIndex() const noexcept;
     int replayMaximum() const noexcept;
@@ -68,6 +78,7 @@ private:
     void refresh(const LabSnapshot& snapshot);
     void showReplayFrame();
     void refreshTrends();
+    void refreshTwin();
 
     AvionicsLab lab_;
     CockpitViewModel viewModel_;
@@ -77,10 +88,15 @@ private:
     QVariantList sensorRows_;
     QVariantList eventRows_;
     QVariantList trendRows_;
+    QVariantList twinRows_;
     QStringList annunciators_;
     bool replayMode_{false};
     int replayIndex_{0};
     int trendWindow_{60};
+    int twinNominalCount_{0};
+    int twinDegradedCount_{0};
+    int twinFaultCount_{0};
+    int twinUnknownCount_{0};
 };
 
 } // namespace nexvary::avionics

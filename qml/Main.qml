@@ -17,6 +17,13 @@ ApplicationWindow {
         return cockpit.text(key)
     }
 
+    function stateColor(state) {
+        if (state === "NOMINAL") return "#39ff9b"
+        if (state === "DEGRADED") return "#ffb000"
+        if (state === "FAULT") return "#ff5a5f"
+        return "#748990"
+    }
+
     LayoutMirroring.enabled: cockpit.rtl
     LayoutMirroring.childrenInherit: true
 
@@ -89,6 +96,7 @@ ApplicationWindow {
             Button { text: root.t("events"); checkable: true; checked: root.selectedPage === 3; onClicked: root.selectedPage = 3 }
             Button { text: root.t("replay"); checkable: true; checked: root.selectedPage === 4; onClicked: root.selectedPage = 4 }
             Button { text: root.t("trends"); checkable: true; checked: root.selectedPage === 5; onClicked: root.selectedPage = 5 }
+            Button { text: root.t("digital_twin"); checkable: true; checked: root.selectedPage === 6; onClicked: root.selectedPage = 6 }
 
             Item { Layout.fillWidth: true }
 
@@ -247,16 +255,10 @@ ApplicationWindow {
                 ColumnLayout {
                     anchors.fill: parent
                     spacing: 10
-
                     RowLayout {
                         Layout.fillWidth: true
-                        Text {
-                            text: root.t("window")
-                            color: "#f1c75b"
-                            font.bold: true
-                        }
+                        Text { text: root.t("window"); color: "#f1c75b"; font.bold: true }
                         ComboBox {
-                            id: trendWindowSelector
                             model: ["20", "60", "120", "ALL"]
                             currentIndex: 1
                             Layout.preferredWidth: 130
@@ -265,15 +267,9 @@ ApplicationWindow {
                                 cockpit.setTrendWindow(values[currentIndex])
                             }
                         }
-                        Text {
-                            text: cockpit.trendWindow === 0 ? "ALL" : cockpit.trendWindow
-                            color: "#7fdcff"
-                        }
+                        Text { text: cockpit.trendWindow === 0 ? "ALL" : cockpit.trendWindow; color: "#7fdcff" }
                         Item { Layout.fillWidth: true }
-                        Text {
-                            text: cockpit.recordedFrames + " " + root.t("recorded_frames")
-                            color: "#8fa5ae"
-                        }
+                        Text { text: cockpit.recordedFrames + " " + root.t("recorded_frames"); color: "#8fa5ae" }
                     }
 
                     Rectangle {
@@ -320,6 +316,89 @@ ApplicationWindow {
                                 Text { text: Number(modelData.delta).toFixed(2); color: Math.abs(modelData.delta) > 0.001 ? "#f1c75b" : "#8fa5ae"; Layout.preferredWidth: 100 }
                                 Text { text: Number(modelData.slope).toFixed(3); color: "#d4e2e7"; Layout.preferredWidth: 110 }
                                 Text { text: Number(modelData.quality).toFixed(1) + "%"; color: modelData.quality >= 99.9 ? "#39ff9b" : (modelData.quality >= 90 ? "#ffb000" : "#ff5a5f"); Layout.preferredWidth: 120; font.bold: true }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item {
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 12
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 10
+                        Repeater {
+                            model: [
+                                { "label": root.t("nominal"), "value": cockpit.twinNominalCount, "state": "NOMINAL" },
+                                { "label": root.t("degraded"), "value": cockpit.twinDegradedCount, "state": "DEGRADED" },
+                                { "label": root.t("fault"), "value": cockpit.twinFaultCount, "state": "FAULT" },
+                                { "label": root.t("unknown"), "value": cockpit.twinUnknownCount, "state": "UNKNOWN" }
+                            ]
+                            delegate: Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 82
+                                radius: 8
+                                color: "#071014"
+                                border.width: 1
+                                border.color: root.stateColor(modelData.state)
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: 4
+                                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.label; color: "#8fa5ae" }
+                                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.value; color: root.stateColor(modelData.state); font.pixelSize: 26; font.bold: true }
+                                }
+                            }
+                        }
+                    }
+
+                    GridLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        columns: 2
+                        columnSpacing: 12
+                        rowSpacing: 12
+
+                        Repeater {
+                            model: cockpit.twinRows
+                            delegate: Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Layout.minimumHeight: 150
+                                radius: 10
+                                color: "#081216"
+                                border.width: 2
+                                border.color: root.stateColor(modelData.state)
+
+                                ColumnLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 16
+                                    spacing: 8
+
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        Text { text: modelData.label; color: "#f1c75b"; font.pixelSize: 20; font.bold: true; Layout.fillWidth: true }
+                                        Text { text: modelData.state; color: root.stateColor(modelData.state); font.bold: true }
+                                    }
+
+                                    ProgressBar {
+                                        Layout.fillWidth: true
+                                        from: 0
+                                        to: 100
+                                        value: modelData.health
+                                    }
+
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        Text { text: root.t("health") + ": " + Number(modelData.health).toFixed(0) + "%"; color: "#7fdcff"; Layout.fillWidth: true }
+                                        Text { text: root.t("channels") + ": " + modelData.valid + "/" + modelData.expected; color: "#d4e2e7" }
+                                        Text { text: root.t("issues") + ": " + modelData.issues; color: modelData.issues > 0 ? "#ffb000" : "#8fa5ae" }
+                                    }
+                                }
                             }
                         }
                     }

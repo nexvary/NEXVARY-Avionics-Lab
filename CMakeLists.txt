@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
-project(NexvaryAvionicsLab VERSION 1.2.0 LANGUAGES CXX)
+project(NexvaryAvionicsLab VERSION 1.3.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(cmake/Dependencies.cmake)
+
 option(NEXVARY_BUILD_QT_HMI "Build the Qt/QML cockpit training interface" OFF)
 option(NEXVARY_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer on supported compilers" OFF)
 option(NEXVARY_WARNINGS_AS_ERRORS "Treat project warnings as errors" OFF)
@@ -29,7 +30,9 @@ add_library(avionics_core
     src/io/SessionArchive.cpp
     src/report/LabReport.cpp
     src/config/RunProfile.cpp
+    src/twin/DigitalTwin.cpp
 )
+
 target_include_directories(avionics_core PUBLIC src)
 target_link_libraries(avionics_core PUBLIC nlohmann_json::nlohmann_json)
 
@@ -54,7 +57,7 @@ add_executable(nexvary_avionics_lab src/main.cpp)
 target_link_libraries(nexvary_avionics_lab PRIVATE avionics_core CLI11::CLI11)
 
 enable_testing()
-foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends)
+foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin)
     add_executable(${test_name}_tests tests/test_${test_name}.cpp)
     target_link_libraries(${test_name}_tests PRIVATE avionics_core)
     add_test(NAME ${test_name}_tests COMMAND ${test_name}_tests)
@@ -71,7 +74,9 @@ if(NEXVARY_BUILD_QT_HMI)
     )
     qt_add_resources(nexvary_avionics_hmi "qml_resources"
         PREFIX "/"
-        FILES qml/Main.qml qml/InstrumentTile.qml
+        FILES
+            qml/Main.qml
+            qml/InstrumentTile.qml
     )
     target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
 

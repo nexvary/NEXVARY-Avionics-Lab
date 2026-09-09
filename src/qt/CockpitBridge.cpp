@@ -1,6 +1,7 @@
 #include "qt/CockpitBridge.hpp"
 #include "core/TelemetryTrend.hpp"
 #include "sim/ScenarioEngine.hpp"
+#include "twin/DigitalTwin.hpp"
 #include <QVariantMap>
 #include <algorithm>
 #include <cmath>
@@ -17,23 +18,22 @@ QVariantList CockpitBridge::tiles() const { return tiles_; }
 QVariantList CockpitBridge::sensorRows() const { return sensorRows_; }
 QVariantList CockpitBridge::eventRows() const { return eventRows_; }
 QVariantList CockpitBridge::trendRows() const { return trendRows_; }
+QVariantList CockpitBridge::twinRows() const { return twinRows_; }
 QStringList CockpitBridge::annunciators() const { return annunciators_; }
-
-QString CockpitBridge::scenario() const {
-    return QString::fromUtf8(ScenarioEngine::toString(snapshot_.scenario));
-}
-
+QString CockpitBridge::scenario() const { return QString::fromUtf8(ScenarioEngine::toString(snapshot_.scenario)); }
 qulonglong CockpitBridge::tick() const noexcept { return snapshot_.tick; }
 int CockpitBridge::recordedFrames() const noexcept { return static_cast<int>(lab_.recorder().size()); }
 int CockpitBridge::sensorCount() const noexcept { return static_cast<int>(snapshot_.sensors.size()); }
 int CockpitBridge::eventCount() const noexcept { return static_cast<int>(lab_.eventLog().size()); }
 int CockpitBridge::trendWindow() const noexcept { return trendWindow_; }
+int CockpitBridge::twinNominalCount() const noexcept { return twinNominalCount_; }
+int CockpitBridge::twinDegradedCount() const noexcept { return twinDegradedCount_; }
+int CockpitBridge::twinFaultCount() const noexcept { return twinFaultCount_; }
+int CockpitBridge::twinUnknownCount() const noexcept { return twinUnknownCount_; }
 
 int CockpitBridge::activeAlertCount() const noexcept {
     int count = 0;
-    for (const auto& alert : snapshot_.alerts) {
-        if (alert.active) ++count;
-    }
+    for (const auto& alert : snapshot_.alerts) if (alert.active) ++count;
     return count;
 }
 
@@ -42,18 +42,11 @@ int CockpitBridge::replayIndex() const noexcept { return replayIndex_; }
 int CockpitBridge::replayMaximum() const noexcept {
     return lab_.recorder().size() > 0 ? static_cast<int>(lab_.recorder().size() - 1) : 0;
 }
-
-QString CockpitBridge::language() const {
-    return language_ == UiLanguage::Arabic ? QStringLiteral("ar") : QStringLiteral("en");
-}
-
+QString CockpitBridge::language() const { return language_ == UiLanguage::Arabic ? QStringLiteral("ar") : QStringLiteral("en"); }
 bool CockpitBridge::rtl() const noexcept { return UiLocale::isRtl(language_); }
-
 QStringList CockpitBridge::scenarios() const {
     QStringList result;
-    for (const auto& name : ScenarioEngine::names()) {
-        result.push_back(QString::fromStdString(name));
-    }
+    for (const auto& name : ScenarioEngine::names()) result.push_back(QString::fromStdString(name));
     return result;
 }
 
@@ -81,7 +74,6 @@ void CockpitBridge::setScenario(const QString& name) {
         lab_.reset();
         refresh(lab_.step());
     } catch (const std::invalid_argument&) {
-        // Ignore invalid UI input; scenario choices are normally constrained by the model.
     }
 }
 
@@ -125,7 +117,6 @@ void CockpitBridge::setTrendWindow(int frames) {
 void CockpitBridge::showReplayFrame() {
     const auto frame = lab_.recorder().frame(static_cast<std::size_t>(replayIndex_));
     if (!frame) return;
-
     LabSnapshot replay = snapshot_;
     replay.tick = frame->sequence;
     replay.simTime = frame->simTime;
@@ -137,10 +128,7 @@ void CockpitBridge::showReplayFrame() {
 
 void CockpitBridge::refreshTrends() {
     trendRows_.clear();
-    const auto trends = TelemetryTrendAnalyzer::analyze(
-        lab_.recorder().frames(),
-        static_cast<std::size_t>(trendWindow_));
-
+    const auto trends = TelemetryTrendAnalyzer::analyze(lab_.recorder().frames(), static_cast<std::size_t>(trendWindow_));
     for (const auto& [name, trend] : trends) {
         QVariantMap item;
         item["id"] = QString::fromStdString(name);
@@ -157,13 +145,31 @@ void CockpitBridge::refreshTrends() {
         item["delta"] = trend.delta;
         item["slope"] = trend.slopePerSecond;
         item["hasValid"] = trend.hasValidSamples;
-
         const auto selectedWindow = trend.samples + trend.missingSamples;
-        const double quality = selectedWindow == 0
-            ? 0.0
-            : (100.0 * static_cast<double>(trend.validSamples) / static_cast<double>(selectedWindow));
+        const double quality = selectedWindow == 0 ? 0.0 : 100.0 * static_cast<double>(trend.validSamples) / static_cast<double>(selectedWindow);
         item["quality"] = std::round(quality * 10.0) / 10.0;
         trendRows_.push_back(item);
+    }
+}
+
+void CockpitBridge::refreshTwin() {
+    twinRows_.clear();
+    const auto twin = DigitalTwinModel::build(snapshot_.sensors, snapshot_.issues);
+    twinNominalCount_ = static_cast<int>(twin.nominalCount);
+    twinDegradedCount_ = static_cast<int>(twin.degradedCount);
+    twinFaultCount_ = static_cast<int>(twin.faultCount);
+    twinUnknownCount_ = static_cast<int>(twin.unknownCount);
+    for (const auto& subsystem : twin.subsystems) {
+        QVariantMap item;
+        item["id"] = QString::fromStdString(subsystem.id);
+        item["label"] = QString::fromStdString(UiLocale::text(language_, subsystem.id));
+        item["state"] = QString::fromLatin1(to_string(subsystem.state));
+        item["expected"] = static_cast<qulonglong>(subsystem.expectedChannels);
+        item["observed"] = static_cast<qulonglong>(subsystem.observedChannels);
+        item["valid"] = static_cast<qulonglong>(subsystem.validChannels);
+        item["issues"] = static_cast<qulonglong>(subsystem.issueCount);
+        item["health"] = subsystem.healthPercent;
+        twinRows_.push_back(item);
     }
 }
 
@@ -202,18 +208,14 @@ void CockpitBridge::refresh(const LabSnapshot& snapshot) {
     }
 
     refreshTrends();
+    refreshTwin();
 
     annunciators_.clear();
-    if (replayMode_) {
-        annunciators_.push_back(QString::fromStdString(UiLocale::text(language_, "replay_mode")));
-    }
+    if (replayMode_) annunciators_.push_back(QString::fromStdString(UiLocale::text(language_, "replay_mode")));
     for (const auto& annunciator : page.annunciators) {
         annunciators_.push_back(QString::fromStdString(
-            annunciator == "SYSTEMS NOMINAL"
-                ? UiLocale::text(language_, "systems_nominal")
-                : annunciator));
+            annunciator == "SYSTEMS NOMINAL" ? UiLocale::text(language_, "systems_nominal") : annunciator));
     }
-
     emit dataChanged();
 }
 

@@ -8,28 +8,63 @@ Rectangle {
     property string value: ""
     property string subtitle: ""
     property string iconText: "•"
-    property color accent: Theme.green
+    property color accent: Theme.accent
     radius: Theme.radius
     color: Theme.panel
     border.width: 1
     border.color: Theme.border
-    implicitHeight: 86
+    implicitHeight: 88
 
-    Rectangle { anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom; width: 2; color: card.accent }
+    Rectangle {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 3
+        color: card.accent
+        opacity: 0.9
+    }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.leftMargin: 11
-        anchors.rightMargin: 9
-        anchors.topMargin: 8
-        anchors.bottomMargin: 7
-        spacing: 2
+        anchors.leftMargin: 14
+        anchors.rightMargin: 11
+        anchors.topMargin: 9
+        anchors.bottomMargin: 8
+        spacing: 3
         RowLayout {
             Layout.fillWidth: true
-            Text { text: card.iconText; color: card.accent; font.pixelSize: 12; font.bold: true; font.family: "Consolas" }
-            Text { text: card.title.toUpperCase(); color: Theme.muted; font.pixelSize: 9; font.bold: true; font.letterSpacing: 0.7; Layout.fillWidth: true; elide: Text.ElideRight }
+            Text {
+                text: card.iconText
+                color: Theme.silver
+                font.pixelSize: 11
+                font.bold: true
+                font.family: "Consolas"
+            }
+            Text {
+                text: card.title.toUpperCase()
+                color: Theme.silver
+                font.pixelSize: 8
+                font.bold: true
+                font.letterSpacing: 0.9
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
         }
-        Text { text: card.value; color: card.accent; font.pixelSize: 20; font.bold: true; font.family: "Consolas"; Layout.fillWidth: true; elide: Text.ElideRight }
-        Text { text: card.subtitle; color: Theme.silver; font.pixelSize: 9; Layout.fillWidth: true; elide: Text.ElideRight }
+        Text {
+            text: card.value
+            color: card.accent
+            font.pixelSize: 20
+            font.bold: true
+            font.family: "Consolas"
+            Layout.fillWidth: true
+            elide: Text.ElideRight
+        }
+        Text {
+            text: card.subtitle
+            color: Theme.muted
+            font.pixelSize: 8
+            Layout.fillWidth: true
+            elide: Text.ElideRight
+        }
     }
 }

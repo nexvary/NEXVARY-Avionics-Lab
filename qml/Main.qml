@@ -94,7 +94,7 @@ ApplicationWindow {
                     }
                     ColumnLayout { spacing:1
                         Text { text:"TICK "+cockpit.tick; color:Theme.silver; font.family:"Consolas"; font.pixelSize:11; font.bold:true }
-                        Text { text:"BUILD 2.2 • STAGE 1200"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:8 }
+                        Text { text:"BUILD 3.0 • STAGE 1700"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:8 }
                     }
                     Rectangle { Layout.preferredWidth:190; Layout.preferredHeight:42; color:"#071713"; border.color:cockpit.activeAlertCount===0?Theme.green:Theme.amber; radius:Theme.radius
                         RowLayout{anchors.fill:parent;anchors.margins:8

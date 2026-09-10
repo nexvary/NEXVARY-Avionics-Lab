@@ -21,3 +21,7 @@ This pass restructures the presentation layer without changing the safe training
 - Green/amber/red are reserved for state/health only.
 - No decorative neon glow in structural UI.
 - No live aircraft control interface; synthetic training/simulation data only.
+
+## Integration state
+- Ministerial shell and internal layouts are implemented in QML.
+- Visual QA must pass on Windows/Linux/Qt before release labeling changes.

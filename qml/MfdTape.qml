@@ -8,12 +8,12 @@ Rectangle {
     property real currentValue: 0
     property real majorStep: 10
     property int decimals: 0
-    property color accent: Theme.cyan
+    property color accent: Theme.accent
 
     implicitWidth: 132
     implicitHeight: 150
-    radius: 7
-    color: "#061117"
+    radius: Theme.radius
+    color: Theme.panel2
     border.width: 1
     border.color: Theme.border
 
@@ -23,9 +23,10 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - 14
         text: root.title
-        color: Theme.muted
-        font.pixelSize: 9
+        color: Theme.silver
+        font.pixelSize: 8
         font.bold: true
+        font.letterSpacing: .5
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
     }
@@ -53,15 +54,15 @@ Rectangle {
             var c = getContext("2d")
             c.clearRect(0,0,width,height)
             if (height <= 5 || width <= 20) return
-            c.font = "9px sans-serif"
+            c.font = "8px Consolas"
             c.textBaseline = "middle"
             for (var i=0; i<7; ++i) {
                 var y = 7 + i * (height - 14) / 6
                 var value = root.currentValue + (3-i) * root.majorStep
                 var selected = (i === 3)
-                c.fillStyle = selected ? root.accent : Theme.silver
+                c.fillStyle = selected ? Theme.platinum : Theme.silver
                 c.fillText(Number(value).toFixed(root.decimals), 8, y)
-                c.strokeStyle = selected ? root.accent : "#52646d"
+                c.strokeStyle = selected ? root.accent : Theme.border
                 c.lineWidth = selected ? 2 : 1
                 c.beginPath()
                 c.moveTo(width - (selected ? 38 : 23), y)
@@ -74,7 +75,7 @@ Rectangle {
     Rectangle {
         anchors.right: parent.right
         anchors.verticalCenter: tape.verticalCenter
-        width: 7
+        width: 5
         height: 24
         color: root.accent
     }
@@ -86,15 +87,16 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - 14
         height: 31
-        radius: 4
-        color: "#0b1c24"
+        radius: Theme.radius
+        color: Theme.panel3
         border.color: root.accent
         border.width: 1
         Text {
             anchors.centerIn: parent
             text: Number(root.currentValue).toFixed(root.decimals) + (root.unit.length ? " " + root.unit : "")
-            color: root.accent
-            font.pixelSize: 14
+            color: Theme.platinum
+            font.family: "Consolas"
+            font.pixelSize: 13
             font.bold: true
         }
     }

@@ -93,8 +93,7 @@ Item {
         }
 
         RowLayout { Layout.fillWidth:true; Layout.fillHeight:true; Layout.minimumHeight:188; spacing:7
-            Rectangle {
-                Layout.fillWidth:true; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
+            Rectangle { Layout.preferredWidth:330; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:7; spacing:3
                     RowLayout { Layout.fillWidth:true
                         Text { text:cockpit.rtl?"الأحداث المرتبطة":"CORRELATED EVENTS"; color:Theme.silver; font.pixelSize:9; font.bold:true; Layout.fillWidth:true }
@@ -103,28 +102,47 @@ Item {
                     ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.eventRows; clip:true; spacing:1
                         delegate: Rectangle { required property int index; required property var modelData; width:ListView.view.width; height:27; color:index%2?"#061219":"#08161d"
                             RowLayout { anchors.fill:parent; anchors.margins:5
-                                Text { text:modelData.severity; color:modelData.severity==="FAULT"?Theme.red:(modelData.severity==="WARN"?Theme.amber:Theme.green); Layout.preferredWidth:50; font.family:"Consolas"; font.pixelSize:7; font.bold:true }
-                                Text { text:modelData.source; color:Theme.cyan; Layout.preferredWidth:65; font.family:"Consolas"; font.pixelSize:7 }
-                                Text { text:modelData.message; color:Theme.silver; Layout.fillWidth:true; elide:Text.ElideRight; font.pixelSize:8 }
+                                Text { text:modelData.severity; color:modelData.severity==="FAULT"?Theme.red:(modelData.severity==="WARN"?Theme.amber:Theme.green); Layout.preferredWidth:46; font.family:"Consolas"; font.pixelSize:7; font.bold:true }
+                                Text { text:modelData.source; color:Theme.cyan; Layout.preferredWidth:55; font.family:"Consolas"; font.pixelSize:7 }
+                                Text { text:modelData.message; color:Theme.silver; Layout.fillWidth:true; elide:Text.ElideRight; font.pixelSize:7 }
+                            }
+                        }
+                    }
+                }
+            }
+            Rectangle { Layout.fillWidth:true; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
+                ColumnLayout { anchors.fill:parent; anchors.margins:7; spacing:3
+                    RowLayout { Layout.fillWidth:true
+                        Text { text:cockpit.rtl?"القنوات الحية":"LIVE CHANNEL MATRIX"; color:Theme.silver; font.pixelSize:9; font.bold:true; Layout.fillWidth:true }
+                        Text { text:page.telemetryQuality()+"% QUALITY"; color:page.telemetryQuality()===100?Theme.green:Theme.amber; font.family:"Consolas"; font.pixelSize:8 }
+                    }
+                    GridLayout { Layout.fillWidth:true; Layout.fillHeight:true; columns:2; columnSpacing:4; rowSpacing:4
+                        Repeater { model:cockpit.sensorRows
+                            delegate: Rectangle { required property var modelData; Layout.fillWidth:true; Layout.fillHeight:true; color:"#07151c"; border.color:modelData.valid?"#1c4b3a":Theme.red; radius:Theme.radius
+                                RowLayout { anchors.fill:parent; anchors.margins:5
+                                    Rectangle { width:3; height:20; color:modelData.valid?Theme.green:Theme.red }
+                                    Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7; Layout.fillWidth:true; elide:Text.ElideRight }
+                                    Text { text:Number(modelData.value).toFixed(1)+" "+modelData.unit; color:modelData.valid?Theme.cyan:Theme.red; font.family:"Consolas"; font.pixelSize:8; font.bold:true }
+                                }
                             }
                         }
                     }
                 }
             }
             Rectangle {
-                Layout.preferredWidth:300; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
+                Layout.preferredWidth:270; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:3
                     Text { text:cockpit.rtl?"حالة السيناريو":"SCENARIO CONTROL"; color:Theme.silver; font.pixelSize:9; font.bold:true }
-                    Text { text:cockpit.scenario.toUpperCase(); color:Theme.green; font.family:"Consolas"; font.pixelSize:20; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
+                    Text { text:cockpit.scenario.toUpperCase(); color:Theme.green; font.family:"Consolas"; font.pixelSize:19; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
                     GridLayout { Layout.fillWidth:true; columns:2; columnSpacing:4; rowSpacing:4
-                        MetricBox { Layout.fillWidth:true; Layout.preferredHeight:48; label:"TICK"; value:String(cockpit.tick); accent:Theme.cyan }
-                        MetricBox { Layout.fillWidth:true; Layout.preferredHeight:48; label:"FRAMES"; value:String(cockpit.recordedFrames); accent:Theme.green }
+                        MetricBox { Layout.fillWidth:true; Layout.preferredHeight:46; label:"TICK"; value:String(cockpit.tick); accent:Theme.cyan }
+                        MetricBox { Layout.fillWidth:true; Layout.preferredHeight:46; label:"FRAMES"; value:String(cockpit.recordedFrames); accent:Theme.green }
                     }
                     Item { Layout.fillHeight:true }
                     MinisterialButton { Layout.fillWidth:true; text:cockpit.text("reset"); onClicked:cockpit.resetLab() }
                 }
             }
-            PerformancePanel { Layout.preferredWidth:420; Layout.fillHeight:true }
+            PerformancePanel { Layout.preferredWidth:365; Layout.fillHeight:true }
         }
     }
 }

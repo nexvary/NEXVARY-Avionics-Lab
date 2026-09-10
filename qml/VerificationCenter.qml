@@ -80,7 +80,7 @@ Item {
             }
 
             Rectangle {
-                Layout.preferredWidth:500; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
+                Layout.preferredWidth:520; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:5
                     RowLayout { Layout.fillWidth:true
                         Text { text:cockpit.rtl?"مصفوفة الأدلة":"EVIDENCE MATRIX"; color:Theme.gold; font.pixelSize:13; font.bold:true; Layout.fillWidth:true }
@@ -96,7 +96,7 @@ Item {
                             {"k":"ALERTS","v":String(cockpit.activeAlertCount),"c":cockpit.activeAlertCount?Theme.amber:Theme.green},
                             {"k":"FAULT LAB","v":String(cockpit.activeTrainingFaultCount),"c":cockpit.activeTrainingFaultCount?Theme.amber:Theme.green}
                         ]
-                            delegate: Rectangle { required property var modelData; Layout.fillWidth:true; Layout.preferredHeight:62; color:"#07141b"; border.color:Theme.border; radius:Theme.radius
+                            delegate: Rectangle { required property var modelData; Layout.fillWidth:true; Layout.preferredHeight:58; color:"#07141b"; border.color:Theme.border; radius:Theme.radius
                                 ColumnLayout { anchors.fill:parent; anchors.margins:7; spacing:1
                                     Text { text:modelData.k; color:Theme.muted; font.pixelSize:8; font.bold:true; font.letterSpacing:.5 }
                                     Text { text:modelData.v; color:modelData.c; font.family:"Consolas"; font.pixelSize:15; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
@@ -104,32 +104,43 @@ Item {
                             }
                         }
                     }
-                    Rectangle { Layout.fillWidth:true; Layout.preferredHeight:46; color:"#07141b"; border.color:Theme.border; radius:Theme.radius
+                    Rectangle { Layout.fillWidth:true; Layout.preferredHeight:42; color:"#07141b"; border.color:Theme.border; radius:Theme.radius
                         RowLayout { anchors.fill:parent; anchors.margins:6
                             Text { text:"EVIDENCE CHAIN"; color:Theme.silver; font.pixelSize:8; font.bold:true }
-                            Text { text:"SCENARIO"; color:Theme.cyan; font.family:"Consolas"; font.pixelSize:8 }
-                            Text { text:"→"; color:Theme.muted }
-                            Text { text:"TELEMETRY"; color:Theme.cyan; font.family:"Consolas"; font.pixelSize:8 }
-                            Text { text:"→"; color:Theme.muted }
-                            Text { text:"HEALTH"; color:Theme.green; font.family:"Consolas"; font.pixelSize:8 }
-                            Text { text:"→"; color:Theme.muted }
-                            Text { text:"REPORT"; color:Theme.gold; font.family:"Consolas"; font.pixelSize:8 }
-                            Item { Layout.fillWidth:true }
+                            Text { text:"SCENARIO → TELEMETRY → HEALTH → REPORT"; color:Theme.cyan; font.family:"Consolas"; font.pixelSize:8; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight }
                         }
                     }
-                    Text { text:cockpit.rtl?"آخر أحداث الأدلة":"RECENT EVIDENCE EVENTS"; color:Theme.silver; font.pixelSize:10; font.bold:true }
-                    ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.eventRows; clip:true; spacing:1
-                        delegate: Rectangle { required property int index; required property var modelData; width:ListView.view.width; height:34; color:index%2?"#071219":"#09171e"
-                            RowLayout { anchors.fill:parent; anchors.margins:6
-                                Text { text:modelData.severity; color:modelData.severity==="FAULT"?Theme.red:(modelData.severity==="WARN"?Theme.amber:Theme.green); font.family:"Consolas"; font.pixelSize:8; Layout.preferredWidth:58 }
-                                Text { text:modelData.source; color:Theme.cyan; font.family:"Consolas"; font.pixelSize:8; Layout.preferredWidth:70 }
-                                Text { text:modelData.message; color:Theme.silver; font.pixelSize:8; Layout.fillWidth:true; elide:Text.ElideRight }
+                    RowLayout { Layout.fillWidth:true
+                        Text { text:cockpit.rtl?"أدلة القنوات":"CHANNEL EVIDENCE"; color:Theme.gold; font.pixelSize:9; font.bold:true; Layout.fillWidth:true }
+                        Text { text:page.validSensors()+"/"+cockpit.sensorCount+" VALID"; color:page.validSensors()===cockpit.sensorCount?Theme.green:Theme.amber; font.family:"Consolas"; font.pixelSize:8 }
+                    }
+                    GridLayout { Layout.fillWidth:true; Layout.fillHeight:true; columns:2; columnSpacing:5; rowSpacing:5
+                        Repeater { model:cockpit.sensorRows
+                            delegate: Rectangle { required property var modelData; Layout.fillWidth:true; Layout.fillHeight:true; Layout.minimumHeight:44; color:"#07151c"; border.color:modelData.valid?"#1c4b3a":Theme.red; radius:Theme.radius
+                                RowLayout { anchors.fill:parent; anchors.margins:6
+                                    Rectangle { width:4; height:24; color:modelData.valid?Theme.green:Theme.red }
+                                    ColumnLayout { Layout.fillWidth:true; spacing:0
+                                        Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7; elide:Text.ElideRight; Layout.fillWidth:true }
+                                        Text { text:Number(modelData.value).toFixed(1)+" "+modelData.unit; color:modelData.valid?Theme.cyan:Theme.red; font.family:"Consolas"; font.pixelSize:10; font.bold:true }
+                                    }
+                                    Text { text:modelData.valid?"PASS":"FAIL"; color:modelData.valid?Theme.green:Theme.red; font.family:"Consolas"; font.pixelSize:7; font.bold:true }
+                                }
                             }
                         }
                     }
-                    Rectangle { Layout.fillWidth:true; Layout.preferredHeight:38; color:page.passCount()===6?"#071c16":"#241b08"; border.color:page.passCount()===6?Theme.green:Theme.amber; radius:Theme.radius
+                    Text { text:cockpit.rtl?"آخر أحداث الأدلة":"RECENT EVIDENCE EVENTS"; color:Theme.silver; font.pixelSize:9; font.bold:true }
+                    ListView { Layout.fillWidth:true; Layout.preferredHeight:90; Layout.minimumHeight:60; Layout.maximumHeight:110; model:cockpit.eventRows; clip:true; spacing:1
+                        delegate: Rectangle { required property int index; required property var modelData; width:ListView.view.width; height:30; color:index%2?"#071219":"#09171e"
+                            RowLayout { anchors.fill:parent; anchors.margins:5
+                                Text { text:modelData.severity; color:modelData.severity==="FAULT"?Theme.red:(modelData.severity==="WARN"?Theme.amber:Theme.green); font.family:"Consolas"; font.pixelSize:7; Layout.preferredWidth:52 }
+                                Text { text:modelData.source; color:Theme.cyan; font.family:"Consolas"; font.pixelSize:7; Layout.preferredWidth:65 }
+                                Text { text:modelData.message; color:Theme.silver; font.pixelSize:7; Layout.fillWidth:true; elide:Text.ElideRight }
+                            }
+                        }
+                    }
+                    Rectangle { Layout.fillWidth:true; Layout.preferredHeight:34; color:page.passCount()===6?"#071c16":"#241b08"; border.color:page.passCount()===6?Theme.green:Theme.amber; radius:Theme.radius
                         RowLayout { anchors.fill:parent; anchors.margins:6
-                            Text { text:page.passCount()===6?"ALL SIX RUNTIME GATES SATISFIED":"RUNTIME EVIDENCE REQUIRES ATTENTION"; color:page.passCount()===6?Theme.green:Theme.amber; font.family:"Consolas"; font.pixelSize:9; font.bold:true; Layout.fillWidth:true }
+                            Text { text:page.passCount()===6?"ALL SIX RUNTIME GATES SATISFIED":"RUNTIME EVIDENCE REQUIRES ATTENTION"; color:page.passCount()===6?Theme.green:Theme.amber; font.family:"Consolas"; font.pixelSize:8; font.bold:true; Layout.fillWidth:true }
                             Text { text:"TRAINING ONLY"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
                         }
                     }

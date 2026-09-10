@@ -24,4 +24,5 @@ This pass restructures the presentation layer without changing the safe training
 
 ## Integration state
 - Ministerial shell and internal layouts are implemented in QML.
+- Dashboard, Fault Lab, Verification Center and Engineering Workbench use the new hierarchy.
 - Visual QA must pass on Windows/Linux/Qt before release labeling changes.

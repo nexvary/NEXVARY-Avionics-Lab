@@ -18,7 +18,25 @@ Item {
             Rectangle { Layout.preferredWidth:170; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:9; spacing:0
                     Text { text:"TIME WINDOW"; color:Theme.muted; font.pixelSize:7 }
-                    ComboBox { id:w; model:[20,60,120,0]; currentIndex:1; Layout.fillWidth:true; onActivated:cockpit.setTrendWindow(Number(currentText)); contentItem:Text{text:w.displayText; color:Theme.platinum; verticalAlignment:Text.AlignVCenter; horizontalAlignment:Text.AlignHCenter; font.family:"Consolas"}; background:Rectangle{color:Theme.panel2; radius:Theme.radius; border.color:Theme.border} }
+                    ComboBox {
+                        id: w
+                        model: [20,60,120,0]
+                        currentIndex: 1
+                        Layout.fillWidth: true
+                        onActivated: cockpit.setTrendWindow(Number(currentText))
+                        contentItem: Text {
+                            text: w.displayText
+                            color: Theme.platinum
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                            font.family: "Consolas"
+                        }
+                        background: Rectangle {
+                            color: Theme.panel2
+                            radius: Theme.radius
+                            border.color: Theme.border
+                        }
+                    }
                 }
             }
             StatusCard { Layout.preferredWidth:170; Layout.fillHeight:true; title:"FRAMES"; value:String(cockpit.recordedFrames); subtitle:"SYNCHRONIZED"; iconText:"REC"; accent:Theme.accent }

@@ -8,8 +8,8 @@ Item {
     width: 300
     height: 300
 
-    Behavior on pitch { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-    Behavior on roll { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
+    Behavior on pitch { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+    Behavior on roll { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
 
     Canvas {
         id: display
@@ -31,68 +31,72 @@ Item {
             var r = size*0.455
 
             c.save()
-            c.beginPath()
-            c.arc(cx,cy,r,0,Math.PI*2)
-            c.clip()
+            c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.clip()
             c.translate(cx,cy)
             c.rotate(-root.roll*Math.PI/180)
-            c.translate(0,root.pitch*2.2)
+            c.translate(0,root.pitch*2.05)
 
-            c.fillStyle = "#0d5ab5"
+            // Muted sky/ground treatment to avoid a game-like presentation.
+            c.fillStyle = "#2F4655"
             c.fillRect(-size,-size*1.4,size*2,size*1.4)
-            c.fillStyle = "#6a431f"
+            c.fillStyle = "#3A3530"
             c.fillRect(-size,0,size*2,size*1.4)
-            c.strokeStyle = "#ffffff"
-            c.lineWidth = 3
+            c.strokeStyle = Theme.platinum
+            c.globalAlpha = .9
+            c.lineWidth = 2
             c.beginPath(); c.moveTo(-size,0); c.lineTo(size,0); c.stroke()
 
-            c.font = "10px sans-serif"
+            c.font = "9px Consolas"
             c.textBaseline = "middle"
-            c.fillStyle = "#ffffff"
+            c.fillStyle = Theme.platinum
             var ladder = [-30,-20,-10,10,20,30]
             for (var i=0;i<ladder.length;++i) {
                 var deg = ladder[i]
-                var y = -deg*2.2
+                var y = -deg*2.05
                 var longLine = Math.abs(deg)%20===0
-                var half = longLine ? 48 : 32
-                c.lineWidth = 2
+                var half = longLine ? 44 : 30
+                c.lineWidth = 1.3
                 c.beginPath(); c.moveTo(-half,y); c.lineTo(half,y); c.stroke()
-                c.fillText(String(Math.abs(deg)), -half-27, y)
-                c.fillText(String(Math.abs(deg)), half+10, y)
+                c.fillText(String(Math.abs(deg)), -half-24, y)
+                c.fillText(String(Math.abs(deg)), half+8, y)
             }
             c.restore()
 
-            c.strokeStyle = "#52646d"
+            c.globalAlpha = 1
+            c.strokeStyle = Theme.border
             c.lineWidth = 4
             c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.stroke()
+            c.strokeStyle = Theme.silver
+            c.lineWidth = 1
+            c.beginPath(); c.arc(cx,cy,r-5,0,Math.PI*2); c.stroke()
 
             var marks = [-60,-45,-30,-20,-10,0,10,20,30,45,60]
-            c.strokeStyle = "#dce8ed"
+            c.strokeStyle = Theme.platinum
             for (var m=0;m<marks.length;++m) {
                 var a = (marks[m]-90)*Math.PI/180
-                var len = marks[m]%30===0 ? 13 : 8
-                c.lineWidth = marks[m]===0 ? 3 : 2
+                var len = marks[m]%30===0 ? 12 : 7
+                c.lineWidth = marks[m]===0 ? 2 : 1
                 c.beginPath()
                 c.moveTo(cx+Math.cos(a)*(r-len),cy+Math.sin(a)*(r-len))
                 c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r)
                 c.stroke()
             }
 
-            c.strokeStyle = Theme.gold
-            c.lineWidth = 4
+            c.strokeStyle = Theme.accent
+            c.lineWidth = 3
             c.beginPath()
-            c.moveTo(cx-r*0.57,cy)
-            c.lineTo(cx-r*0.17,cy)
-            c.lineTo(cx,cy+14)
-            c.lineTo(cx+r*0.17,cy)
-            c.lineTo(cx+r*0.57,cy)
+            c.moveTo(cx-r*0.54,cy)
+            c.lineTo(cx-r*0.16,cy)
+            c.lineTo(cx,cy+12)
+            c.lineTo(cx+r*0.16,cy)
+            c.lineTo(cx+r*0.54,cy)
             c.stroke()
 
-            c.fillStyle = Theme.gold
+            c.fillStyle = Theme.platinum
             c.beginPath()
-            c.moveTo(cx,cy-r*0.92)
-            c.lineTo(cx-8,cy-r*0.80)
-            c.lineTo(cx+8,cy-r*0.80)
+            c.moveTo(cx,cy-r*0.90)
+            c.lineTo(cx-7,cy-r*0.80)
+            c.lineTo(cx+7,cy-r*0.80)
             c.closePath(); c.fill()
         }
     }
@@ -103,14 +107,15 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         width: 126
         height: 25
-        radius: 4
-        color: "#071218dd"
+        radius: Theme.radius
+        color: Theme.panel2
         border.color: Theme.border
         Text {
             anchors.centerIn: parent
             text: "P " + Number(root.pitch).toFixed(1) + "°   R " + Number(root.roll).toFixed(1) + "°"
             color: Theme.silver
-            font.pixelSize: 10
+            font.family: "Consolas"
+            font.pixelSize: 9
             font.bold: true
         }
     }

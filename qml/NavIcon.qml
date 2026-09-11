@@ -29,6 +29,11 @@ Canvas {
             c.beginPath(); c.moveTo(.5*w,.1*h); c.lineTo(.82*w,.29*h); c.lineTo(.82*w,.69*h); c.lineTo(.5*w,.89*h); c.lineTo(.18*w,.69*h); c.lineTo(.18*w,.29*h); c.closePath(); c.stroke(); line(.18,.29,.5,.5); line(.82,.29,.5,.5); line(.5,.5,.5,.89);
         } else if (kind === "fault") {
             c.beginPath(); c.moveTo(.5*w,.1*h); c.lineTo(.9*w,.84*h); c.lineTo(.1*w,.84*h); c.closePath(); c.stroke(); line(.5,.35,.5,.61); c.beginPath(); c.arc(.5*w,.72*h,.03*w,0,Math.PI*2); c.fill();
+        } else if (kind === "diagnostic") {
+            c.beginPath(); c.arc(.5*w,.45*h,.28*w,0,Math.PI*2); c.stroke();
+            line(.33,.45,.44,.45); line(.56,.45,.67,.45); line(.5,.28,.5,.37); line(.5,.53,.5,.62);
+            c.beginPath(); c.arc(.5*w,.45*h,.07*w,0,Math.PI*2); c.stroke();
+            line(.68,.66,.88,.86); c.beginPath(); c.arc(.72*w,.70*h,.05*w,0,Math.PI*2); c.fill();
         } else if (kind === "verify") {
             c.strokeRect(.18*w,.15*h,.64*w,.7*h); line(.3,.42,.44,.56); line(.44,.56,.7,.3); line(.3,.68,.68,.68);
         }

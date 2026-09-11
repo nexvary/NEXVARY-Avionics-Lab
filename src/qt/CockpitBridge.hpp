@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QVariantList>
+#include <string>
 
 namespace nexvary::avionics {
 
@@ -24,6 +25,11 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList diagnosticFindings READ diagnosticFindings NOTIFY dataChanged)
     Q_PROPERTY(QVariantList diagnosticRecommendations READ diagnosticRecommendations NOTIFY dataChanged)
     Q_PROPERTY(QVariantList diagnosticHistoryRows READ diagnosticHistoryRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList platformProfiles READ platformProfiles NOTIFY dataChanged)
+    Q_PROPERTY(QString activePlatformId READ activePlatformId NOTIFY dataChanged)
+    Q_PROPERTY(QString activePlatformName READ activePlatformName NOTIFY dataChanged)
+    Q_PROPERTY(QString activePlatformCategory READ activePlatformCategory NOTIFY dataChanged)
+    Q_PROPERTY(QString activePlatformPropulsion READ activePlatformPropulsion NOTIFY dataChanged)
     Q_PROPERTY(QStringList annunciators READ annunciators NOTIFY dataChanged)
     Q_PROPERTY(QString scenario READ scenario NOTIFY dataChanged)
     Q_PROPERTY(qulonglong tick READ tick NOTIFY dataChanged)
@@ -68,6 +74,11 @@ public:
     QVariantList diagnosticFindings() const;
     QVariantList diagnosticRecommendations() const;
     QVariantList diagnosticHistoryRows() const;
+    QVariantList platformProfiles() const;
+    QString activePlatformId() const;
+    QString activePlatformName() const;
+    QString activePlatformCategory() const;
+    QString activePlatformPropulsion() const;
     QStringList annunciators() const;
     QString scenario() const;
     qulonglong tick() const noexcept;
@@ -112,6 +123,7 @@ public:
     Q_INVOKABLE void clearDiagnosticHistory();
     Q_INVOKABLE QString diagnosticReportJson() const;
     Q_INVOKABLE QString diagnosticReportMarkdown() const;
+    Q_INVOKABLE void setActivePlatform(const QString& id);
 
 signals:
     void dataChanged();
@@ -139,6 +151,7 @@ private:
     QStringList annunciators_;
     DiagnosticSummary diagnosticSummary_;
     DiagnosticHistory diagnosticHistory_;
+    std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};
     bool replayPaused_{false};
     int replayIndex_{0};

@@ -19,14 +19,14 @@ ApplicationWindow {
     onSelectedPageChanged: {
         if (root.selectedPage === 0) root.workMode = "EXECUTIVE"
         else if (root.selectedPage === 5) root.workMode = "ENGINEERING"
-        else if (root.selectedPage === 8) root.workMode = "DIAGNOSTIC"
+        else if (root.selectedPage === 9) root.workMode = "DIAGNOSTIC"
     }
 
     function setWorkMode(mode) {
         root.workMode = mode
         if (mode === "EXECUTIVE") root.selectedPage = 0
         else if (mode === "ENGINEERING") root.selectedPage = 5
-        else root.selectedPage = 8
+        else root.selectedPage = 9
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
@@ -73,6 +73,7 @@ ApplicationWindow {
                         {"text": cockpit.text("replay"), "icon": "replay"},
                         {"text": cockpit.text("trends"), "icon": "trends"},
                         {"text": cockpit.text("digital_twin"), "icon": "twin"},
+                        {"text": cockpit.rtl ? "مكتبة المنصات" : "Platform Library", "icon": "platform"},
                         {"text": cockpit.text("fault_lab"), "icon": "fault"},
                         {"text": cockpit.rtl ? "مركز التشخيص" : "Diagnostic Center", "icon": "diagnostic"},
                         {"text": cockpit.rtl ? "مركز التحقق" : "Verification Center", "icon": "verify"}
@@ -133,7 +134,7 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         spacing: 1
                         Text { text: cockpit.text("app_title"); color: Theme.platinum; font.pixelSize: 21; font.bold: true; font.letterSpacing: 0.5; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true }
-                        Text { text: cockpit.text("training") + "  /  " + cockpit.scenario; color: Theme.accent; font.pixelSize: 9; font.bold: true; font.letterSpacing: 0.7; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true }
+                        Text { text: cockpit.text("training") + "  /  " + cockpit.activePlatformName + "  /  " + cockpit.scenario; color: Theme.accent; font.pixelSize: 9; font.bold: true; font.letterSpacing: 0.5; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
                     }
                     RowLayout {
                         spacing: 5
@@ -144,13 +145,13 @@ ApplicationWindow {
                     Rectangle { width: 1; Layout.fillHeight: true; color: Theme.borderSoft }
                     ColumnLayout {
                         spacing: 0
-                        Text { text: "MODE"; color: Theme.muted; font.pixelSize: 7; font.letterSpacing: 0.6 }
-                        Text { text: root.workMode; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                        Text { text: "PLATFORM"; color: Theme.muted; font.pixelSize: 7; font.letterSpacing: 0.6 }
+                        Text { text: cockpit.activePlatformId.toUpperCase(); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
                     }
                     ComboBox {
                         id: scenarioBox
                         model: cockpit.scenarios
-                        Layout.preferredWidth: 155
+                        Layout.preferredWidth: 145
                         contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; font.family: "Consolas" }
                         background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
                         onActivated: cockpit.setScenario(currentText)
@@ -194,6 +195,7 @@ ApplicationWindow {
                 ReplayPage {}
                 TrendsPage {}
                 DigitalTwinPage {}
+                AircraftPlatformLibrary {}
                 FaultLabPage {}
                 DiagnosticCenter {}
                 VerificationCenter {}
@@ -213,7 +215,7 @@ ApplicationWindow {
                     Item { Layout.fillWidth: true }
                     Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.pixelSize: 7 }
                     Item { Layout.fillWidth: true }
-                    Text { text: "OFFLINE  •  TIME-CORRELATED EVIDENCE  •  SYNTHETIC DATA"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC DATA"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
                 }
             }
         }

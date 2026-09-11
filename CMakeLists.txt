@@ -11,6 +11,7 @@ add_library(avionics_core
  src/core/EventLog.cpp src/core/SensorBus.cpp src/core/SystemHealth.cpp src/core/Watchdog.cpp src/core/AlertManager.cpp src/core/TelemetryRecorder.cpp src/core/TelemetryArchive.cpp src/core/TelemetryTrend.cpp
  src/telemetry/TelemetryDictionary.cpp src/plugin/PluginRegistry.cpp src/campaign/CampaignRunner.cpp src/timeline/UnifiedTimeline.cpp src/verify/SessionVerifier.cpp src/instruments/InstrumentCatalog.cpp src/release/ReleaseManifest.cpp
  src/diagnostics/DiagnosticEngine.cpp src/diagnostics/DiagnosticReport.cpp src/diagnostics/DiagnosticComparator.cpp src/diagnostics/DiagnosticWorkflow.cpp src/diagnostics/DiagnosticCasebook.cpp src/diagnostics/DiagnosticHistory.cpp
+ src/platform/AircraftPlatformCatalog.cpp
  src/sim/SimulationClock.cpp src/sim/FaultInjector.cpp src/sim/ScenarioEngine.cpp src/sim/TrainingFaultCatalog.cpp src/sim/NativeSyntheticProvider.cpp
  src/app/AvionicsLab.cpp src/app/ConsoleCockpit.cpp src/hmi/CockpitViewModel.cpp src/hmi/UiLocale.cpp src/io/SessionArchive.cpp src/report/LabReport.cpp src/config/RunProfile.cpp src/twin/DigitalTwin.cpp)
 target_include_directories(avionics_core PUBLIC src)
@@ -35,7 +36,7 @@ target_link_libraries(nexvary_avionics_lab PRIVATE avionics_core CLI11::CLI11)
 add_executable(nexvary_release_manifest src/release/manifest_main.cpp)
 target_link_libraries(nexvary_release_manifest PRIVATE avionics_core)
 enable_testing()
-foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity provider dictionary plugin_registry campaign timeline verifier instrument_catalog release_manifest diagnostics diagnostic_workflow)
+foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity provider dictionary plugin_registry campaign timeline verifier instrument_catalog release_manifest diagnostics diagnostic_workflow platform_catalog)
  add_executable(${test_name}_tests tests/test_${test_name}.cpp)
  target_link_libraries(${test_name}_tests PRIVATE avionics_core)
  add_test(NAME ${test_name}_tests COMMAND ${test_name}_tests)
@@ -43,9 +44,9 @@ endforeach()
 if(NEXVARY_BUILD_QT_HMI)
  find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
  set(CMAKE_AUTOMOC ON)
- set(NEXVARY_QT_BRIDGE_SOURCES src/qt/CockpitBridge.cpp src/qt/CockpitBridgeMinisterial.cpp src/qt/CockpitBridgeDiagnostics.cpp src/qt/CockpitBridge.hpp)
+ set(NEXVARY_QT_BRIDGE_SOURCES src/qt/CockpitBridge.cpp src/qt/CockpitBridgeMinisterial.cpp src/qt/CockpitBridgeDiagnostics.cpp src/qt/CockpitBridgePlatforms.cpp src/qt/CockpitBridge.hpp)
  qt_add_executable(nexvary_avionics_hmi src/qt/main_qt.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
- qt_add_resources(nexvary_avionics_hmi "qml_resources" PREFIX "/" FILES qml/Main.qml qml/Theme.js qml/DiagnosticCodeCatalog.js qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml qml/InstrumentTile.qml qml/MetricBox.qml qml/MfdTape.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml qml/TelemetryPlot.qml qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/FaultLabPage.qml qml/DiagnosticCenter.qml qml/VerificationCenter.qml)
+ qt_add_resources(nexvary_avionics_hmi "qml_resources" PREFIX "/" FILES qml/Main.qml qml/Theme.js qml/DiagnosticCodeCatalog.js qml/MinisterialButton.qml qml/StatusCard.qml qml/SideNavButton.qml qml/NavIcon.qml qml/NexvaryMark.qml qml/InstrumentTile.qml qml/MetricBox.qml qml/MfdTape.qml qml/AttitudeIndicator.qml qml/AircraftSchematic.qml qml/TelemetrySparkline.qml qml/TelemetryPlot.qml qml/PerformancePanel.qml qml/ExecutiveDashboard.qml qml/SystemHealthPage.qml qml/SensorsPage.qml qml/EventsPage.qml qml/ReplayPage.qml qml/TrendsPage.qml qml/DigitalTwinPage.qml qml/AircraftPlatformLibrary.qml qml/FaultLabPage.qml qml/DiagnosticCenter.qml qml/VerificationCenter.qml)
  target_link_libraries(nexvary_avionics_hmi PRIVATE avionics_core Qt6::Quick Qt6::QuickControls2)
  add_executable(qt_bridge_tests tests/test_qt_bridge.cpp ${NEXVARY_QT_BRIDGE_SOURCES})
  target_link_libraries(qt_bridge_tests PRIVATE avionics_core Qt6::Core)

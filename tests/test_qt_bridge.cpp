@@ -17,6 +17,15 @@ QVariantMap findRow(const QVariantList& rows, const QString& id) {
 
 int main() {
     CockpitBridge bridge;
+    assert(bridge.platformProfiles().size() == 4);
+    assert(bridge.activePlatformId() == QStringLiteral("generic-jet"));
+    assert(!bridge.activePlatformName().isEmpty());
+    bridge.setActivePlatform(QStringLiteral("generic-helicopter"));
+    assert(bridge.activePlatformId() == QStringLiteral("generic-helicopter"));
+    assert(bridge.activePlatformCategory() == QStringLiteral("ROTORCRAFT"));
+    bridge.setActivePlatform(QStringLiteral("generic-jet"));
+    assert(bridge.activePlatformId() == QStringLiteral("generic-jet"));
+
     assert(bridge.trendWindow() == 60);
     assert(!bridge.trendRows().isEmpty());
     assert(bridge.twinRows().size() == 5);

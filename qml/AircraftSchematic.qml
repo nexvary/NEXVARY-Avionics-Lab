@@ -19,94 +19,108 @@ Canvas {
     onPaint: {
         var c = getContext("2d")
         c.reset()
-        var w = width, h = height, cx = w * 0.5
+        var w = width, h = height, cx = w*0.5
 
+        // Precision engineering grid.
         c.strokeStyle = Theme.grid
         c.lineWidth = 1
-        for (var x = 26; x < w; x += 26) {
-            c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke()
-        }
-        for (var y = 26; y < h; y += 26) {
-            c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke()
-        }
+        c.globalAlpha = .72
+        for (var x=22; x<w; x+=22) { c.beginPath(); c.moveTo(x,0); c.lineTo(x,h); c.stroke() }
+        for (var y=22; y<h; y+=22) { c.beginPath(); c.moveTo(0,y); c.lineTo(w,y); c.stroke() }
+        c.globalAlpha = 1
 
         c.save()
-        c.strokeStyle = "#41515D"
-        c.globalAlpha = .55
-        c.setLineDash([4, 6])
-        c.beginPath(); c.moveTo(cx, h * .05); c.lineTo(cx, h * .94); c.stroke()
-        c.beginPath(); c.moveTo(w * .08, h * .48); c.lineTo(w * .92, h * .48); c.stroke()
+        c.strokeStyle = Theme.silver
+        c.globalAlpha = .26
+        c.setLineDash([5,7])
+        c.beginPath(); c.moveTo(cx,h*.025); c.lineTo(cx,h*.965); c.stroke()
+        c.beginPath(); c.moveTo(w*.035,h*.49); c.lineTo(w*.965,h*.49); c.stroke()
         c.setLineDash([])
         c.restore()
 
-        // Generic technical cutaway silhouette for training visualization.
-        c.fillStyle = "#15212A"
+        // Generic high-performance aircraft planform; technical visualization only.
+        var outline = [
+            [0.50,.035],[.535,.16],[.55,.27],[.60,.34],[.905,.475],[.90,.525],
+            [.64,.55],[.60,.62],[.585,.79],[.705,.895],[.675,.92],[.56,.88],
+            [.535,.955],[.50,.978],[.465,.955],[.44,.88],[.325,.92],[.295,.895],
+            [.415,.79],[.40,.62],[.36,.55],[.10,.525],[.095,.475],[.40,.34],[.45,.27],[.465,.16]
+        ]
+
+        c.fillStyle = "#17232C"
         c.strokeStyle = Theme.accent
-        c.lineWidth = 1.8
-        c.beginPath()
-        c.moveTo(cx, h * .05)
-        c.lineTo(w * .555, h * .29)
-        c.lineTo(w * .615, h * .36)
-        c.lineTo(w * .90, h * .50)
-        c.lineTo(w * .655, h * .54)
-        c.lineTo(w * .59, h * .61)
-        c.lineTo(w * .57, h * .80)
-        c.lineTo(w * .70, h * .90)
-        c.lineTo(w * .56, h * .875)
-        c.lineTo(cx, h * .955)
-        c.lineTo(w * .44, h * .875)
-        c.lineTo(w * .30, h * .90)
-        c.lineTo(w * .43, h * .80)
-        c.lineTo(w * .41, h * .61)
-        c.lineTo(w * .345, h * .54)
-        c.lineTo(w * .10, h * .50)
-        c.lineTo(w * .385, h * .36)
-        c.lineTo(w * .445, h * .29)
+        c.lineWidth = 1.7
+        c.beginPath(); c.moveTo(w*outline[0][0],h*outline[0][1])
+        for (var p=1;p<outline.length;++p) c.lineTo(w*outline[p][0],h*outline[p][1])
         c.closePath(); c.fill(); c.stroke()
 
-        // Structural ribs / cutaway lines.
-        c.strokeStyle = "#6A88A0"
-        c.globalAlpha = .35
-        c.lineWidth = 1
-        var ribs = [.22,.30,.38,.46,.54,.62,.70,.78]
-        for (var i = 0; i < ribs.length; ++i) {
-            var yy = h * ribs[i]
-            c.beginPath(); c.moveTo(w*.39, yy); c.lineTo(w*.61, yy); c.stroke()
-        }
-        c.beginPath(); c.moveTo(cx,h*.08); c.lineTo(cx,h*.90); c.stroke()
-        c.beginPath(); c.moveTo(w*.18,h*.49); c.lineTo(w*.82,h*.49); c.stroke()
-        c.beginPath(); c.moveTo(w*.30,h*.42); c.lineTo(w*.70,h*.42); c.stroke()
+        // Secondary metallic outline.
+        c.strokeStyle = Theme.silver
+        c.globalAlpha = .42
+        c.lineWidth = .8
+        c.beginPath(); c.moveTo(cx,h*.07); c.lineTo(w*.52,h*.29); c.lineTo(w*.57,h*.38); c.lineTo(w*.82,h*.49); c.lineTo(w*.59,h*.53); c.lineTo(w*.55,h*.61); c.lineTo(w*.54,h*.84); c.lineTo(cx,h*.93); c.stroke()
+        c.beginPath(); c.moveTo(cx,h*.07); c.lineTo(w*.48,h*.29); c.lineTo(w*.43,h*.38); c.lineTo(w*.18,h*.49); c.lineTo(w*.41,h*.53); c.lineTo(w*.45,h*.61); c.lineTo(w*.46,h*.84); c.lineTo(cx,h*.93); c.stroke()
         c.globalAlpha = 1
 
-        var zones = [
-            {x:cx, y:h*.23, color:stateColorAt(1)},
-            {x:w*.38, y:h*.48, color:stateColorAt(2)},
-            {x:w*.62, y:h*.48, color:stateColorAt(0)},
-            {x:cx, y:h*.61, color:stateColorAt(3)},
-            {x:cx, y:h*.79, color:stateColorAt(4)}
+        // Structural stations and wing ribs.
+        c.strokeStyle = "#53636E"
+        c.lineWidth = .8
+        c.globalAlpha = .5
+        var fuselageStations=[.18,.25,.32,.40,.49,.57,.66,.75,.84]
+        for(var s=0;s<fuselageStations.length;++s){
+            var yy=h*fuselageStations[s]
+            var half=(s<2? w*.035 : (s<6?w*.055:w*.045))
+            c.beginPath(); c.moveTo(cx-half,yy); c.lineTo(cx+half,yy); c.stroke()
+        }
+        var wingYs=[.405,.445,.485,.525]
+        for(var wy=0;wy<wingYs.length;++wy){
+            var yv=h*wingYs[wy]
+            c.beginPath(); c.moveTo(w*.20,yv); c.lineTo(w*.80,yv); c.stroke()
+        }
+        c.globalAlpha=1
+
+        // Dual avionics buses A/B.
+        c.strokeStyle = Theme.accent
+        c.lineWidth = 1.15
+        c.globalAlpha=.9
+        c.beginPath(); c.moveTo(cx-8,h*.17); c.lineTo(cx-8,h*.82); c.stroke()
+        c.beginPath(); c.moveTo(cx+8,h*.17); c.lineTo(cx+8,h*.82); c.stroke()
+        c.beginPath(); c.moveTo(w*.31,h*.49); c.lineTo(w*.69,h*.49); c.stroke()
+        c.beginPath(); c.moveTo(w*.42,h*.61); c.lineTo(w*.58,h*.61); c.stroke()
+
+        // Branch routing to avionics zones.
+        var nodes=[
+            {x:cx,y:h*.22,c:stateColorAt(1),label:"COM"},
+            {x:w*.36,y:h*.49,c:stateColorAt(2),label:"SENS"},
+            {x:w*.64,y:h*.49,c:stateColorAt(0),label:"PWR"},
+            {x:cx,y:h*.62,c:stateColorAt(3),label:"HYD"},
+            {x:cx,y:h*.79,c:stateColorAt(4),label:"FUEL"}
         ]
-        for (var z = 0; z < zones.length; ++z) {
-            c.fillStyle = zones[z].color
-            c.beginPath(); c.arc(zones[z].x,zones[z].y,5,0,Math.PI*2); c.fill()
-            c.strokeStyle = "#D9D7D4"; c.globalAlpha=.55
-            c.beginPath(); c.arc(zones[z].x,zones[z].y,10,0,Math.PI*2); c.stroke(); c.globalAlpha=1
+        for(var n=0;n<nodes.length;++n){
+            var nd=nodes[n]
+            c.strokeStyle=Theme.accent; c.globalAlpha=.45; c.lineWidth=.8
+            c.beginPath(); c.moveTo(cx,nd.y); c.lineTo(nd.x,nd.y); c.stroke(); c.globalAlpha=1
+            c.fillStyle=Theme.panel2; c.strokeStyle=nd.c; c.lineWidth=1
+            c.beginPath(); c.arc(nd.x,nd.y,9,0,Math.PI*2); c.fill(); c.stroke()
+            c.fillStyle=nd.c; c.beginPath(); c.arc(nd.x,nd.y,3.2,0,Math.PI*2); c.fill()
+            c.fillStyle=Theme.silver; c.font="7px Consolas"; c.textAlign="center"; c.fillText(nd.label,nd.x,nd.y+20)
         }
 
-        // Data bus and branch routing.
-        c.strokeStyle = Theme.accent
-        c.lineWidth = 1.1
-        c.beginPath(); c.moveTo(cx,h*.20); c.lineTo(cx,h*.82); c.stroke()
-        c.beginPath(); c.moveTo(w*.38,h*.48); c.lineTo(w*.62,h*.48); c.stroke()
-        c.beginPath(); c.moveTo(w*.43,h*.61); c.lineTo(w*.57,h*.61); c.stroke()
-
-        c.fillStyle = Theme.panel2
-        c.strokeStyle = Theme.border
-        var bw = Math.min(190,w*.38), bh = 42, bx = cx-bw/2, by = h*.43
+        // Central bus controller / data fusion node.
+        var bw=Math.min(178,w*.34), bh=44, bx=cx-bw/2, by=h*.425
+        c.fillStyle=Theme.panel2; c.strokeStyle=Theme.border; c.lineWidth=1
         c.fillRect(bx,by,bw,bh); c.strokeRect(bx,by,bw,bh)
-        c.fillStyle = Theme.platinum
-        c.textAlign = "center"; c.font = "bold 10px Consolas"
-        c.fillText("PLATFORM DATA BUS",cx,by+16)
-        c.fillStyle = Theme.accent; c.font = "8px Consolas"
-        c.fillText((subsystemRows ? subsystemRows.length : 0)+" SUBSYSTEMS / SYNTHETIC",cx,by+31)
+        c.fillStyle=Theme.platinum; c.textAlign="center"; c.font="bold 9px Consolas"
+        c.fillText("AVIONICS DATA CORE",cx,by+16)
+        c.fillStyle=Theme.accent; c.font="7px Consolas"
+        c.fillText("BUS A/B  •  "+(subsystemRows?subsystemRows.length:0)+" SUBSYSTEMS",cx,by+31)
+
+        // Corner reference marks.
+        c.strokeStyle=Theme.silver; c.globalAlpha=.42; c.lineWidth=1
+        var m=16
+        c.beginPath(); c.moveTo(4,m); c.lineTo(4,4); c.lineTo(m,4); c.stroke()
+        c.beginPath(); c.moveTo(w-m,4); c.lineTo(w-4,4); c.lineTo(w-4,m); c.stroke()
+        c.beginPath(); c.moveTo(4,h-m); c.lineTo(4,h-4); c.lineTo(m,h-4); c.stroke()
+        c.beginPath(); c.moveTo(w-m,h-4); c.lineTo(w-4,h-4); c.lineTo(w-4,h-m); c.stroke()
+        c.globalAlpha=1
     }
 }

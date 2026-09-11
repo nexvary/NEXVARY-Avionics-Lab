@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
+import "DiagnosticCodeCatalog.js" as DxCodes
 
 Item {
     id: page
@@ -12,16 +13,7 @@ Item {
     property string systemFilter: "ALL"
     property int lastScanTick: -1
 
-    property var codeCatalog: [
-        {"code":"NXD-PWR-101","system":"POWER","severity":"WARNING","title":"Bus Voltage Below Training Envelope","meaning":"The simulated main electrical bus is below the configured nominal training range.","cause":"Synthetic power-transient scenario, injected low-power preset, or invalid bus-voltage channel.","isolation":"Confirm bus_voltage_v validity; compare current value with recent trend; correlate with power subsystem health and event timeline.","recovery":"Clear the training fault or return the scenario to nominal, then verify stable bus voltage and nominal power-subsystem state.","sensor":"bus_voltage_v"},
-        {"code":"NXD-CMP-201","system":"COMPUTE","severity":"WARNING","title":"Compute Thermal Excursion","meaning":"The simulated compute temperature is above its configured training threshold.","cause":"Synthetic thermal-rise scenario, compute-hot preset, or abnormal temperature-channel trend.","isolation":"Review cpu_temp_c quality and slope; compare with compute Digital Twin state and recent warnings.","recovery":"Remove the synthetic thermal condition and verify temperature trend returns toward the nominal envelope.","sensor":"cpu_temp_c"},
-        {"code":"NXD-FLT-301","system":"FLIGHT SENSORS","severity":"FAULT","title":"Attitude Channel Unavailable","meaning":"One or more simulated attitude channels are invalid or unavailable for the current frame.","cause":"Sensor-dropout scenario, injected IMU dropout, or invalid telemetry sample.","isolation":"Check imu_pitch_deg and imu_roll_deg validity; inspect missing/invalid counters; correlate with flight-sensor twin state.","recovery":"Restore valid synthetic IMU samples and verify both attitude channels return to nominal quality.","sensor":"imu_pitch_deg"},
-        {"code":"NXD-HYD-401","system":"HYDRAULICS","severity":"WARNING","title":"Hydraulic Pressure Degraded","meaning":"The simulated hydraulic pressure has moved outside the preferred training band or quality has degraded.","cause":"Scenario-driven degradation, invalid pressure sample, or synthetic subsystem fault.","isolation":"Inspect hydraulic_pressure_pct latest value, quality, delta and subsystem health before clearing the finding.","recovery":"Return the channel to a stable nominal value and verify the hydraulic Digital Twin state is NOMINAL.","sensor":"hydraulic_pressure_pct"},
-        {"code":"NXD-FUL-501","system":"FUEL","severity":"WARNING","title":"Fuel Quantity Channel Mismatch","meaning":"The simulated fuel channel is inconsistent with the expected training-state progression.","cause":"Injected synthetic offset, discontinuity in recorded frames, or abnormal trend.","isolation":"Compare fuel_level_pct with previous frames, delta and recorder continuity; confirm channel quality is valid.","recovery":"Restore a continuous nominal synthetic fuel signal and verify the mismatch no longer appears.","sensor":"fuel_level_pct"},
-        {"code":"NXD-DAT-601","system":"DATA","severity":"FAULT","title":"Telemetry Sequence Integrity Fault","meaning":"The recorded training session contains a missing, invalid or non-monotonic telemetry condition.","cause":"Corrupted synthetic session, missing frame, invalid sample, or sequence/time-order failure.","isolation":"Run verification, inspect recorder/session evidence, then identify the first invalid or missing frame/channel.","recovery":"Use a valid session or regenerate the synthetic run, then pass sequence and timestamp verification gates.","sensor":""},
-        {"code":"NXD-NAV-701","system":"NAVIGATION","severity":"WARNING","title":"Navigation Sensor Disagreement","meaning":"Simulated navigation-related channels disagree beyond the configured training tolerance.","cause":"Synthetic sensor offset, dropout, or inconsistent replay frame.","isolation":"Correlate altitude/attitude channels and quality metrics with the event timeline and current scenario.","recovery":"Restore coherent synthetic channels and confirm the related Digital Twin subsystem returns to NOMINAL.","sensor":"altitude_m"},
-        {"code":"NXD-REC-801","system":"RECORDER","severity":"FAULT","title":"Recorder Continuity Failure","meaning":"The training recorder cannot provide a continuous evidence chain for the selected run.","cause":"Empty recording, frame discontinuity, invalid timestamp order, or corrupted archive.","isolation":"Check recorded frame count, timeline monotonicity and verification evidence before using replay results.","recovery":"Create a fresh valid recording and confirm verification gates pass before analysis.","sensor":""}
-    ]
+    property var codeCatalog: DxCodes.catalog()
 
     function severityColor(s) {
         if (s === "FAULT") return Theme.red
@@ -54,7 +46,8 @@ Item {
         for (var i=0; i<codeCatalog.length; ++i) {
             var c = codeCatalog[i]
             var systemOk = systemFilter === "ALL" || c.system === systemFilter
-            var queryOk = q.length === 0 || c.code.toLowerCase().indexOf(q) >= 0 || c.title.toLowerCase().indexOf(q) >= 0 || c.system.toLowerCase().indexOf(q) >= 0
+            var haystack = (c.code + " " + c.system + " " + c.title + " " + c.meaning + " " + c.cause + " " + c.sensor).toLowerCase()
+            var queryOk = q.length === 0 || haystack.indexOf(q) >= 0
             if (systemOk && queryOk) out.push(c)
         }
         return out
@@ -110,7 +103,7 @@ Item {
                             font.letterSpacing: .6
                         }
                         Text {
-                            text: cockpit.rtl ? "أكواد NEXVARY تدريبية وليست أكواد مصنع أو اعتماد صلاحية طيران" : "NEXVARY TRAINING CODES — NOT OEM OR AIRWORTHINESS CODES"
+                            text: cockpit.rtl ? "48 كود NEXVARY تدريبيًا عبر 12 منظومة — ليست أكواد مصنع أو اعتماد صلاحية طيران" : "48 NEXVARY TRAINING CODES ACROSS 12 SYSTEMS — NOT OEM OR AIRWORTHINESS CODES"
                             color: Theme.muted
                             font.pixelSize: 7
                         }
@@ -132,9 +125,9 @@ Item {
                 }
             }
 
+            StatusCard { Layout.preferredWidth: 170; Layout.fillHeight: true; title: "CODE LIBRARY"; value: String(page.codeCatalog.length); subtitle: "12 SYSTEMS"; iconText: "DB"; accent: Theme.accent }
             StatusCard { Layout.preferredWidth: 170; Layout.fillHeight: true; title: "LIVE FINDINGS"; value: String(page.liveFindingCount()); subtitle: "CURRENT RUN"; iconText: "DX"; accent: page.liveFindingCount() > 0 ? Theme.amber : Theme.accent }
             StatusCard { Layout.preferredWidth: 170; Layout.fillHeight: true; title: "INVALID CHANNELS"; value: String(page.invalidSensorCount()); subtitle: "TELEMETRY"; iconText: "CH"; accent: page.invalidSensorCount() > 0 ? Theme.red : Theme.accent }
-            StatusCard { Layout.preferredWidth: 170; Layout.fillHeight: true; title: "TWIN ISSUES"; value: String(page.degradedTwinCount()); subtitle: "SYSTEM MODEL"; iconText: "DT"; accent: page.degradedTwinCount() > 0 ? Theme.amber : Theme.accent }
         }
 
         RowLayout {
@@ -209,7 +202,7 @@ Item {
             }
 
             Rectangle {
-                Layout.preferredWidth: 505
+                Layout.preferredWidth: 545
                 Layout.fillHeight: true
                 color: Theme.panel
                 border.color: Theme.border
@@ -221,7 +214,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "مكتبة أكواد الأعطال" : "FAULT-CODE LIBRARY"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: page.filteredCatalog().length + " CODES"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                        Text { text: page.filteredCatalog().length + " / " + page.codeCatalog.length + " CODES"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
                     }
                     RowLayout {
                         Layout.fillWidth: true
@@ -229,7 +222,7 @@ Item {
                         TextField {
                             id: searchField
                             Layout.fillWidth: true
-                            placeholderText: cockpit.rtl ? "بحث بالكود أو النظام أو الوصف" : "Search code, system or description"
+                            placeholderText: cockpit.rtl ? "بحث بالكود أو النظام أو الوصف أو السبب" : "Search code, system, description or cause"
                             color: Theme.platinum
                             font.pixelSize: 8
                             onTextChanged: { page.codeQuery = text; page.selectedCode = 0 }
@@ -237,8 +230,8 @@ Item {
                         }
                         ComboBox {
                             id: filterBox
-                            Layout.preferredWidth: 145
-                            model: ["ALL","POWER","COMPUTE","FLIGHT SENSORS","HYDRAULICS","FUEL","DATA","NAVIGATION","RECORDER"]
+                            Layout.preferredWidth: 165
+                            model: DxCodes.systems()
                             onActivated: { page.systemFilter = currentText; page.selectedCode = 0 }
                             contentItem: Text { text: filterBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.family: "Consolas"; font.pixelSize: 7 }
                             background: Rectangle { color: Theme.panel2; border.color: Theme.border; radius: Theme.radius }
@@ -248,8 +241,8 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 24
-                        Text { text: "CODE"; color: Theme.muted; Layout.preferredWidth: 100; font.pixelSize: 7 }
-                        Text { text: "SYSTEM"; color: Theme.muted; Layout.preferredWidth: 105; font.pixelSize: 7 }
+                        Text { text: "CODE"; color: Theme.muted; Layout.preferredWidth: 105; font.pixelSize: 7 }
+                        Text { text: "SYSTEM"; color: Theme.muted; Layout.preferredWidth: 112; font.pixelSize: 7 }
                         Text { text: "DESCRIPTION"; color: Theme.muted; Layout.fillWidth: true; font.pixelSize: 7 }
                         Text { text: "LEVEL"; color: Theme.muted; Layout.preferredWidth: 66; horizontalAlignment: Text.AlignRight; font.pixelSize: 7 }
                     }
@@ -273,8 +266,8 @@ Item {
                                 anchors.fill: parent
                                 anchors.margins: 6
                                 spacing: 6
-                                Text { text: modelData.code; color: Theme.platinum; Layout.preferredWidth: 100; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                                Text { text: modelData.system; color: Theme.silver; Layout.preferredWidth: 105; font.family: "Consolas"; font.pixelSize: 7; elide: Text.ElideRight }
+                                Text { text: modelData.code; color: Theme.platinum; Layout.preferredWidth: 105; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                                Text { text: modelData.system; color: Theme.silver; Layout.preferredWidth: 112; font.family: "Consolas"; font.pixelSize: 7; elide: Text.ElideRight }
                                 Text { text: modelData.title; color: Theme.platinum; Layout.fillWidth: true; font.pixelSize: 8; elide: Text.ElideRight }
                                 Text { text: modelData.severity; color: page.severityColor(modelData.severity); Layout.preferredWidth: 66; horizontalAlignment: Text.AlignRight; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
                             }

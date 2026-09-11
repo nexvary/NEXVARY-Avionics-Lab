@@ -1,5 +1,6 @@
 #include "app/ConsoleCockpit.hpp"
 #include "core/EventLog.hpp"
+#include "release/BuildIdentity.hpp"
 #include "sim/ScenarioEngine.hpp"
 #include <iomanip>
 #include <ostream>
@@ -8,7 +9,8 @@ namespace nexvary::avionics {
 
 void ConsoleCockpit::render(std::ostream& out, const LabSnapshot& s) {
     out << "\n============================================================\n";
-    out << " NEXVARY AVIONICS LAB | TRAINING COCKPIT | STAGE 250 CORE\n";
+    out << " NEXVARY AVIONICS LAB | TRAINING COCKPIT | v"
+        << build::BuildIdentity::version << " | STAGE " << build::BuildIdentity::stage << "\n";
     out << "============================================================\n";
     out << " SCENARIO: " << ScenarioEngine::toString(s.scenario)
         << "   TICK: " << s.tick

@@ -20,7 +20,9 @@ public:
  explicit AvionicsLab(ScenarioKind scenario=ScenarioKind::Nominal);
  LabSnapshot step(std::chrono::milliseconds delta=std::chrono::milliseconds{100});
  void reset();void setScenario(ScenarioKind scenario);
- [[nodiscard]] bool applyTrainingFault(std::string_view presetId);void clearTrainingFaults();
+ [[nodiscard]] bool applyTrainingFault(std::string_view presetId);
+ [[nodiscard]] bool applyTrainingFault(std::string_view platformId,std::string_view presetId);
+ void clearTrainingFaults();
  [[nodiscard]] std::vector<FaultSpec> activeTrainingFaults() const;
  [[nodiscard]] LabSnapshot snapshot() const;[[nodiscard]] const TelemetryRecorder& recorder() const noexcept;[[nodiscard]] const EventLog& eventLog() const noexcept;
  [[nodiscard]] std::string_view providerId() const noexcept;

@@ -10,6 +10,7 @@ option(NEXVARY_WARNINGS_AS_ERRORS "Treat project warnings as errors" OFF)
 add_library(avionics_core
  src/core/EventLog.cpp src/core/SensorBus.cpp src/core/SystemHealth.cpp src/core/Watchdog.cpp src/core/AlertManager.cpp src/core/TelemetryRecorder.cpp src/core/TelemetryArchive.cpp src/core/TelemetryTrend.cpp
  src/telemetry/TelemetryDictionary.cpp src/plugin/PluginRegistry.cpp src/campaign/CampaignRunner.cpp src/timeline/UnifiedTimeline.cpp src/verify/SessionVerifier.cpp src/instruments/InstrumentCatalog.cpp src/release/ReleaseManifest.cpp
+ src/diagnostics/DiagnosticEngine.cpp src/diagnostics/DiagnosticReport.cpp
  src/sim/SimulationClock.cpp src/sim/FaultInjector.cpp src/sim/ScenarioEngine.cpp src/sim/TrainingFaultCatalog.cpp src/sim/NativeSyntheticProvider.cpp
  src/app/AvionicsLab.cpp src/app/ConsoleCockpit.cpp src/hmi/CockpitViewModel.cpp src/hmi/UiLocale.cpp src/io/SessionArchive.cpp src/report/LabReport.cpp src/config/RunProfile.cpp src/twin/DigitalTwin.cpp)
 target_include_directories(avionics_core PUBLIC src)
@@ -34,7 +35,7 @@ target_link_libraries(nexvary_avionics_lab PRIVATE avionics_core CLI11::CLI11)
 add_executable(nexvary_release_manifest src/release/manifest_main.cpp)
 target_link_libraries(nexvary_release_manifest PRIVATE avionics_core)
 enable_testing()
-foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity provider dictionary plugin_registry campaign timeline verifier instrument_catalog release_manifest)
+foreach(test_name IN ITEMS core simulation alerts hmi locale archive session report profile trends digital_twin fault_console release_identity provider dictionary plugin_registry campaign timeline verifier instrument_catalog release_manifest diagnostics)
  add_executable(${test_name}_tests tests/test_${test_name}.cpp)
  target_link_libraries(${test_name}_tests PRIVATE avionics_core)
  add_test(NAME ${test_name}_tests COMMAND ${test_name}_tests)

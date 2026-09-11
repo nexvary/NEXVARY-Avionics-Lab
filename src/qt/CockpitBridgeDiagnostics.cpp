@@ -1,94 +1,14 @@
 #include "qt/CockpitBridge.hpp"
 #include "diagnostics/DiagnosticEngine.hpp"
 #include "diagnostics/DiagnosticReport.hpp"
+#include "diagnostics/PlatformDiagnosticRules.hpp"
 #include "sim/ScenarioEngine.hpp"
 #include <QVariantMap>
 #include <cmath>
-
 namespace nexvary::avionics {
-
-QVariantList CockpitBridge::diagnosticFindings() const { return diagnosticFindings_; }
-QVariantList CockpitBridge::diagnosticRecommendations() const { return diagnosticRecommendations_; }
-QVariantList CockpitBridge::diagnosticHistoryRows() const { return diagnosticHistoryRows_; }
-
-int CockpitBridge::diagnosticHealthScore() const noexcept {
-    return static_cast<int>(std::lround(diagnosticSummary_.healthScore));
-}
-int CockpitBridge::diagnosticFindingCount() const noexcept { return static_cast<int>(diagnosticSummary_.findings.size()); }
-int CockpitBridge::diagnosticFaultCount() const noexcept { return static_cast<int>(diagnosticSummary_.faultCount); }
-int CockpitBridge::diagnosticWarningCount() const noexcept { return static_cast<int>(diagnosticSummary_.warningCount); }
-int CockpitBridge::diagnosticRecurrentCount() const noexcept { return static_cast<int>(diagnosticHistory_.recurrentCount()); }
-qulonglong CockpitBridge::diagnosticScanTick() const noexcept { return static_cast<qulonglong>(diagnosticSummary_.generatedTick); }
-QString CockpitBridge::diagnosticFingerprint() const { return QString::fromStdString(diagnosticSummary_.fingerprint); }
-
-void CockpitBridge::runDiagnosticScan() {
-    diagnosticSummary_ = DiagnosticEngine::analyze(
-        ScenarioEngine::toString(snapshot_.scenario),
-        snapshot_.tick,
-        snapshot_.sensors,
-        snapshot_.issues,
-        lab_.recorder(),
-        lab_.eventLog());
-    diagnosticHistory_.ingest(diagnosticSummary_);
-    rebuildDiagnosticRows();
-    emit dataChanged();
-}
-
-void CockpitBridge::clearDiagnosticHistory() {
-    diagnosticHistory_.clear();
-    diagnosticHistoryRows_.clear();
-    emit dataChanged();
-}
-
-QString CockpitBridge::diagnosticReportJson() const {
-    return QString::fromStdString(DiagnosticReport::toJson(diagnosticSummary_));
-}
-
-QString CockpitBridge::diagnosticReportMarkdown() const {
-    return QString::fromStdString(DiagnosticReport::toMarkdown(diagnosticSummary_));
-}
-
-void CockpitBridge::rebuildDiagnosticRows() {
-    diagnosticFindings_.clear();
-    for (const auto& finding : diagnosticSummary_.findings) {
-        QVariantMap row;
-        row["id"] = QString::fromStdString(finding.code);
-        row["code"] = QString::fromStdString(finding.code);
-        row["system"] = QString::fromStdString(finding.system);
-        row["category"] = QString::fromStdString(finding.category);
-        row["severity"] = QString::fromLatin1(diagnosticSeverityName(finding.severity));
-        row["title"] = QString::fromStdString(finding.title);
-        row["probableCause"] = QString::fromStdString(finding.probableCause);
-        row["isolation"] = QString::fromStdString(finding.isolation);
-        row["recovery"] = QString::fromStdString(finding.recovery);
-        row["confidence"] = finding.confidence;
-        row["confidencePercent"] = static_cast<int>(std::lround(finding.confidence * 100.0));
-        row["priority"] = finding.priority;
-        row["occurrences"] = static_cast<qulonglong>(finding.occurrences);
-        row["evidenceCount"] = static_cast<qulonglong>(finding.evidence.size());
-        if (!finding.evidence.empty()) {
-            row["evidenceSource"] = QString::fromStdString(finding.evidence.front().source);
-            row["evidenceKey"] = QString::fromStdString(finding.evidence.front().key);
-            row["evidenceObservation"] = QString::fromStdString(finding.evidence.front().observation);
-            row["evidenceExpected"] = QString::fromStdString(finding.evidence.front().expected);
-        }
-        diagnosticFindings_.push_back(row);
-    }
-
-    diagnosticRecommendations_.clear();
-    for (const auto& recommendation : diagnosticSummary_.recommendations)
-        diagnosticRecommendations_.push_back(QString::fromStdString(recommendation));
-
-    diagnosticHistoryRows_.clear();
-    for (const auto& history : diagnosticHistory_.rows()) {
-        QVariantMap row;
-        row["code"] = QString::fromStdString(history.code);
-        row["firstTick"] = static_cast<qulonglong>(history.firstTick);
-        row["lastTick"] = static_cast<qulonglong>(history.lastTick);
-        row["scansSeen"] = static_cast<qulonglong>(history.scansSeen);
-        row["active"] = history.active;
-        diagnosticHistoryRows_.push_back(row);
-    }
-}
-
+QVariantList CockpitBridge::diagnosticFindings()const{return diagnosticFindings_;}QVariantList CockpitBridge::diagnosticRecommendations()const{return diagnosticRecommendations_;}QVariantList CockpitBridge::diagnosticHistoryRows()const{return diagnosticHistoryRows_;}
+int CockpitBridge::diagnosticHealthScore()const noexcept{return static_cast<int>(std::lround(diagnosticSummary_.healthScore));}int CockpitBridge::diagnosticFindingCount()const noexcept{return static_cast<int>(diagnosticSummary_.findings.size());}int CockpitBridge::diagnosticFaultCount()const noexcept{return static_cast<int>(diagnosticSummary_.faultCount);}int CockpitBridge::diagnosticWarningCount()const noexcept{return static_cast<int>(diagnosticSummary_.warningCount);}int CockpitBridge::diagnosticRecurrentCount()const noexcept{return static_cast<int>(diagnosticHistory_.recurrentCount());}qulonglong CockpitBridge::diagnosticScanTick()const noexcept{return static_cast<qulonglong>(diagnosticSummary_.generatedTick);}QString CockpitBridge::diagnosticFingerprint()const{return QString::fromStdString(diagnosticSummary_.fingerprint);}
+void CockpitBridge::runDiagnosticScan(){diagnosticSummary_=DiagnosticEngine::analyze(ScenarioEngine::toString(snapshot_.scenario),snapshot_.tick,snapshot_.sensors,snapshot_.issues,lab_.recorder(),lab_.eventLog());PlatformDiagnosticRules::augment(activePlatformId_,snapshot_.tick,snapshot_.sensors,diagnosticSummary_);diagnosticHistory_.ingest(diagnosticSummary_);rebuildDiagnosticRows();emit dataChanged();}
+void CockpitBridge::clearDiagnosticHistory(){diagnosticHistory_.clear();diagnosticHistoryRows_.clear();emit dataChanged();}QString CockpitBridge::diagnosticReportJson()const{return QString::fromStdString(DiagnosticReport::toJson(diagnosticSummary_));}QString CockpitBridge::diagnosticReportMarkdown()const{return QString::fromStdString(DiagnosticReport::toMarkdown(diagnosticSummary_));}
+void CockpitBridge::rebuildDiagnosticRows(){diagnosticFindings_.clear();for(const auto& f:diagnosticSummary_.findings){QVariantMap r;r["id"]=QString::fromStdString(f.code);r["code"]=QString::fromStdString(f.code);r["system"]=QString::fromStdString(f.system);r["category"]=QString::fromStdString(f.category);r["severity"]=QString::fromLatin1(diagnosticSeverityName(f.severity));r["title"]=QString::fromStdString(f.title);r["probableCause"]=QString::fromStdString(f.probableCause);r["isolation"]=QString::fromStdString(f.isolation);r["recovery"]=QString::fromStdString(f.recovery);r["confidence"]=f.confidence;r["confidencePercent"]=static_cast<int>(std::lround(f.confidence*100));r["priority"]=f.priority;r["occurrences"]=static_cast<qulonglong>(f.occurrences);r["evidenceCount"]=static_cast<qulonglong>(f.evidence.size());if(!f.evidence.empty()){r["evidenceSource"]=QString::fromStdString(f.evidence.front().source);r["evidenceKey"]=QString::fromStdString(f.evidence.front().key);r["evidenceObservation"]=QString::fromStdString(f.evidence.front().observation);r["evidenceExpected"]=QString::fromStdString(f.evidence.front().expected);}diagnosticFindings_.push_back(r);}diagnosticRecommendations_.clear();for(const auto& x:diagnosticSummary_.recommendations)diagnosticRecommendations_.push_back(QString::fromStdString(x));diagnosticHistoryRows_.clear();for(const auto& h:diagnosticHistory_.rows()){QVariantMap r;r["code"]=QString::fromStdString(h.code);r["firstTick"]=static_cast<qulonglong>(h.firstTick);r["lastTick"]=static_cast<qulonglong>(h.lastTick);r["scansSeen"]=static_cast<qulonglong>(h.scansSeen);r["active"]=h.active;diagnosticHistoryRows_.push_back(r);}}
 } // namespace nexvary::avionics

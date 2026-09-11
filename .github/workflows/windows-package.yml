@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['qml/**','src/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml','scripts/verify_manifest.py','scripts/verify_diagnostics.py']
+    paths: ['qml/**','src/**','tests/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml','scripts/verify_manifest.py','scripts/verify_diagnostics.py']
 jobs:
   package-windows:
     runs-on: windows-latest

@@ -56,34 +56,13 @@ ApplicationWindow {
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
-                        Text {
-                            text: "NEXVARY"
-                            color: Theme.platinum
-                            font.pixelSize: 18
-                            font.bold: true
-                            font.letterSpacing: 2.5
-                        }
-                        Text {
-                            text: "AVIONICS LAB"
-                            color: Theme.silver
-                            font.pixelSize: 8
-                            font.letterSpacing: 1.8
-                        }
+                        Text { text: "NEXVARY"; color: Theme.platinum; font.pixelSize: 18; font.bold: true; font.letterSpacing: 2.5 }
+                        Text { text: "AVIONICS LAB"; color: Theme.silver; font.pixelSize: 8; font.letterSpacing: 1.8 }
                     }
                 }
 
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-
-                Text {
-                    text: "OPERATIONS"
-                    color: Theme.muted
-                    font.pixelSize: 8
-                    font.bold: true
-                    font.letterSpacing: 1.4
-                    leftPadding: 4
-                    topPadding: 5
-                    bottomPadding: 3
-                }
+                Text { text: "OPERATIONS"; color: Theme.muted; font.pixelSize: 8; font.bold: true; font.letterSpacing: 1.4; leftPadding: 4; topPadding: 5; bottomPadding: 3 }
 
                 Repeater {
                     model: [
@@ -110,7 +89,6 @@ ApplicationWindow {
                 }
 
                 Item { Layout.fillHeight: true }
-
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 92
@@ -121,34 +99,11 @@ ApplicationWindow {
                         anchors.fill: parent
                         anchors.margins: 10
                         spacing: 2
-                        Text {
-                            text: "TRAINING / VERIFICATION"
-                            color: Theme.accent
-                            font.bold: true
-                            font.pixelSize: 9
-                            font.letterSpacing: 0.7
-                            Layout.fillWidth: true
-                        }
-                        Text {
-                            text: "SECURE  •  OFFLINE"
-                            color: Theme.silver
-                            font.family: "Consolas"
-                            font.pixelSize: 8
-                            Layout.fillWidth: true
-                        }
+                        Text { text: "TRAINING / VERIFICATION"; color: Theme.accent; font.bold: true; font.pixelSize: 9; font.letterSpacing: 0.7; Layout.fillWidth: true }
+                        Text { text: "SECURE  •  OFFLINE"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8; Layout.fillWidth: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text {
-                            text: "NO LIVE AIRCRAFT I/O"
-                            color: Theme.muted
-                            font.pixelSize: 7
-                            Layout.fillWidth: true
-                        }
-                        Text {
-                            text: "SYNTHETIC DATA ONLY"
-                            color: Theme.muted
-                            font.pixelSize: 7
-                            Layout.fillWidth: true
-                        }
+                        Text { text: "NO LIVE AIRCRAFT I/O"; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
+                        Text { text: "SYNTHETIC DATA ONLY"; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
                     }
                 }
             }
@@ -167,7 +122,6 @@ ApplicationWindow {
                 color: Theme.panel
                 border.color: Theme.border
                 border.width: 1
-
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 16
@@ -175,71 +129,37 @@ ApplicationWindow {
                     anchors.topMargin: 10
                     anchors.bottomMargin: 10
                     spacing: 12
-
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text {
-                            text: cockpit.text("app_title")
-                            color: Theme.platinum
-                            font.pixelSize: 21
-                            font.bold: true
-                            font.letterSpacing: 0.5
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                            Layout.fillWidth: true
-                        }
-                        Text {
-                            text: cockpit.text("training") + "  /  " + cockpit.scenario
-                            color: Theme.accent
-                            font.pixelSize: 9
-                            font.bold: true
-                            font.letterSpacing: 0.7
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                            Layout.fillWidth: true
-                        }
+                        Text { text: cockpit.text("app_title"); color: Theme.platinum; font.pixelSize: 21; font.bold: true; font.letterSpacing: 0.5; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true }
+                        Text { text: cockpit.text("training") + "  /  " + cockpit.scenario; color: Theme.accent; font.pixelSize: 9; font.bold: true; font.letterSpacing: 0.7; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true }
                     }
-
                     RowLayout {
                         spacing: 5
                         MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
                         MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
                         MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
                     }
-
                     Rectangle { width: 1; Layout.fillHeight: true; color: Theme.borderSoft }
-
                     ColumnLayout {
                         spacing: 0
                         Text { text: "MODE"; color: Theme.muted; font.pixelSize: 7; font.letterSpacing: 0.6 }
                         Text { text: root.workMode; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
                     }
-
                     ComboBox {
                         id: scenarioBox
                         model: cockpit.scenarios
                         Layout.preferredWidth: 155
-                        contentItem: Text {
-                            text: scenarioBox.displayText
-                            color: Theme.platinum
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            font.pixelSize: 9
-                            font.family: "Consolas"
-                        }
-                        background: Rectangle {
-                            color: Theme.panel2
-                            radius: Theme.radius
-                            border.color: Theme.border
-                        }
+                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; font.family: "Consolas" }
+                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
                         onActivated: cockpit.setScenario(currentText)
                     }
-
                     ColumnLayout {
                         spacing: 0
                         Text { text: "TICK " + cockpit.tick; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                        Text { text: "BUILD 3.0.0  •  STAGE 1700"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                        Text { text: "BUILD 3.2.0  •  STAGE 1720"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
                     }
-
                     Rectangle {
                         Layout.preferredWidth: 190
                         Layout.preferredHeight: 44
@@ -249,47 +169,18 @@ ApplicationWindow {
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 8
-                            Rectangle {
-                                width: 8; height: 8; radius: 4
-                                color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber
-                            }
+                            Rectangle { width: 8; height: 8; radius: 4; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber }
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text {
-                                    text: cockpit.activeAlertCount === 0 ? "SYSTEMS NOMINAL" : "ATTENTION REQUIRED"
-                                    color: cockpit.activeAlertCount === 0 ? Theme.platinum : Theme.amber
-                                    font.family: "Consolas"
-                                    font.pixelSize: 9
-                                    font.bold: true
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-                                Text {
-                                    text: "ALERTS " + cockpit.activeAlertCount
-                                    color: Theme.muted
-                                    font.family: "Consolas"
-                                    font.pixelSize: 7
-                                }
+                                Text { text: cockpit.activeAlertCount === 0 ? "SYSTEMS NOMINAL" : "ATTENTION REQUIRED"; color: cockpit.activeAlertCount === 0 ? Theme.platinum : Theme.amber; font.family: "Consolas"; font.pixelSize: 9; font.bold: true; elide: Text.ElideRight; Layout.fillWidth: true }
+                                Text { text: "ALERTS " + cockpit.activeAlertCount; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
                             }
                         }
                     }
-
-                    MinisterialButton {
-                        text: cockpit.text("language")
-                        implicitWidth: 82
-                        onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar")
-                    }
+                    MinisterialButton { text: cockpit.text("language"); implicitWidth: 82; onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar") }
                 }
-
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    height: 2
-                    color: Theme.accent
-                    opacity: 0.55
-                }
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 2; color: Theme.accent; opacity: 0.55 }
             }
 
             StackLayout {

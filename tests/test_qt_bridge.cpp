@@ -39,6 +39,12 @@ int main() {
         assert(!row.value("values").toList().isEmpty());
     }
 
+    bridge.runDiagnosticScan();
+    assert(bridge.diagnosticHealthScore() >= 90);
+    assert(!bridge.diagnosticFingerprint().isEmpty());
+    assert(bridge.diagnosticReportJson().contains(QStringLiteral("nexvary-avionics-diagnostic/v1")));
+    assert(bridge.diagnosticReportMarkdown().contains(QStringLiteral("TRAINING / SIMULATION ONLY")));
+
     bridge.setReplayMode(true);
     assert(bridge.replayMode());
     assert(bridge.replayPaused());
@@ -64,6 +70,11 @@ int main() {
     auto flightTwin = findRow(bridge.twinRows(), QStringLiteral("flight_sensors"));
     assert(flightTwin.value("state").toString() == QStringLiteral("FAULT"));
     assert(bridge.twinFaultCount() > 0);
+    bridge.runDiagnosticScan();
+    assert(bridge.diagnosticFindingCount() > 0);
+    assert(bridge.diagnosticFaultCount() > 0);
+    assert(!bridge.diagnosticFindings().isEmpty());
+    assert(!bridge.diagnosticHistoryRows().isEmpty());
 
     bridge.setScenario(QStringLiteral("nominal"));
     bridge.applyTrainingFault(QStringLiteral("low-power-bus"));
@@ -73,6 +84,8 @@ int main() {
     assert(powerTwin.value("state").toString() == QStringLiteral("DEGRADED"));
     auto preset = findRow(bridge.presentationFaultPresets(), QStringLiteral("low-power-bus"));
     assert(preset.value("active").toBool());
+    bridge.runDiagnosticScan();
+    assert(bridge.diagnosticFindingCount() > 0);
 
     bridge.clearTrainingFaults();
     assert(bridge.activeTrainingFaultCount() == 0);
@@ -86,6 +99,9 @@ int main() {
     assert(flightTwin.value("state").toString() == QStringLiteral("FAULT"));
     bridge.resetLab();
     assert(bridge.activeTrainingFaultCount() == 0);
+
+    bridge.clearDiagnosticHistory();
+    assert(bridge.diagnosticHistoryRows().isEmpty());
 
     bridge.setLanguage(QStringLiteral("ar"));
     assert(bridge.rtl());

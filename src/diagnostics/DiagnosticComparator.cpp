@@ -1,5 +1,6 @@
 #include "diagnostics/DiagnosticComparator.hpp"
 #include <algorithm>
+#include <iterator>
 #include <set>
 
 namespace nexvary::avionics {

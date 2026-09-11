@@ -1,5 +1,5 @@
 #define MyAppName "NEXVARY Avionics Lab"
-#define MyAppVersion "3.0.0"
+#define MyAppVersion "3.2.0"
 #define MyAppPublisher "NEXVARY Inc"
 #define MyAppExeName "nexvary_avionics_hmi.exe"
 [Setup]

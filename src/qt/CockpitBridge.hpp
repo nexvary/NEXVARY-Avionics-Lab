@@ -1,5 +1,7 @@
 #pragma once
 #include "app/AvionicsLab.hpp"
+#include "diagnostics/DiagnosticHistory.hpp"
+#include "diagnostics/DiagnosticTypes.hpp"
 #include "hmi/CockpitViewModel.hpp"
 #include "hmi/UiLocale.hpp"
 #include <QObject>
@@ -19,6 +21,9 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList presentationFaultPresets READ presentationFaultPresets NOTIFY dataChanged)
     Q_PROPERTY(QVariantList activeFaultRows READ activeFaultRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList performanceSeries READ performanceSeries NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList diagnosticFindings READ diagnosticFindings NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList diagnosticRecommendations READ diagnosticRecommendations NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList diagnosticHistoryRows READ diagnosticHistoryRows NOTIFY dataChanged)
     Q_PROPERTY(QStringList annunciators READ annunciators NOTIFY dataChanged)
     Q_PROPERTY(QString scenario READ scenario NOTIFY dataChanged)
     Q_PROPERTY(qulonglong tick READ tick NOTIFY dataChanged)
@@ -32,6 +37,13 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int twinDegradedCount READ twinDegradedCount NOTIFY dataChanged)
     Q_PROPERTY(int twinFaultCount READ twinFaultCount NOTIFY dataChanged)
     Q_PROPERTY(int twinUnknownCount READ twinUnknownCount NOTIFY dataChanged)
+    Q_PROPERTY(int diagnosticHealthScore READ diagnosticHealthScore NOTIFY dataChanged)
+    Q_PROPERTY(int diagnosticFindingCount READ diagnosticFindingCount NOTIFY dataChanged)
+    Q_PROPERTY(int diagnosticFaultCount READ diagnosticFaultCount NOTIFY dataChanged)
+    Q_PROPERTY(int diagnosticWarningCount READ diagnosticWarningCount NOTIFY dataChanged)
+    Q_PROPERTY(int diagnosticRecurrentCount READ diagnosticRecurrentCount NOTIFY dataChanged)
+    Q_PROPERTY(qulonglong diagnosticScanTick READ diagnosticScanTick NOTIFY dataChanged)
+    Q_PROPERTY(QString diagnosticFingerprint READ diagnosticFingerprint NOTIFY dataChanged)
     Q_PROPERTY(bool replayMode READ replayMode NOTIFY dataChanged)
     Q_PROPERTY(bool replayPaused READ replayPaused NOTIFY dataChanged)
     Q_PROPERTY(int replayIndex READ replayIndex NOTIFY dataChanged)
@@ -53,6 +65,9 @@ public:
     QVariantList presentationFaultPresets() const;
     QVariantList activeFaultRows() const;
     QVariantList performanceSeries() const;
+    QVariantList diagnosticFindings() const;
+    QVariantList diagnosticRecommendations() const;
+    QVariantList diagnosticHistoryRows() const;
     QStringList annunciators() const;
     QString scenario() const;
     qulonglong tick() const noexcept;
@@ -66,6 +81,13 @@ public:
     int twinDegradedCount() const noexcept;
     int twinFaultCount() const noexcept;
     int twinUnknownCount() const noexcept;
+    int diagnosticHealthScore() const noexcept;
+    int diagnosticFindingCount() const noexcept;
+    int diagnosticFaultCount() const noexcept;
+    int diagnosticWarningCount() const noexcept;
+    int diagnosticRecurrentCount() const noexcept;
+    qulonglong diagnosticScanTick() const noexcept;
+    QString diagnosticFingerprint() const;
     bool replayMode() const noexcept;
     bool replayPaused() const noexcept;
     int replayIndex() const noexcept;
@@ -86,6 +108,10 @@ public:
     Q_INVOKABLE void setTrendWindow(int frames);
     Q_INVOKABLE void applyTrainingFault(const QString& presetId);
     Q_INVOKABLE void clearTrainingFaults();
+    Q_INVOKABLE void runDiagnosticScan();
+    Q_INVOKABLE void clearDiagnosticHistory();
+    Q_INVOKABLE QString diagnosticReportJson() const;
+    Q_INVOKABLE QString diagnosticReportMarkdown() const;
 
 signals:
     void dataChanged();
@@ -96,6 +122,7 @@ private:
     void showReplayFrame();
     void refreshTrends();
     void refreshTwin();
+    void rebuildDiagnosticRows();
 
     AvionicsLab lab_;
     CockpitViewModel viewModel_;
@@ -106,7 +133,12 @@ private:
     QVariantList eventRows_;
     QVariantList trendRows_;
     QVariantList twinRows_;
+    QVariantList diagnosticFindings_;
+    QVariantList diagnosticRecommendations_;
+    QVariantList diagnosticHistoryRows_;
     QStringList annunciators_;
+    DiagnosticSummary diagnosticSummary_;
+    DiagnosticHistory diagnosticHistory_;
     bool replayMode_{false};
     bool replayPaused_{false};
     int replayIndex_{0};

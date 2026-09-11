@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
+#include <utility>
 
 namespace nexvary::avionics {
 namespace {

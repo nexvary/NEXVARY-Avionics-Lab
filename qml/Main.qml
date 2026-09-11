@@ -95,6 +95,7 @@ ApplicationWindow {
                         {"text": cockpit.text("trends"), "icon": "trends"},
                         {"text": cockpit.text("digital_twin"), "icon": "twin"},
                         {"text": cockpit.text("fault_lab"), "icon": "fault"},
+                        {"text": cockpit.rtl ? "مركز التشخيص" : "Diagnostic Center", "icon": "diagnostic"},
                         {"text": cockpit.rtl ? "مركز التحقق" : "Verification Center", "icon": "verify"}
                     ]
                     delegate: SideNavButton {
@@ -303,6 +304,7 @@ ApplicationWindow {
                 TrendsPage {}
                 DigitalTwinPage {}
                 FaultLabPage {}
+                DiagnosticCenter {}
                 VerificationCenter {}
             }
 

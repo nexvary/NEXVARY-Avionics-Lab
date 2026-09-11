@@ -1,5 +1,6 @@
 #include "app/AvionicsLab.hpp"
 #include "core/TelemetryTrend.hpp"
+#include "telemetry/TelemetryDictionary.hpp"
 #include <cassert>
 #include <chrono>
 #include <cmath>
@@ -12,7 +13,11 @@ int main() {
     for (int i = 0; i < 50; ++i) nominal.step(std::chrono::milliseconds{100});
 
     const auto recent = TelemetryTrendAnalyzer::analyze(nominal.recorder().frames(), 20);
-    assert(recent.size() == 8);
+    assert(recent.size() == TelemetryDictionary::channels().size());
+    assert(recent.size() == 15);
+    assert(recent.count("jet_engine_core_pct") == 1);
+    assert(recent.count("rotor_rpm_pct") == 1);
+    assert(recent.count("link_quality_pct") == 1);
     const auto bus = recent.at("bus_voltage_v");
     assert(bus.samples == 20);
     assert(bus.validSamples == 20);

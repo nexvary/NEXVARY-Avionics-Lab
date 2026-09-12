@@ -4,6 +4,7 @@
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
 #include "diagnostics/DiagnosticTypes.hpp"
+#include "force/ForceManagement.hpp"
 #include "hmi/CockpitViewModel.hpp"
 #include "hmi/UiLocale.hpp"
 #include <QObject>
@@ -44,6 +45,18 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int readinessMaintenanceOpenCount READ readinessMaintenanceOpenCount NOTIFY dataChanged)
     Q_PROPERTY(int readinessCrewPercent READ readinessCrewPercent NOTIFY dataChanged)
     Q_PROPERTY(QString readinessStatus READ readinessStatus NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceBases READ forceBases NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceSquadrons READ forceSquadrons NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceTrainingRows READ forceTrainingRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceMaintenancePlanRows READ forceMaintenancePlanRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceExecutiveReports READ forceExecutiveReports NOTIFY dataChanged)
+    Q_PROPERTY(int forceAvailableBaseCount READ forceAvailableBaseCount NOTIFY dataChanged)
+    Q_PROPERTY(int forceAssignedPlatformCount READ forceAssignedPlatformCount NOTIFY dataChanged)
+    Q_PROPERTY(int forceReadyPlatformCount READ forceReadyPlatformCount NOTIFY dataChanged)
+    Q_PROPERTY(int forceFleetReadinessPercent READ forceFleetReadinessPercent NOTIFY dataChanged)
+    Q_PROPERTY(int forceCrewReadinessPercent READ forceCrewReadinessPercent NOTIFY dataChanged)
+    Q_PROPERTY(int forceWeatherConstraintCount READ forceWeatherConstraintCount NOTIFY dataChanged)
+    Q_PROPERTY(int forceOpenMaintenanceCount READ forceOpenMaintenanceCount NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformId READ activePlatformId NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformName READ activePlatformName NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformCategory READ activePlatformCategory NOTIFY dataChanged)
@@ -109,6 +122,18 @@ public:
     int readinessMaintenanceOpenCount() const noexcept;
     int readinessCrewPercent() const noexcept;
     QString readinessStatus() const;
+    QVariantList forceBases() const;
+    QVariantList forceSquadrons() const;
+    QVariantList forceTrainingRows() const;
+    QVariantList forceMaintenancePlanRows() const;
+    QVariantList forceExecutiveReports() const;
+    int forceAvailableBaseCount() const noexcept;
+    int forceAssignedPlatformCount() const noexcept;
+    int forceReadyPlatformCount() const noexcept;
+    int forceFleetReadinessPercent() const noexcept;
+    int forceCrewReadinessPercent() const noexcept;
+    int forceWeatherConstraintCount() const noexcept;
+    int forceOpenMaintenanceCount() const noexcept;
     QString activePlatformId() const;
     QString activePlatformName() const;
     QString activePlatformCategory() const;
@@ -188,6 +213,7 @@ private:
     DiagnosticSummary diagnosticSummary_;
     DiagnosticHistory diagnosticHistory_;
     AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
+    ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
     QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};

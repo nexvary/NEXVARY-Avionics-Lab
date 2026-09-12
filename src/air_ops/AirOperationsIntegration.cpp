@@ -1,9 +1,11 @@
 #include "air_ops/AirOperationsIntegration.hpp"
 
+#include <cctype>
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 namespace nexvary::avionics {
 namespace {

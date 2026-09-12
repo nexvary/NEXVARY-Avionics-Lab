@@ -35,6 +35,36 @@ Item {
         {"en":"REPORT", "ar":"التقرير"}
     ]
 
+    property var executiveMessages: [
+        {
+            "number":"01",
+            "titleEn":"WHAT IS THE SYSTEM?",
+            "titleAr":"ما النظام؟",
+            "bodyEn":"A multi-platform digital engineering laboratory that simulates systems, sensors and data flows in a safe training and analysis environment.",
+            "bodyAr":"مختبر هندسي رقمي متعدد المنصات يحاكي الأنظمة والحساسات وتدفقات البيانات داخل بيئة آمنة للتدريب والتحليل.",
+            "noteEn":"UNDERSTAND THE PLATFORM BEFORE, DURING AND AFTER A FAULT.",
+            "noteAr":"فهم المنظومة قبل العطل وأثناءه وبعده."
+        },
+        {
+            "number":"02",
+            "titleEn":"WHY IS IT DIFFERENT?",
+            "titleAr":"لماذا يختلف؟",
+            "bodyEn":"It unifies digital twin, telemetry, fault injection, diagnostics, evidence, recovery and verification in one engineering workflow.",
+            "bodyAr":"يجمع التوأم الرقمي والقياسات وحقن الأعطال والتشخيص والأدلة والاستعادة والتحقق في دورة هندسية واحدة.",
+            "noteEn":"ONE WORKFLOW — NOT A COLLECTION OF DISCONNECTED TOOLS.",
+            "noteAr":"دورة واحدة بدل مجموعة أدوات منفصلة."
+        },
+        {
+            "number":"03",
+            "titleEn":"WHAT VALUE DOES IT DELIVER?",
+            "titleAr":"ما القيمة التي يقدمها؟",
+            "bodyEn":"It turns synthetic scenarios into traceable engineering decisions, shortening the path from anomaly to explanation, recovery and verification.",
+            "bodyAr":"يحوّل السيناريو الصناعي إلى قرار هندسي قابل للتتبع، ويختصر الطريق من اكتشاف الخلل إلى تفسيره واستعادته والتحقق منه.",
+            "noteEn":"FASTER TRAINING • CLEARER ANALYSIS • REVIEWABLE EVIDENCE.",
+            "noteAr":"تدريب أسرع • تحليل أوضح • أدلة قابلة للمراجعة."
+        }
+    ]
+
     Flickable {
         id: flick
         anchors.fill: parent
@@ -52,7 +82,7 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 108
+                Layout.preferredHeight: 132
                 color: Theme.panel
                 border.color: Theme.border
                 border.width: Theme.frameWidth
@@ -65,29 +95,30 @@ Item {
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 2
+                        spacing: 3
 
                         Text {
                             text: cockpit.rtl ? "عن النظام" : "ABOUT SYSTEM"
                             color: Theme.platinum
-                            font.pixelSize: 24
+                            font.pixelSize: 30
                             font.bold: true
                             Layout.fillWidth: true
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         }
                         Text {
-                            text: cockpit.rtl ? "الملخص التقني التنفيذي للعرض الوزاري" : "TECHNICAL EXECUTIVE BRIEF / MINISTERIAL PRESENTATION"
+                            text: cockpit.rtl ? "ثلاث إجابات تنفيذية للعرض الوزاري" : "THREE EXECUTIVE ANSWERS FOR MINISTERIAL PRESENTATION"
                             color: Theme.accent
-                            font.pixelSize: 9
+                            font.pixelSize: 12
                             font.bold: true
                             font.letterSpacing: 0.7
                             Layout.fillWidth: true
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         }
                         Text {
-                            text: cockpit.rtl ? "منصة هندسية متعددة المنصات للمحاكاة الصناعية والتوأم الرقمي والقياسات وتشخيص الأعطال والتحقق." : "A multi-platform engineering environment for synthetic simulation, digital-twin analysis, telemetry, diagnostics and verification."
+                            text: cockpit.rtl ? "ما النظام؟ لماذا يختلف؟ وما القيمة التي يقدمها؟" : "WHAT IS IT?  •  WHY IS IT DIFFERENT?  •  WHAT VALUE DOES IT DELIVER?"
                             color: Theme.silver
-                            font.pixelSize: 9
+                            font.pixelSize: 13
+                            font.bold: true
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -95,7 +126,7 @@ Item {
                     }
 
                     Rectangle {
-                        Layout.preferredWidth: 255
+                        Layout.preferredWidth: 285
                         Layout.fillHeight: true
                         color: Theme.panel2
                         border.color: Theme.border
@@ -106,11 +137,12 @@ Item {
                             anchors.fill: parent
                             anchors.margins: 10
                             spacing: 2
-                            Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
-                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
-                            Text { text: "v3.2.0 / STAGE 1720"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
+                            Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: "v3.2.0 / STAGE 1720"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
+                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: 8; font.bold: true }
                             Item { Layout.fillHeight: true }
-                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
                             Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: 7 }
                         }
                     }
@@ -119,7 +151,7 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 166
+                Layout.preferredHeight: 252
                 color: Theme.panel
                 border.color: Theme.border
                 border.width: Theme.frameWidth
@@ -127,55 +159,84 @@ Item {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.margins: 12
-                    spacing: 16
+                    anchors.margins: 10
+                    spacing: 8
 
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 5
-                        Text {
-                            text: cockpit.rtl ? "نظرة تقنية على النظام" : "SYSTEM OVERVIEW"
-                            color: Theme.platinum
-                            font.pixelSize: 13
-                            font.bold: true
+                    Repeater {
+                        model: page.executiveMessages
+                        delegate: Rectangle {
+                            required property int index
+                            required property var modelData
+                            property color cardAccent: index === 0 ? Theme.accent : (index === 1 ? Theme.green : Theme.amber)
+
                             Layout.fillWidth: true
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                        }
-                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text {
-                            text: cockpit.rtl ? "NEXVARY Avionics Lab ليس محاكي قيادة فقط، بل مختبر هندسي برمجي يربط سلوك المنظومات والحساسات وقنوات البيانات داخل بيئة رقمية آمنة. يبدأ من تشغيل سيناريو صناعي، ويسجل البيانات، ويكتشف الخلل، ويربط الأدلة، ويقترح الأسباب المحتملة، ويتابع العزل والاستعادة والتحقق ثم يحفظ الحالة في تقرير قابل للمراجعة." : "NEXVARY Avionics Lab is not only a flight-display simulator. It is an engineering software laboratory that correlates systems, sensors and data channels in a safe synthetic environment. A run can progress from simulation and telemetry capture through anomaly detection, evidence correlation, diagnostic ranking, isolation, recovery, verification and structured reporting."
-                            color: Theme.silver
-                            font.pixelSize: 9
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                        }
-                    }
+                            Layout.fillHeight: true
+                            color: Theme.panel2
+                            border.color: cardAccent
+                            border.width: Theme.frameWidth
+                            radius: Theme.radius
 
-                    Rectangle {
-                        Layout.preferredWidth: 330
-                        Layout.fillHeight: true
-                        color: Theme.panel2
-                        border.color: Theme.border
-                        border.width: Theme.frameWidth
-                        radius: Theme.radius
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 13
+                                spacing: 7
 
-                        ColumnLayout {
-                            anchors.fill: parent
-                            anchors.margins: 10
-                            spacing: 4
-                            Text { text: cockpit.rtl ? "القيمة الأساسية" : "CORE VALUE"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
-                            Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                            Text {
-                                text: cockpit.rtl ? "منصة واحدة تربط: المحاكاة ← القياسات ← الأعطال ← التشخيص ← الأدلة ← الاستعادة ← التحقق ← التقرير." : "ONE ENGINEERING FLOW: SIMULATION → TELEMETRY → FAULT → DIAGNOSIS → EVIDENCE → RECOVERY → VERIFICATION → REPORT."
-                                color: Theme.accent
-                                font.pixelSize: 9
-                                font.bold: true
-                                Layout.fillWidth: true
-                                wrapMode: Text.WordWrap
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 9
+                                    Text {
+                                        text: modelData.number
+                                        color: cardAccent
+                                        font.family: "Consolas"
+                                        font.pixelSize: 23
+                                        font.bold: true
+                                    }
+                                    Text {
+                                        text: cockpit.rtl ? modelData.titleAr : modelData.titleEn
+                                        color: Theme.platinum
+                                        font.pixelSize: 17
+                                        font.bold: true
+                                        Layout.fillWidth: true
+                                        wrapMode: Text.WordWrap
+                                        horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                                    }
+                                }
+
+                                Rectangle { Layout.fillWidth: true; height: 1; color: cardAccent; opacity: 0.85 }
+
+                                Text {
+                                    text: cockpit.rtl ? modelData.bodyAr : modelData.bodyEn
+                                    color: Theme.platinum
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    lineHeight: 1.12
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    wrapMode: Text.WordWrap
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                                }
+
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 38
+                                    color: Theme.panel3
+                                    border.color: Theme.borderSoft
+                                    border.width: Theme.frameWidth
+                                    radius: Theme.radius
+                                    Text {
+                                        anchors.fill: parent
+                                        anchors.margins: 7
+                                        text: cockpit.rtl ? modelData.noteAr : modelData.noteEn
+                                        color: cardAccent
+                                        font.pixelSize: 9
+                                        font.bold: true
+                                        wrapMode: Text.WordWrap
+                                        verticalAlignment: Text.AlignVCenter
+                                        horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                                    }
+                                }
                             }
-                            Item { Layout.fillHeight: true }
-                            Text { text: cockpit.rtl ? "الهدف: تدريب وتحليل وتحقق هندسي ببيانات صناعية." : "PURPOSE: TRAINING, ANALYSIS AND ENGINEERING VERIFICATION WITH SYNTHETIC DATA."; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         }
                     }
                 }
@@ -184,7 +245,7 @@ Item {
             Text {
                 text: cockpit.rtl ? "المميزات الرئيسية" : "KEY CAPABILITIES"
                 color: Theme.platinum
-                font.pixelSize: 12
+                font.pixelSize: 14
                 font.bold: true
                 Layout.fillWidth: true
                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft

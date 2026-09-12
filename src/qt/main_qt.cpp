@@ -14,9 +14,15 @@ int main(int argc, char* argv[]) {
     nexvary::avionics::CockpitBridge cockpit;
 
     const QStringList arguments = QCoreApplication::arguments();
+
     const int languageIndex = arguments.indexOf(QStringLiteral("--language"));
     if (languageIndex >= 0 && languageIndex + 1 < arguments.size()) {
         cockpit.setLanguage(arguments.at(languageIndex + 1));
+    }
+
+    const int platformIndex = arguments.indexOf(QStringLiteral("--platform"));
+    if (platformIndex >= 0 && platformIndex + 1 < arguments.size()) {
+        cockpit.setActivePlatform(arguments.at(platformIndex + 1));
     }
 
     const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));
@@ -34,7 +40,7 @@ int main(int argc, char* argv[]) {
     if (pageIndex >= 0 && pageIndex + 1 < arguments.size()) {
         bool ok = false;
         const int page = arguments.at(pageIndex + 1).toInt(&ok);
-        if (ok && page >= 0 && page <= 8) root->setProperty("selectedPage", page);
+        if (ok && page >= 0 && page <= 10) root->setProperty("selectedPage", page);
     }
 
     if (screenshotIndex >= 0) {

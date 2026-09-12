@@ -66,25 +66,33 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: ./build-qt/nexvary_avionics_hmi --smoke
-      - name: Capture Stage 1720 visual gate
+      - name: Capture Stage 1720 ministerial visual gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive.png --page 0
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-jet.png --page 0 --platform generic-jet
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-turboprop.png --page 0 --platform turboprop
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-helicopter.png --page 0 --platform helicopter
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-uav.png --page 0 --platform uav
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-engineering.png --page 5
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-platform-library.png --page 7
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-fault-lab.png --page 8
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-diagnostic.png --page 9
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-diagnostic-ar.png --page 9 --language ar
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-verification.png --page 10
-          test -s build-qt/stage1720-executive.png
+          test -s build-qt/stage1720-executive-jet.png
+          test -s build-qt/stage1720-executive-turboprop.png
+          test -s build-qt/stage1720-executive-helicopter.png
+          test -s build-qt/stage1720-executive-uav.png
           test -s build-qt/stage1720-engineering.png
           test -s build-qt/stage1720-platform-library.png
+          test -s build-qt/stage1720-fault-lab.png
           test -s build-qt/stage1720-diagnostic.png
           test -s build-qt/stage1720-diagnostic-ar.png
           test -s build-qt/stage1720-verification.png
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1720-visual-gate
+          name: nexvary-avionics-stage1720-ministerial-visual-gate
           path: build-qt/stage1720-*.png
           if-no-files-found: error

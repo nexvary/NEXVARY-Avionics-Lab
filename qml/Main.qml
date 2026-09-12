@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
 import "AirOperationsLocale.js" as AirOpsLocale
+import "AirReadinessLocale.js" as ReadyLocale
 
 ApplicationWindow {
     id: root
@@ -60,7 +61,7 @@ ApplicationWindow {
         if (selectedPage === 0) workMode = "EXECUTIVE"
         else if (selectedPage === 5) workMode = "ENGINEERING"
         else if (selectedPage === 9) workMode = "DIAGNOSTIC"
-        else if (selectedPage === 12) workMode = "BRIEF"
+        else if (selectedPage === 13) workMode = "BRIEF"
     }
 
     function setWorkMode(mode) {
@@ -68,7 +69,7 @@ ApplicationWindow {
         if (mode === "EXECUTIVE") navigateTo(0)
         else if (mode === "ENGINEERING") navigateTo(5)
         else if (mode === "DIAGNOSTIC") navigateTo(9)
-        else navigateTo(12)
+        else navigateTo(13)
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
@@ -121,6 +122,7 @@ ApplicationWindow {
                         {"text": cockpit.text("diagnostic_center"), "icon": "diagnostic"},
                         {"text": cockpit.text("verification_center"), "icon": "verify"},
                         {"text": AirOpsLocale.label(cockpit.language), "icon": "sensors"},
+                        {"text": ReadyLocale.label(cockpit.language), "icon": "health"},
                         {"text": cockpit.text("about_system"), "icon": "about"},
                         {"text": cockpit.text("about_us"), "icon": "about"}
                     ]
@@ -336,6 +338,7 @@ ApplicationWindow {
                 DiagnosticCenter {}
                 VerificationCenter {}
                 AirOperationsPage {}
+                AirReadinessPage {}
                 Item {
                     AboutSystem { anchors.fill: parent; anchors.bottomMargin: 86 }
                     TechnologyStackBanner {

@@ -70,6 +70,11 @@ jobs:
         run: cmake --build build-qt --config Release
       - name: Run tests with Qt configuration
         run: ctest --test-dir build-qt --output-on-failure
+      - name: Back navigation functional smoke test
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+        run: ./build-qt/nexvary_avionics_hmi --navigation-smoke --language ar
       - name: Headless QML smoke test - all locales
         env:
           QT_QPA_PLATFORM: offscreen

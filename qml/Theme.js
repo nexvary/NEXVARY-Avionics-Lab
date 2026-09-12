@@ -13,8 +13,12 @@ var panel = "#121B22"
 var panel2 = "#18232C"
 var panel3 = gunmetal
 var elevated = "#24313B"
-var border = "#52606B"
-var borderSoft = "#26333D"
+
+// Ministerial polish: visible 1 px metallic framing for primary panels,
+// with a restrained soft border for nested/internal elements.
+var border = metallicSilver
+var borderSoft = "#46515A"
+var frameWidth = 1
 var grid = "#1C2831"
 var text = platinum
 var muted = "#7E898F"

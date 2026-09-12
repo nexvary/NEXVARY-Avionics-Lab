@@ -4,6 +4,7 @@
 #include <QVariantMap>
 #include <algorithm>
 #include <array>
+#include <string_view>
 
 namespace nexvary::avionics {
 namespace {
@@ -25,6 +26,22 @@ constexpr std::array<ReadinessSeed, 4> kSeeds{{
     {"generic-uav", "NXL-U01", 89, "READY", 1, 3, 3, 26, "SIM-CHARLIE / 13:00"},
     {"generic-turboprop", "NXL-T01", 86, "READY", 1, 4, 4, 21, "SIM-DELTA / 15:30"}
 }};
+
+QVariantMap maintenanceRow(const QString& priority,
+                           const QString& platform,
+                           const QString& system,
+                           const QString& action,
+                           const QString& due,
+                           const QString& state) {
+    QVariantMap row;
+    row[QStringLiteral("priority")] = priority;
+    row[QStringLiteral("platform")] = platform;
+    row[QStringLiteral("system")] = system;
+    row[QStringLiteral("action")] = action;
+    row[QStringLiteral("due")] = due;
+    row[QStringLiteral("state")] = state;
+    return row;
+}
 }
 
 QVariantList CockpitBridge::readinessAssets() const {
@@ -32,18 +49,18 @@ QVariantList CockpitBridge::readinessAssets() const {
     for (const auto& seed : kSeeds) {
         QVariantMap row;
         const auto profile = AircraftPlatformCatalog::find(seed.id);
-        row["id"] = QString::fromUtf8(seed.id);
-        row["tail"] = QString::fromUtf8(seed.tail);
-        row["name"] = profile ? QString::fromStdString(profile->name) : QString::fromUtf8(seed.id);
-        row["category"] = profile ? QString::fromStdString(profile->category) : QStringLiteral("GENERIC");
-        row["readiness"] = seed.readiness;
-        row["state"] = QString::fromUtf8(seed.state);
-        row["maintenanceItems"] = seed.maintenanceItems;
-        row["crewReady"] = seed.crewReady;
-        row["crewRequired"] = seed.crewRequired;
-        row["hoursToInspection"] = seed.hoursToInspection;
-        row["trainingSlot"] = QString::fromUtf8(seed.trainingSlot);
-        row["active"] = activePlatformId_ == seed.id;
+        row[QStringLiteral("id")] = QString::fromUtf8(seed.id);
+        row[QStringLiteral("tail")] = QString::fromUtf8(seed.tail);
+        row[QStringLiteral("name")] = profile ? QString::fromStdString(profile->name) : QString::fromUtf8(seed.id);
+        row[QStringLiteral("category")] = profile ? QString::fromStdString(profile->category) : QStringLiteral("GENERIC");
+        row[QStringLiteral("readiness")] = seed.readiness;
+        row[QStringLiteral("state")] = QString::fromUtf8(seed.state);
+        row[QStringLiteral("maintenanceItems")] = seed.maintenanceItems;
+        row[QStringLiteral("crewReady")] = seed.crewReady;
+        row[QStringLiteral("crewRequired")] = seed.crewRequired;
+        row[QStringLiteral("hoursToInspection")] = seed.hoursToInspection;
+        row[QStringLiteral("trainingSlot")] = QString::fromUtf8(seed.trainingSlot);
+        row[QStringLiteral("active")] = activePlatformId_ == seed.id;
         rows.push_back(row);
     }
     return rows;
@@ -51,11 +68,11 @@ QVariantList CockpitBridge::readinessAssets() const {
 
 QVariantList CockpitBridge::readinessMaintenanceRows() const {
     return QVariantList{
-        QVariantMap{{"priority", "P2"}, {"platform", "NXL-H01"}, {"system", "ROTOR / DRIVE"}, {"action", "Inspect vibration trend before next training block"}, {"due", "14 h"}, {"state", "PLANNED"}},
-        QVariantMap{{"priority", "P2"}, {"platform", "NXL-H01"}, {"system", "HYDRAULICS"}, {"action", "Review synthetic pressure excursion evidence"}, {"due", "18 h"}, {"state", "REVIEW"}},
-        QVariantMap{{"priority", "P3"}, {"platform", "NXL-T01"}, {"system", "POWERPLANT"}, {"action", "Scheduled trend review and training inspection"}, {"due", "21 h"}, {"state", "PLANNED"}},
-        QVariantMap{{"priority", "P3"}, {"platform", "NXL-U01"}, {"system", "DATALINK"}, {"action", "Validate replay baseline against training profile"}, {"due", "26 h"}, {"state", "VERIFY"}},
-        QVariantMap{{"priority", "P3"}, {"platform", "NXL-J01"}, {"system", "AVIONICS"}, {"action", "Routine synthetic health review"}, {"due", "38 h"}, {"state", "PLANNED"}}
+        maintenanceRow(QStringLiteral("P2"), QStringLiteral("NXL-H01"), QStringLiteral("ROTOR / DRIVE"), QStringLiteral("Inspect vibration trend before next training block"), QStringLiteral("14 h"), QStringLiteral("PLANNED")),
+        maintenanceRow(QStringLiteral("P2"), QStringLiteral("NXL-H01"), QStringLiteral("HYDRAULICS"), QStringLiteral("Review synthetic pressure excursion evidence"), QStringLiteral("18 h"), QStringLiteral("REVIEW")),
+        maintenanceRow(QStringLiteral("P3"), QStringLiteral("NXL-T01"), QStringLiteral("POWERPLANT"), QStringLiteral("Scheduled trend review and training inspection"), QStringLiteral("21 h"), QStringLiteral("PLANNED")),
+        maintenanceRow(QStringLiteral("P3"), QStringLiteral("NXL-U01"), QStringLiteral("DATALINK"), QStringLiteral("Validate replay baseline against training profile"), QStringLiteral("26 h"), QStringLiteral("VERIFY")),
+        maintenanceRow(QStringLiteral("P3"), QStringLiteral("NXL-J01"), QStringLiteral("AVIONICS"), QStringLiteral("Routine synthetic health review"), QStringLiteral("38 h"), QStringLiteral("PLANNED"))
     };
 }
 
@@ -67,7 +84,7 @@ int CockpitBridge::readinessFleetPercent() const noexcept {
 
 int CockpitBridge::readinessReadyCount() const noexcept {
     return static_cast<int>(std::count_if(kSeeds.begin(), kSeeds.end(), [](const ReadinessSeed& seed) {
-        return QString::fromUtf8(seed.state) == QStringLiteral("READY");
+        return std::string_view(seed.state) == std::string_view("READY");
     }));
 }
 

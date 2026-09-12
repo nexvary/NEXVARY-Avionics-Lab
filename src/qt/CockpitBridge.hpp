@@ -37,6 +37,13 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int airOperationsIncidentCount READ airOperationsIncidentCount NOTIFY dataChanged)
     Q_PROPERTY(int airOperationsHighCount READ airOperationsHighCount NOTIFY dataChanged)
     Q_PROPERTY(qulonglong airOperationsObservationCount READ airOperationsObservationCount NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList readinessAssets READ readinessAssets NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList readinessMaintenanceRows READ readinessMaintenanceRows NOTIFY dataChanged)
+    Q_PROPERTY(int readinessFleetPercent READ readinessFleetPercent NOTIFY dataChanged)
+    Q_PROPERTY(int readinessReadyCount READ readinessReadyCount NOTIFY dataChanged)
+    Q_PROPERTY(int readinessMaintenanceOpenCount READ readinessMaintenanceOpenCount NOTIFY dataChanged)
+    Q_PROPERTY(int readinessCrewPercent READ readinessCrewPercent NOTIFY dataChanged)
+    Q_PROPERTY(QString readinessStatus READ readinessStatus NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformId READ activePlatformId NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformName READ activePlatformName NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformCategory READ activePlatformCategory NOTIFY dataChanged)
@@ -95,6 +102,13 @@ public:
     int airOperationsIncidentCount() const noexcept;
     int airOperationsHighCount() const noexcept;
     qulonglong airOperationsObservationCount() const noexcept;
+    QVariantList readinessAssets() const;
+    QVariantList readinessMaintenanceRows() const;
+    int readinessFleetPercent() const noexcept;
+    int readinessReadyCount() const noexcept;
+    int readinessMaintenanceOpenCount() const noexcept;
+    int readinessCrewPercent() const noexcept;
+    QString readinessStatus() const;
     QString activePlatformId() const;
     QString activePlatformName() const;
     QString activePlatformCategory() const;

@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlExpression>
 #include <QQuickWindow>
 #include <QTimer>
 
@@ -34,7 +35,6 @@ QIcon makeAvionicsIcon() {
     p.setBrush(Qt::NoBrush);
     p.drawRoundedRect(QRectF(12, 12, 104, 104), 13, 13);
 
-    // Aircraft + electronics mark: unmistakably avionics rather than a generic shield.
     QPolygonF aircraft;
     aircraft << QPointF(64, 19) << QPointF(71, 49) << QPointF(99, 64)
              << QPointF(73, 61) << QPointF(70, 91) << QPointF(82, 103)
@@ -116,6 +116,19 @@ int main(int argc, char* argv[]) {
         if (ok && value >= 800 && value <= 4320) requestedHeight = value;
     }
     window->resize(requestedWidth, requestedHeight);
+
+    if (arguments.contains(QStringLiteral("--navigation-smoke"))) {
+        auto* qmlContext = QQmlEngine::contextForObject(root);
+        if (!qmlContext) return 8;
+        QQmlExpression navigationTest(
+            qmlContext,
+            root,
+            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(9); var opened=(selectedPage===9 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
+        );
+        const QVariant result = navigationTest.evaluate();
+        if (navigationTest.hasError() || !result.toBool()) return 9;
+        return 0;
+    }
 
     if (screenshotIndex >= 0) {
         if (screenshotIndex + 1 >= arguments.size()) return 5;

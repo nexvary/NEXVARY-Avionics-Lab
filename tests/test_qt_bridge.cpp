@@ -29,6 +29,18 @@ int main() {
     assert(b.airOperationsTracks().size() == 3);
     assert(b.airOperationsIncidents().size() == 1);
 
+    assert(b.readinessAssets().size() == 4);
+    assert(b.readinessMaintenanceRows().size() == 5);
+    assert(b.readinessFleetPercent() == 87);
+    assert(b.readinessReadyCount() == 3);
+    assert(b.readinessMaintenanceOpenCount() == 5);
+    assert(b.readinessCrewPercent() == 93);
+    assert(b.readinessStatus() == "AMBER / MANAGED LIMITATIONS");
+    const auto uavReadiness = findRow(b.readinessAssets(), "generic-uav");
+    assert(!uavReadiness.isEmpty());
+    assert(uavReadiness.value("readiness").toInt() == 89);
+    assert(uavReadiness.value("state").toString() == "READY");
+
     for (int i = 0; i < 20; ++i) b.step();
     b.runDiagnosticScan();
     assert(b.diagnosticHealthScore() >= 90);
@@ -38,6 +50,7 @@ int main() {
     assert(b.faultPresets().size() == 6);
     assert(findRow(b.sensorRows(), "link_quality_pct").value("unit").toString() == "%");
     assert(findRow(b.twinRows(), "datalink").value("state").toString() == "NOMINAL");
+    assert(findRow(b.readinessAssets(), "generic-uav").value("active").toBool());
     b.applyTrainingFault("uav-link-degrade");
     b.runDiagnosticScan();
     assert(!findRow(b.diagnosticFindings(), "NXP-UAV-702").isEmpty());

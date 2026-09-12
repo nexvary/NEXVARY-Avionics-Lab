@@ -81,6 +81,8 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-diagnostic.png --page 9
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-diagnostic-ar.png --page 9 --language ar
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-verification.png --page 10
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-about.png --page 11
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-about-ar.png --page 11 --language ar
           test -s build-qt/stage1720-executive-jet.png
           test -s build-qt/stage1720-executive-turboprop.png
           test -s build-qt/stage1720-executive-helicopter.png
@@ -91,6 +93,8 @@ jobs:
           test -s build-qt/stage1720-diagnostic.png
           test -s build-qt/stage1720-diagnostic-ar.png
           test -s build-qt/stage1720-verification.png
+          test -s build-qt/stage1720-about.png
+          test -s build-qt/stage1720-about-ar.png
       - uses: actions/upload-artifact@v4
         with:
           name: nexvary-avionics-stage1720-ministerial-visual-gate

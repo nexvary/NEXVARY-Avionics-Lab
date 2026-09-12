@@ -20,13 +20,15 @@ ApplicationWindow {
         if (selectedPage === 0) workMode = "EXECUTIVE"
         else if (selectedPage === 5) workMode = "ENGINEERING"
         else if (selectedPage === 9) workMode = "DIAGNOSTIC"
+        else if (selectedPage === 11) workMode = "BRIEF"
     }
 
     function setWorkMode(mode) {
         workMode = mode
         if (mode === "EXECUTIVE") selectedPage = 0
         else if (mode === "ENGINEERING") selectedPage = 5
-        else selectedPage = 9
+        else if (mode === "DIAGNOSTIC") selectedPage = 9
+        else selectedPage = 11
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
@@ -39,8 +41,8 @@ ApplicationWindow {
             Layout.preferredWidth: 206
             Layout.fillHeight: true
             color: Theme.shell
-            border.color: Theme.borderSoft
-            border.width: 1
+            border.color: Theme.border
+            border.width: Theme.frameWidth
             LayoutMirroring.enabled: false
 
             ColumnLayout {
@@ -77,7 +79,8 @@ ApplicationWindow {
                         {"text": cockpit.rtl ? "مكتبة المنصات" : "Platform Library", "icon": "platform"},
                         {"text": cockpit.text("fault_lab"), "icon": "fault"},
                         {"text": cockpit.rtl ? "مركز التشخيص" : "Diagnostic Center", "icon": "diagnostic"},
-                        {"text": cockpit.rtl ? "مركز التحقق" : "Verification Center", "icon": "verify"}
+                        {"text": cockpit.rtl ? "مركز التحقق" : "Verification Center", "icon": "verify"},
+                        {"text": cockpit.rtl ? "عن النظام" : "About System", "icon": "about"}
                     ]
                     delegate: SideNavButton {
                         required property int index
@@ -97,6 +100,7 @@ ApplicationWindow {
                     Layout.preferredHeight: 112
                     color: Theme.panel
                     border.color: Theme.border
+                    border.width: Theme.frameWidth
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
@@ -130,8 +134,8 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 80
                 color: Theme.panel
-                border.color: Theme.borderSoft
-                border.width: 1
+                border.color: Theme.border
+                border.width: Theme.frameWidth
 
                 RowLayout {
                     anchors.fill: parent
@@ -139,7 +143,7 @@ ApplicationWindow {
                     anchors.rightMargin: 16
                     anchors.topMargin: 10
                     anchors.bottomMargin: 10
-                    spacing: 12
+                    spacing: 10
 
                     ColumnLayout {
                         Layout.fillWidth: true
@@ -167,9 +171,10 @@ ApplicationWindow {
 
                     RowLayout {
                         spacing: 4
-                        MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
-                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
-                        MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
+                        MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 64; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
+                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 64; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
+                        MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 64; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
+                        MinisterialButton { text: "BRIEF"; checkable: true; checked: root.workMode === "BRIEF"; implicitWidth: 68; accent: Theme.platinum; onClicked: root.setWorkMode("BRIEF") }
                     }
 
                     Rectangle { width: 1; Layout.fillHeight: true; color: Theme.borderSoft }
@@ -179,12 +184,18 @@ ApplicationWindow {
                         Layout.preferredHeight: 48
                         color: Theme.panel2
                         border.color: Theme.border
+                        border.width: Theme.frameWidth
                         radius: Theme.radius
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 7
                             Rectangle {
-                                width: 34; height: 34; color: Theme.panel3; border.color: Theme.accent; radius: Theme.radius
+                                width: 34
+                                height: 34
+                                color: Theme.panel3
+                                border.color: Theme.accent
+                                border.width: Theme.frameWidth
+                                radius: Theme.radius
                                 Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
                             }
                             ColumnLayout {
@@ -200,23 +211,24 @@ ApplicationWindow {
                     ComboBox {
                         id: scenarioBox
                         model: cockpit.scenarios
-                        Layout.preferredWidth: 142
+                        Layout.preferredWidth: 136
                         contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; font.family: "Consolas" }
-                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
+                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border; border.width: Theme.frameWidth }
                         onActivated: cockpit.setScenario(currentText)
                     }
 
                     ColumnLayout {
                         spacing: 0
                         Text { text: "TICK " + cockpit.tick; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
-                        Text { text: "BUILD 3.2.0 / UI-M1"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                        Text { text: "BUILD 3.2.0 / UI-M2"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
                     }
 
                     Rectangle {
-                        Layout.preferredWidth: 170
+                        Layout.preferredWidth: 158
                         Layout.preferredHeight: 44
                         color: Theme.panel2
                         border.color: cockpit.activeAlertCount === 0 ? Theme.border : Theme.amber
+                        border.width: Theme.frameWidth
                         radius: Theme.radius
                         RowLayout {
                             anchors.fill: parent
@@ -231,7 +243,7 @@ ApplicationWindow {
                         }
                     }
 
-                    MinisterialButton { text: cockpit.text("language"); implicitWidth: 72; onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar") }
+                    MinisterialButton { text: cockpit.text("language"); implicitWidth: 68; onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar") }
                 }
 
                 Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 1; color: Theme.accent; opacity: 0.75 }
@@ -252,13 +264,15 @@ ApplicationWindow {
                 FaultLabPage {}
                 DiagnosticCenter {}
                 VerificationCenter {}
+                AboutSystem {}
             }
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 25
                 color: Theme.shell
-                border.color: Theme.borderSoft
+                border.color: Theme.border
+                border.width: Theme.frameWidth
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 10

@@ -1,9 +1,85 @@
 #include "hmi/UiLocale.hpp"
+#include <unordered_map>
 
 namespace nexvary::avionics {
-UiLanguage UiLocale::fromCode(std::string_view code) noexcept { return code == "ar" ? UiLanguage::Arabic : UiLanguage::English; }
-bool UiLocale::isRtl(UiLanguage language) noexcept { return language == UiLanguage::Arabic; }
+namespace {
+using Dict = std::unordered_map<std::string_view, std::string_view>;
+
+const Dict& chrome(UiLanguage language) {
+    static const Dict tr{
+        {"app_title","NEXVARY AVİYONİK LABORATUVARI"},{"training","EĞİTİM / SİMÜLASYON"},{"mfd","KOMUTA PANELİ"},{"systems","SİSTEM SAĞLIĞI"},{"alerts","UYARILAR"},{"sensors","SENSÖRLER"},{"events","OLAY KAYDI"},{"replay","YENİDEN OYNATMA"},{"trends","EĞİLİMLER"},{"digital_twin","DİJİTAL İKİZ"},{"platform_library","PLATFORM KÜTÜPHANESİ"},{"fault_lab","ARIZA LABORATUVARI"},{"diagnostic_center","TANI MERKEZİ"},{"verification_center","DOĞRULAMA MERKEZİ"},{"about_system","SİSTEM HAKKINDA"},{"about_us","HAKKIMIZDA"},{"back","GERİ"},{"language","DİL"},{"contact","İLETİŞİM"},{"social_links","SOSYAL MEDYA"},{"programming_languages","PROGRAMLAMA DİLLERİ"},{"technology_stack","TEKNOLOJİ YIĞINI"},{"about_nexvary_intro","NEXVARY, güvenli mühendislik, eğitim, analiz ve doğrulanabilir dijital ikiz iş akışları için ileri teknoloji sistemleri geliştirir."},{"about_nexvary_mission","Amaç: karmaşık sistemleri güvenli, izlenebilir ve karar vermeye uygun bir mühendislik ortamında anlaşılır hale getirmek."},{"about_nexvary_safety","Bu laboratuvar çevrimdışı ve sentetik eğitim/verifikasyon içindir; canlı uçak kontrol yolu içermez."}},
+    es{
+        {"app_title","LABORATORIO DE AVIÓNICA NEXVARY"},{"training","ENTRENAMIENTO / SIMULACIÓN"},{"mfd","PANEL DE MANDO"},{"systems","SALUD DEL SISTEMA"},{"alerts","ALERTAS"},{"sensors","SENSORES"},{"events","REGISTRO DE EVENTOS"},{"replay","REPRODUCCIÓN"},{"trends","TENDENCIAS"},{"digital_twin","GEMELO DIGITAL"},{"platform_library","BIBLIOTECA DE PLATAFORMAS"},{"fault_lab","LABORATORIO DE FALLOS"},{"diagnostic_center","CENTRO DE DIAGNÓSTICO"},{"verification_center","CENTRO DE VERIFICACIÓN"},{"about_system","ACERCA DEL SISTEMA"},{"about_us","SOBRE NOSOTROS"},{"back","VOLVER"},{"language","IDIOMA"},{"contact","CONTACTO"},{"social_links","REDES SOCIALES"},{"programming_languages","LENGUAJES DE PROGRAMACIÓN"},{"technology_stack","TECNOLOGÍAS"},{"about_nexvary_intro","NEXVARY desarrolla sistemas tecnológicos avanzados para ingeniería segura, formación, análisis y flujos de gemelo digital verificables."},{"about_nexvary_mission","Objetivo: convertir sistemas complejos en un entorno de ingeniería seguro, trazable y útil para la toma de decisiones."},{"about_nexvary_safety","Este laboratorio es para entrenamiento y verificación sintéticos sin conexión; no incluye control de aeronaves reales."}},
+    de{
+        {"app_title","NEXVARY AVIONIKLABOR"},{"training","TRAINING / SIMULATION"},{"mfd","KOMMANDOZENTRALE"},{"systems","SYSTEMZUSTAND"},{"alerts","WARNUNGEN"},{"sensors","SENSOREN"},{"events","EREIGNISPROTOKOLL"},{"replay","WIEDERGABE"},{"trends","TRENDS"},{"digital_twin","DIGITALER ZWILLING"},{"platform_library","PLATTFORMBIBLIOTHEK"},{"fault_lab","FEHLERLABOR"},{"diagnostic_center","DIAGNOSEZENTRUM"},{"verification_center","VERIFIKATIONSZENTRUM"},{"about_system","ÜBER DAS SYSTEM"},{"about_us","ÜBER UNS"},{"back","ZURÜCK"},{"language","SPRACHE"},{"contact","KONTAKT"},{"social_links","SOZIALE MEDIEN"},{"programming_languages","PROGRAMMIERSPRACHEN"},{"technology_stack","TECHNOLOGIE-STACK"},{"about_nexvary_intro","NEXVARY entwickelt fortschrittliche Technologiesysteme für sichere Technik, Training, Analyse und überprüfbare Digital-Twin-Arbeitsabläufe."},{"about_nexvary_mission","Ziel: komplexe Systeme in einer sicheren, nachvollziehbaren und entscheidungsorientierten Engineering-Umgebung verständlich machen."},{"about_nexvary_safety","Dieses Labor ist für Offline-, synthetisches Training und Verifikation bestimmt und enthält keine Live-Flugzeugsteuerung."}},
+    it{
+        {"app_title","LABORATORIO AVIONICO NEXVARY"},{"training","ADDESTRAMENTO / SIMULAZIONE"},{"mfd","PANNELLO DI COMANDO"},{"systems","STATO SISTEMI"},{"alerts","AVVISI"},{"sensors","SENSORI"},{"events","REGISTRO EVENTI"},{"replay","RIPRODUZIONE"},{"trends","TENDENZE"},{"digital_twin","GEMELLO DIGITALE"},{"platform_library","LIBRERIA PIATTAFORME"},{"fault_lab","LABORATORIO GUASTI"},{"diagnostic_center","CENTRO DIAGNOSTICO"},{"verification_center","CENTRO DI VERIFICA"},{"about_system","INFORMAZIONI SUL SISTEMA"},{"about_us","CHI SIAMO"},{"back","INDIETRO"},{"language","LINGUA"},{"contact","CONTATTI"},{"social_links","SOCIAL MEDIA"},{"programming_languages","LINGUAGGI DI PROGRAMMAZIONE"},{"technology_stack","STACK TECNOLOGICO"},{"about_nexvary_intro","NEXVARY sviluppa sistemi tecnologici avanzati per ingegneria sicura, formazione, analisi e flussi digital-twin verificabili."},{"about_nexvary_mission","Obiettivo: rendere comprensibili i sistemi complessi in un ambiente ingegneristico sicuro, tracciabile e orientato alle decisioni."},{"about_nexvary_safety","Questo laboratorio è destinato a formazione e verifica sintetica offline; non include controllo di aeromobili reali."}},
+    fr{
+        {"app_title","LABORATOIRE AVIONIQUE NEXVARY"},{"training","FORMATION / SIMULATION"},{"mfd","TABLEAU DE COMMANDE"},{"systems","SANTÉ SYSTÈME"},{"alerts","ALERTES"},{"sensors","CAPTEURS"},{"events","JOURNAL DES ÉVÉNEMENTS"},{"replay","RELECTURE"},{"trends","TENDANCES"},{"digital_twin","JUMEAU NUMÉRIQUE"},{"platform_library","BIBLIOTHÈQUE DE PLATEFORMES"},{"fault_lab","LABORATOIRE DE PANNES"},{"diagnostic_center","CENTRE DE DIAGNOSTIC"},{"verification_center","CENTRE DE VÉRIFICATION"},{"about_system","À PROPOS DU SYSTÈME"},{"about_us","À PROPOS DE NOUS"},{"back","RETOUR"},{"language","LANGUE"},{"contact","CONTACT"},{"social_links","RÉSEAUX SOCIAUX"},{"programming_languages","LANGAGES DE PROGRAMMATION"},{"technology_stack","PILE TECHNOLOGIQUE"},{"about_nexvary_intro","NEXVARY développe des systèmes technologiques avancés pour l’ingénierie sûre, la formation, l’analyse et des flux de jumeau numérique vérifiables."},{"about_nexvary_mission","Objectif : rendre les systèmes complexes compréhensibles dans un environnement d’ingénierie sûr, traçable et orienté décision."},{"about_nexvary_safety","Ce laboratoire est destiné à la formation et à la vérification synthétiques hors ligne ; il ne comporte aucun contrôle d’aéronef réel."}},
+    ur{
+        {"app_title","NEXVARY ایویونکس لیب"},{"training","تربیت / سمولیشن"},{"mfd","کمانڈ ڈیش بورڈ"},{"systems","نظام کی صحت"},{"alerts","انتباہات"},{"sensors","سینسرز"},{"events","واقعات کا ریکارڈ"},{"replay","ری پلے"},{"trends","رجحانات"},{"digital_twin","ڈیجیٹل ٹوئن"},{"platform_library","پلیٹ فارم لائبریری"},{"fault_lab","فالٹ لیب"},{"diagnostic_center","تشخیصی مرکز"},{"verification_center","تصدیقی مرکز"},{"about_system","نظام کے بارے میں"},{"about_us","ہمارے بارے میں"},{"back","واپس"},{"language","زبان"},{"contact","رابطہ"},{"social_links","سوشل میڈیا"},{"programming_languages","پروگرامنگ زبانیں"},{"technology_stack","ٹیکنالوجی اسٹیک"},{"about_nexvary_intro","NEXVARY محفوظ انجینئرنگ، تربیت، تجزیہ اور قابلِ تصدیق ڈیجیٹل ٹوئن ورک فلو کے لیے جدید ٹیکنالوجی سسٹمز تیار کرتا ہے۔"},{"about_nexvary_mission","مقصد: پیچیدہ نظاموں کو ایک محفوظ، قابلِ سراغ اور فیصلہ سازی کے لیے موزوں انجینئرنگ ماحول میں قابلِ فہم بنانا۔"},{"about_nexvary_safety","یہ لیب آف لائن مصنوعی تربیت اور تصدیق کے لیے ہے؛ اس میں حقیقی طیارے کے کنٹرول کا راستہ موجود نہیں۔"}},
+    fa{
+        {"app_title","آزمایشگاه اویونیک NEXVARY"},{"training","آموزش / شبیه‌سازی"},{"mfd","داشبورد فرمان"},{"systems","سلامت سامانه"},{"alerts","هشدارها"},{"sensors","حسگرها"},{"events","گزارش رویدادها"},{"replay","بازپخش"},{"trends","روندها"},{"digital_twin","دوقلوی دیجیتال"},{"platform_library","کتابخانه پلتفرم‌ها"},{"fault_lab","آزمایشگاه خطا"},{"diagnostic_center","مرکز تشخیص"},{"verification_center","مرکز راستی‌آزمایی"},{"about_system","درباره سامانه"},{"about_us","درباره ما"},{"back","بازگشت"},{"language","زبان"},{"contact","تماس"},{"social_links","شبکه‌های اجتماعی"},{"programming_languages","زبان‌های برنامه‌نویسی"},{"technology_stack","پشته فناوری"},{"about_nexvary_intro","NEXVARY سامانه‌های فناوری پیشرفته برای مهندسی ایمن، آموزش، تحلیل و گردش‌کارهای دوقلوی دیجیتال قابل‌راستی‌آزمایی توسعه می‌دهد."},{"about_nexvary_mission","هدف: قابل‌فهم کردن سامانه‌های پیچیده در یک محیط مهندسی ایمن، قابل‌ردیابی و مناسب تصمیم‌گیری."},{"about_nexvary_safety","این آزمایشگاه برای آموزش و راستی‌آزمایی مصنوعی و آفلاین است و مسیر کنترل زنده هواگرد ندارد."}},
+    ru{
+        {"app_title","АВИОНИЧЕСКАЯ ЛАБОРАТОРИЯ NEXVARY"},{"training","ОБУЧЕНИЕ / СИМУЛЯЦИЯ"},{"mfd","ПАНЕЛЬ УПРАВЛЕНИЯ"},{"systems","СОСТОЯНИЕ СИСТЕМ"},{"alerts","ПРЕДУПРЕЖДЕНИЯ"},{"sensors","ДАТЧИКИ"},{"events","ЖУРНАЛ СОБЫТИЙ"},{"replay","ВОСПРОИЗВЕДЕНИЕ"},{"trends","ТРЕНДЫ"},{"digital_twin","ЦИФРОВОЙ ДВОЙНИК"},{"platform_library","БИБЛИОТЕКА ПЛАТФОРМ"},{"fault_lab","ЛАБОРАТОРИЯ ОТКАЗОВ"},{"diagnostic_center","ЦЕНТР ДИАГНОСТИКИ"},{"verification_center","ЦЕНТР ВЕРИФИКАЦИИ"},{"about_system","О СИСТЕМЕ"},{"about_us","О НАС"},{"back","НАЗАД"},{"language","ЯЗЫК"},{"contact","КОНТАКТЫ"},{"social_links","СОЦИАЛЬНЫЕ СЕТИ"},{"programming_languages","ЯЗЫКИ ПРОГРАММИРОВАНИЯ"},{"technology_stack","ТЕХНОЛОГИЧЕСКИЙ СТЕК"},{"about_nexvary_intro","NEXVARY разрабатывает передовые технологические системы для безопасной инженерии, обучения, анализа и проверяемых рабочих процессов цифрового двойника."},{"about_nexvary_mission","Цель: сделать сложные системы понятными в безопасной, прослеживаемой и ориентированной на решения инженерной среде."},{"about_nexvary_safety","Лаборатория предназначена для автономного синтетического обучения и верификации и не содержит канала управления реальным воздушным судном."}};
+    switch (language) {
+        case UiLanguage::Turkish: return tr;
+        case UiLanguage::Spanish: return es;
+        case UiLanguage::German: return de;
+        case UiLanguage::Italian: return it;
+        case UiLanguage::French: return fr;
+        case UiLanguage::Urdu: return ur;
+        case UiLanguage::Persian: return fa;
+        case UiLanguage::Russian: return ru;
+        default: { static const Dict empty; return empty; }
+    }
+}
+
+std::string localizedChrome(UiLanguage language, std::string_view key) {
+    const auto& dict = chrome(language);
+    const auto it = dict.find(key);
+    return it == dict.end() ? std::string{} : std::string(it->second);
+}
+} // namespace
+
+UiLanguage UiLocale::fromCode(std::string_view code) noexcept {
+    if (code == "ar") return UiLanguage::Arabic;
+    if (code == "tr") return UiLanguage::Turkish;
+    if (code == "es") return UiLanguage::Spanish;
+    if (code == "de") return UiLanguage::German;
+    if (code == "it") return UiLanguage::Italian;
+    if (code == "fr") return UiLanguage::French;
+    if (code == "ur") return UiLanguage::Urdu;
+    if (code == "fa") return UiLanguage::Persian;
+    if (code == "ru") return UiLanguage::Russian;
+    return UiLanguage::English;
+}
+
+std::string UiLocale::code(UiLanguage language) {
+    switch (language) {
+        case UiLanguage::Arabic: return "ar";
+        case UiLanguage::Turkish: return "tr";
+        case UiLanguage::Spanish: return "es";
+        case UiLanguage::German: return "de";
+        case UiLanguage::Italian: return "it";
+        case UiLanguage::French: return "fr";
+        case UiLanguage::Urdu: return "ur";
+        case UiLanguage::Persian: return "fa";
+        case UiLanguage::Russian: return "ru";
+        default: return "en";
+    }
+}
+
+bool UiLocale::isRtl(UiLanguage language) noexcept {
+    return language == UiLanguage::Arabic || language == UiLanguage::Urdu || language == UiLanguage::Persian;
+}
+
 std::string UiLocale::text(UiLanguage language, std::string_view key) {
+    if (language != UiLanguage::English && language != UiLanguage::Arabic) {
+        const auto translated = localizedChrome(language, key);
+        if (!translated.empty()) return translated;
+        language = UiLanguage::English; // Technical avionics terminology has a controlled English fallback.
+    }
     const bool ar = language == UiLanguage::Arabic;
     if (key == "app_title") return ar ? "مختبر NEXVARY لإلكترونيات الطيران" : "NEXVARY AVIONICS LAB";
     if (key == "training") return ar ? "تدريب ومحاكاة" : "TRAINING / SIMULATION";
@@ -15,7 +91,19 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "replay") return ar ? "مختبر الإعادة" : "REPLAY LAB";
     if (key == "trends") return ar ? "الاتجاهات" : "TRENDS";
     if (key == "digital_twin") return ar ? "التوأم الرقمي" : "DIGITAL TWIN";
+    if (key == "platform_library") return ar ? "مكتبة المنصات" : "PLATFORM LIBRARY";
     if (key == "fault_lab") return ar ? "مختبر الأعطال" : "FAULT LAB";
+    if (key == "diagnostic_center") return ar ? "مركز التشخيص" : "DIAGNOSTIC CENTER";
+    if (key == "verification_center") return ar ? "مركز التحقق" : "VERIFICATION CENTER";
+    if (key == "about_system") return ar ? "حول النظام" : "ABOUT SYSTEM";
+    if (key == "about_us") return ar ? "عنا" : "ABOUT US";
+    if (key == "contact") return ar ? "التواصل" : "CONTACT";
+    if (key == "social_links") return ar ? "روابط التواصل الاجتماعي" : "SOCIAL LINKS";
+    if (key == "programming_languages") return ar ? "لغات البرمجة المستخدمة" : "PROGRAMMING LANGUAGES";
+    if (key == "technology_stack") return ar ? "التقنيات المستخدمة" : "TECHNOLOGY STACK";
+    if (key == "about_nexvary_intro") return ar ? "تطوّر NEXVARY أنظمة تقنية متقدمة للهندسة الآمنة والتدريب والتحليل ومسارات التوأم الرقمي القابلة للتحقق." : "NEXVARY develops advanced technology systems for safe engineering, training, analysis and verifiable digital-twin workflows.";
+    if (key == "about_nexvary_mission") return ar ? "الهدف: تحويل الأنظمة المعقدة إلى بيئة هندسية مفهومة وآمنة وقابلة للتتبع وداعمة لاتخاذ القرار." : "Mission: make complex systems understandable inside a safe, traceable and decision-oriented engineering environment.";
+    if (key == "about_nexvary_safety") return ar ? "هذا المختبر مخصص للتدريب والتحقق الاصطناعي دون اتصال، ولا يحتوي مسار تحكم بطائرة حقيقية." : "This lab is for offline synthetic training and verification and contains no live-aircraft control path.";
     if (key == "system_readiness") return ar ? "جاهزية النظام" : "SYSTEM READINESS";
     if (key == "verification_status") return ar ? "حالة التحقق" : "VERIFICATION STATUS";
     if (key == "runtime_verification") return ar ? "تحقق لحظي من سلامة حالة المحاكاة" : "LIVE SIMULATION CONSISTENCY CHECK";
@@ -58,7 +146,7 @@ std::string UiLocale::text(UiLanguage language, std::string_view key) {
     if (key == "maximum") return ar ? "الأقصى" : "MAX";
     if (key == "scenario") return ar ? "السيناريو الحالي" : "CURRENT SCENARIO";
     if (key == "tick") return ar ? "النبضة" : "TICK";
-    if (key == "language") return ar ? "ENGLISH" : "العربية";
+    if (key == "language") return ar ? "اللغة" : "LANGUAGE";
     if (key == "systems_nominal") return ar ? "جميع الأنظمة تعمل بشكل طبيعي" : "ALL SYSTEMS NOMINAL";
     if (key == "replay_mode") return ar ? "وضع إعادة التسجيل" : "REPLAY MODE";
     if (key == "active_alerts") return ar ? "التنبيهات النشطة" : "ACTIVE ALERTS";

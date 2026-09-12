@@ -1,16 +1,71 @@
 #include "qt/CockpitBridge.hpp"
+#include <QColor>
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QImage>
+#include <QPainter>
+#include <QPixmap>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickWindow>
 #include <QTimer>
 
+namespace {
+QIcon makeAvionicsIcon() {
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter p(&pixmap);
+    p.setRenderHint(QPainter::Antialiasing, true);
+
+    const QColor navy("#0C1319");
+    const QColor gunmetal("#2E3945");
+    const QColor gold("#D6B15E");
+    const QColor blue("#6A88A0");
+    const QColor silver("#D9D7D4");
+    const QColor green("#6FA58D");
+
+    p.setPen(QPen(gold, 4));
+    p.setBrush(navy);
+    p.drawRoundedRect(QRectF(5, 5, 118, 118), 18, 18);
+    p.setPen(QPen(gunmetal, 2));
+    p.setBrush(Qt::NoBrush);
+    p.drawRoundedRect(QRectF(12, 12, 104, 104), 13, 13);
+
+    // Aircraft + electronics mark: unmistakably avionics rather than a generic shield.
+    QPolygonF aircraft;
+    aircraft << QPointF(64, 19) << QPointF(71, 49) << QPointF(99, 64)
+             << QPointF(73, 61) << QPointF(70, 91) << QPointF(82, 103)
+             << QPointF(64, 96) << QPointF(46, 103) << QPointF(58, 91)
+             << QPointF(55, 61) << QPointF(29, 64) << QPointF(57, 49);
+    p.setPen(Qt::NoPen);
+    p.setBrush(blue);
+    p.drawPolygon(aircraft);
+
+    p.setPen(QPen(silver, 2));
+    p.drawLine(QPointF(25, 79), QPointF(49, 79));
+    p.drawLine(QPointF(79, 79), QPointF(103, 79));
+    p.drawLine(QPointF(34, 91), QPointF(51, 91));
+    p.drawLine(QPointF(77, 91), QPointF(94, 91));
+    p.setBrush(green);
+    p.setPen(Qt::NoPen);
+    for (const QPointF point : {QPointF(24,79), QPointF(104,79), QPointF(33,91), QPointF(95,91)})
+        p.drawEllipse(point, 3.5, 3.5);
+
+    p.setPen(QPen(gold, 3));
+    p.setBrush(Qt::NoBrush);
+    p.drawArc(QRectF(24, 22, 80, 80), 25 * 16, 130 * 16);
+    p.drawArc(QRectF(24, 22, 80, 80), 205 * 16, 130 * 16);
+    p.end();
+    return QIcon(pixmap);
+}
+}
+
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
+    QGuiApplication::setWindowIcon(makeAvionicsIcon());
     nexvary::avionics::CockpitBridge cockpit;
 
     const QStringList arguments = QCoreApplication::arguments();

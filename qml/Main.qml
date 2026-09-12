@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
+import "AirOperationsLocale.js" as AirOpsLocale
 
 ApplicationWindow {
     id: root
@@ -119,7 +120,7 @@ ApplicationWindow {
                         {"text": cockpit.text("fault_lab"), "icon": "fault"},
                         {"text": cockpit.text("diagnostic_center"), "icon": "diagnostic"},
                         {"text": cockpit.text("verification_center"), "icon": "verify"},
-                        {"text": cockpit.text("air_operations"), "icon": "sensors"},
+                        {"text": AirOpsLocale.label(cockpit.language), "icon": "sensors"},
                         {"text": cockpit.text("about_system"), "icon": "about"},
                         {"text": cockpit.text("about_us"), "icon": "about"}
                     ]

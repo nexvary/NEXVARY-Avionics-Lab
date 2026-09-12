@@ -6,24 +6,24 @@ import "Theme.js" as Theme
 Button {
     id: control
     property string iconKind: "dashboard"
-    implicitHeight: 52
+    implicitHeight: 46
     implicitWidth: 190
     checkable: true
 
     contentItem: RowLayout {
-        spacing: 12
+        spacing: 9
         NavIcon {
             kind: control.iconKind
             iconColor: control.checked ? Theme.platinum : Theme.silver
-            Layout.preferredWidth: 21
-            Layout.preferredHeight: 21
+            Layout.preferredWidth: 19
+            Layout.preferredHeight: 19
         }
         Text {
             text: control.text
             color: control.checked ? Theme.platinum : Theme.silver
-            font.pixelSize: 11
+            font.pixelSize: 10
             font.bold: control.checked
-            font.letterSpacing: 0.25
+            font.letterSpacing: 0.2
             Layout.fillWidth: true
             elide: Text.ElideRight
         }

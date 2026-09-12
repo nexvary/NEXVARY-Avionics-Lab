@@ -23,7 +23,7 @@ jobs:
         run: cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
       - name: Build complete Windows release configuration
         run: cmake --build build-win --config Release
-      - name: Run Stage 1760 Windows verification
+      - name: Run Stage 1770 Windows verification
         shell: pwsh
         run: |
           $env:PATH = "C:\Qt\6.8.3\msvc2022_64\bin;$env:PATH"
@@ -57,7 +57,7 @@ jobs:
           if (!(Test-Path dist-installer\NEXVARY-Avionics-Lab-Setup.exe)) { throw 'Installer was not generated' }
       - uses: actions/upload-artifact@v4
         with:
-          name: NEXVARY-Avionics-Lab-Windows-v3.2.0-Stage1760
+          name: NEXVARY-Avionics-Lab-Windows-v3.2.0-Stage1770
           path: |
             dist-installer/NEXVARY-Avionics-Lab-Setup.exe
             NEXVARY-Avionics-Lab-v3.2.0-Portable.zip

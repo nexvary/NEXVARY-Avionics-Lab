@@ -1,5 +1,6 @@
 #pragma once
 
+#include "air_ops/AirOperationsIntegration.hpp"
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
 #include "diagnostics/DiagnosticTypes.hpp"
@@ -27,6 +28,15 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList diagnosticRecommendations READ diagnosticRecommendations NOTIFY dataChanged)
     Q_PROPERTY(QVariantList diagnosticHistoryRows READ diagnosticHistoryRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList platformProfiles READ platformProfiles NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList airOperationsTracks READ airOperationsTracks NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList airOperationsIncidents READ airOperationsIncidents NOTIFY dataChanged)
+    Q_PROPERTY(QString airOperationsSource READ airOperationsSource NOTIFY dataChanged)
+    Q_PROPERTY(QString airOperationsMode READ airOperationsMode NOTIFY dataChanged)
+    Q_PROPERTY(QString airOperationsStatus READ airOperationsStatus NOTIFY dataChanged)
+    Q_PROPERTY(int airOperationsTrackCount READ airOperationsTrackCount NOTIFY dataChanged)
+    Q_PROPERTY(int airOperationsIncidentCount READ airOperationsIncidentCount NOTIFY dataChanged)
+    Q_PROPERTY(int airOperationsHighCount READ airOperationsHighCount NOTIFY dataChanged)
+    Q_PROPERTY(qulonglong airOperationsObservationCount READ airOperationsObservationCount NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformId READ activePlatformId NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformName READ activePlatformName NOTIFY dataChanged)
     Q_PROPERTY(QString activePlatformCategory READ activePlatformCategory NOTIFY dataChanged)
@@ -76,6 +86,15 @@ public:
     QVariantList diagnosticRecommendations() const;
     QVariantList diagnosticHistoryRows() const;
     QVariantList platformProfiles() const;
+    QVariantList airOperationsTracks() const;
+    QVariantList airOperationsIncidents() const;
+    QString airOperationsSource() const;
+    QString airOperationsMode() const;
+    QString airOperationsStatus() const;
+    int airOperationsTrackCount() const noexcept;
+    int airOperationsIncidentCount() const noexcept;
+    int airOperationsHighCount() const noexcept;
+    qulonglong airOperationsObservationCount() const noexcept;
     QString activePlatformId() const;
     QString activePlatformName() const;
     QString activePlatformCategory() const;
@@ -125,6 +144,8 @@ public:
     Q_INVOKABLE QString diagnosticReportJson() const;
     Q_INVOKABLE QString diagnosticReportMarkdown() const;
     Q_INVOKABLE void setActivePlatform(const QString& id);
+    Q_INVOKABLE bool loadAirOperationsReplay(const QString& path);
+    Q_INVOKABLE void resetAirOperationsDemo();
 
 signals:
     void dataChanged();
@@ -152,6 +173,8 @@ private:
     QStringList annunciators_;
     DiagnosticSummary diagnosticSummary_;
     DiagnosticHistory diagnosticHistory_;
+    AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
+    QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};
     bool replayPaused_{false};

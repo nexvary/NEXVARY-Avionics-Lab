@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
+import "AirOperationsLocale.js" as AirOpsLocale
 
 Item {
     id: page
@@ -41,7 +42,7 @@ Item {
                     Layout.fillWidth: true
                     spacing: 2
                     Text {
-                        text: cockpit.text("air_operations")
+                        text: AirOpsLocale.label(cockpit.language)
                         color: Theme.platinum
                         font.pixelSize: 20
                         font.bold: true
@@ -131,7 +132,7 @@ Item {
                             anchors.margins: 10
                             onPaint: {
                                 var ctx = getContext("2d")
-                                ctx.reset()
+                                ctx.clearRect(0, 0, width, height)
                                 var cx = width / 2
                                 var cy = height / 2
                                 var radius = Math.min(width, height) * 0.42

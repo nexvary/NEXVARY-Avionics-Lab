@@ -25,15 +25,17 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1730-desktop-1920x1080.png", (1920, 1080))
-    require(root / "stage1730-large-2560x1440.png", (2560, 1440))
-    require(root / "stage1730-about-system-ar.png", (1920, 1080))
-    require(root / "stage1730-about-us-ar.png", (1920, 1080))
-    require(root / "stage1730-about-us-en.png", (1920, 1080))
-    require(root / "stage1730-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1740-desktop-1920x1080.png", (1920, 1080))
+    require(root / "stage1740-large-2560x1440.png", (2560, 1440))
+    require(root / "stage1740-air-operations-ar.png", (1920, 1080))
+    require(root / "stage1740-air-operations-en.png", (1920, 1080))
+    require(root / "stage1740-about-system-ar.png", (1920, 1080))
+    require(root / "stage1740-about-us-ar.png", (1920, 1080))
+    require(root / "stage1740-about-us-en.png", (1920, 1080))
+    require(root / "stage1740-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1730-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: desktop sizing, large-display sizing, RTL surfaces and ten locale renders are present.")
+        require(root / f"stage1740-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: integrated air operations, desktop sizing, large-display sizing, RTL surfaces and ten locale renders are present.")
 
 
 if __name__ == "__main__":

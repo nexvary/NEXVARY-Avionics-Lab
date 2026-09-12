@@ -1,30 +1,31 @@
 .pragma library
 
-// Ministerial / aerospace engineering palette
-// Approved identity:
-// Dark Navy          #0C1319
-// Gunmetal           #2E3945
-// Metallic Silver    #9E9B98
-// Platinum           #D9D7D4
-// Electric Blue      #6A88A0
-var bg = "#0C1319"
-var panel = "#111A22"
-var panel2 = "#18232C"
-var panel3 = "#222E38"
-var elevated = "#26323C"
-var border = "#2E3945"
-var borderSoft = "#202C35"
-var grid = "#1B2730"
-var gold = "#D9D7D4"          // compatibility alias: legacy gold -> platinum
+// NEXVARY Ministerial Command Interface — approved identity
+var darkNavy = "#0C1319"
+var gunmetal = "#2E3945"
+var metallicSilver = "#9E9B98"
 var platinum = "#D9D7D4"
-var silver = "#9E9B98"
-var text = "#D9D7D4"
-var muted = "#7F898F"
-var accent = "#6A88A0"
-var cyan = "#6A88A0"
-var blue = "#7899B2"
+var electricBlue = "#6A88A0"
 
-// Status-only colors. Keep saturated colors out of structural chrome.
+// Structural surfaces: keep Dark Navy dominant (60–70%).
+var bg = darkNavy
+var shell = "#0A1117"
+var panel = "#121B22"
+var panel2 = "#18232C"
+var panel3 = gunmetal
+var elevated = "#24313B"
+var border = "#52606B"
+var borderSoft = "#26333D"
+var grid = "#1C2831"
+var text = platinum
+var muted = "#7E898F"
+var silver = metallicSilver
+var accent = electricBlue
+var cyan = electricBlue
+var blue = electricBlue
+var gold = platinum // legacy compatibility only
+
+// Status-only colors.
 var green = "#63B090"
 var amber = "#B99A62"
 var red = "#B66A6A"
@@ -35,4 +36,12 @@ function stateColor(state) {
     if (state === "DEGRADED") return amber
     if (state === "FAULT") return red
     return muted
+}
+
+function platformCode(id) {
+    if (id === "generic-jet") return "JET"
+    if (id === "turboprop") return "TPR"
+    if (id === "helicopter") return "HEL"
+    if (id === "uav") return "UAV"
+    return "GEN"
 }

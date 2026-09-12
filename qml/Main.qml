@@ -17,16 +17,16 @@ ApplicationWindow {
     property string workMode: "EXECUTIVE"
 
     onSelectedPageChanged: {
-        if (root.selectedPage === 0) root.workMode = "EXECUTIVE"
-        else if (root.selectedPage === 5) root.workMode = "ENGINEERING"
-        else if (root.selectedPage === 9) root.workMode = "DIAGNOSTIC"
+        if (selectedPage === 0) workMode = "EXECUTIVE"
+        else if (selectedPage === 5) workMode = "ENGINEERING"
+        else if (selectedPage === 9) workMode = "DIAGNOSTIC"
     }
 
     function setWorkMode(mode) {
-        root.workMode = mode
-        if (mode === "EXECUTIVE") root.selectedPage = 0
-        else if (mode === "ENGINEERING") root.selectedPage = 5
-        else root.selectedPage = 9
+        workMode = mode
+        if (mode === "EXECUTIVE") selectedPage = 0
+        else if (mode === "ENGINEERING") selectedPage = 5
+        else selectedPage = 9
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
@@ -36,10 +36,10 @@ ApplicationWindow {
         spacing: 0
 
         Rectangle {
-            Layout.preferredWidth: 220
+            Layout.preferredWidth: 206
             Layout.fillHeight: true
-            color: "#0A1117"
-            border.color: Theme.border
+            color: Theme.shell
+            border.color: Theme.borderSoft
             border.width: 1
             LayoutMirroring.enabled: false
 
@@ -50,19 +50,20 @@ ApplicationWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 78
+                    Layout.preferredHeight: 70
                     spacing: 10
-                    NexvaryMark { Layout.preferredWidth: 42; Layout.preferredHeight: 42 }
+                    NexvaryMark { Layout.preferredWidth: 40; Layout.preferredHeight: 40 }
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
-                        Text { text: "NEXVARY"; color: Theme.platinum; font.pixelSize: 18; font.bold: true; font.letterSpacing: 2.5 }
-                        Text { text: "AVIONICS LAB"; color: Theme.silver; font.pixelSize: 8; font.letterSpacing: 1.8 }
+                        Text { text: "NEXVARY"; color: Theme.platinum; font.pixelSize: 17; font.bold: true; font.letterSpacing: 2.4 }
+                        Text { text: "AVIONICS LAB"; color: Theme.silver; font.pixelSize: 8; font.letterSpacing: 1.5 }
+                        Text { text: "COMMAND INTERFACE"; color: Theme.accent; font.pixelSize: 6; font.letterSpacing: 1.0 }
                     }
                 }
 
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                Text { text: "OPERATIONS"; color: Theme.muted; font.pixelSize: 8; font.bold: true; font.letterSpacing: 1.4; leftPadding: 4; topPadding: 5; bottomPadding: 3 }
+                Text { text: "MISSION WORKSPACES"; color: Theme.muted; font.pixelSize: 7; font.bold: true; font.letterSpacing: 1.1; leftPadding: 4; topPadding: 5; bottomPadding: 3 }
 
                 Repeater {
                     model: [
@@ -90,21 +91,29 @@ ApplicationWindow {
                 }
 
                 Item { Layout.fillHeight: true }
+
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 92
+                    Layout.preferredHeight: 112
                     color: Theme.panel
                     border.color: Theme.border
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 2
-                        Text { text: "TRAINING / VERIFICATION"; color: Theme.accent; font.bold: true; font.pixelSize: 9; font.letterSpacing: 0.7; Layout.fillWidth: true }
-                        Text { text: "SECURE  •  OFFLINE"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8; Layout.fillWidth: true }
+                        anchors.margins: 9
+                        spacing: 3
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Rectangle { width: 7; height: 7; radius: 3; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber }
+                            Text { text: "LAB STATUS"; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true }
+                            Text { text: cockpit.activeAlertCount === 0 ? "READY" : "CHECK"; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                        }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: "NO LIVE AIRCRAFT I/O"; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
-                        Text { text: "SYNTHETIC DATA ONLY"; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
+                        Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
+                        Text { text: "NO LIVE AIRCRAFT I/O"; color: Theme.muted; font.pixelSize: 7 }
+                        Text { text: "TRAINING / VERIFICATION"; color: Theme.accent; font.pixelSize: 7; font.bold: true }
+                        Item { Layout.fillHeight: true }
+                        Text { text: "v3.2.0  •  STAGE 1720"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
                     }
                 }
             }
@@ -119,10 +128,11 @@ ApplicationWindow {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 82
+                Layout.preferredHeight: 80
                 color: Theme.panel
-                border.color: Theme.border
+                border.color: Theme.borderSoft
                 border.width: 1
+
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 16
@@ -130,42 +140,83 @@ ApplicationWindow {
                     anchors.topMargin: 10
                     anchors.bottomMargin: 10
                     spacing: 12
+
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: cockpit.text("app_title"); color: Theme.platinum; font.pixelSize: 21; font.bold: true; font.letterSpacing: 0.5; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true }
-                        Text { text: cockpit.text("training") + "  /  " + cockpit.activePlatformName + "  /  " + cockpit.scenario; color: Theme.accent; font.pixelSize: 9; font.bold: true; font.letterSpacing: 0.5; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
+                        Text {
+                            text: cockpit.text("app_title")
+                            color: Theme.platinum
+                            font.pixelSize: 20
+                            font.bold: true
+                            font.letterSpacing: 0.35
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                            Layout.fillWidth: true
+                        }
+                        Text {
+                            text: (cockpit.rtl ? "منصة هندسية متعددة الأنظمة" : "MULTI-PLATFORM AVIONICS ENGINEERING ENVIRONMENT") + "  /  " + cockpit.activePlatformName.toUpperCase()
+                            color: Theme.accent
+                            font.pixelSize: 8
+                            font.bold: true
+                            font.letterSpacing: 0.7
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                        }
                     }
+
                     RowLayout {
-                        spacing: 5
-                        MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
-                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
-                        MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 72; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
+                        spacing: 4
+                        MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
+                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
+                        MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 70; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
                     }
+
                     Rectangle { width: 1; Layout.fillHeight: true; color: Theme.borderSoft }
-                    ColumnLayout {
-                        spacing: 0
-                        Text { text: "PLATFORM"; color: Theme.muted; font.pixelSize: 7; font.letterSpacing: 0.6 }
-                        Text { text: cockpit.activePlatformId.toUpperCase(); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+
+                    Rectangle {
+                        Layout.preferredWidth: 188
+                        Layout.preferredHeight: 48
+                        color: Theme.panel2
+                        border.color: Theme.border
+                        radius: Theme.radius
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 7
+                            Rectangle {
+                                width: 34; height: 34; color: Theme.panel3; border.color: Theme.accent; radius: Theme.radius
+                                Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 0
+                                Text { text: cockpit.activePlatformCategory; color: Theme.muted; font.pixelSize: 6; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: cockpit.activePlatformName; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: cockpit.activePlatformPropulsion; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                            }
+                        }
                     }
+
                     ComboBox {
                         id: scenarioBox
                         model: cockpit.scenarios
-                        Layout.preferredWidth: 145
-                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; font.family: "Consolas" }
+                        Layout.preferredWidth: 142
+                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; font.family: "Consolas" }
                         background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
                         onActivated: cockpit.setScenario(currentText)
                     }
+
                     ColumnLayout {
                         spacing: 0
-                        Text { text: "TICK " + cockpit.tick; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                        Text { text: "BUILD 3.2.0  •  STAGE 1720"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                        Text { text: "TICK " + cockpit.tick; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                        Text { text: "BUILD 3.2.0 / UI-M1"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
                     }
+
                     Rectangle {
-                        Layout.preferredWidth: 190
+                        Layout.preferredWidth: 170
                         Layout.preferredHeight: 44
                         color: Theme.panel2
-                        border.color: cockpit.activeAlertCount === 0 ? Theme.accent : Theme.amber
+                        border.color: cockpit.activeAlertCount === 0 ? Theme.border : Theme.amber
                         radius: Theme.radius
                         RowLayout {
                             anchors.fill: parent
@@ -174,14 +225,16 @@ ApplicationWindow {
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: cockpit.activeAlertCount === 0 ? "SYSTEMS NOMINAL" : "ATTENTION REQUIRED"; color: cockpit.activeAlertCount === 0 ? Theme.platinum : Theme.amber; font.family: "Consolas"; font.pixelSize: 9; font.bold: true; elide: Text.ElideRight; Layout.fillWidth: true }
-                                Text { text: "ALERTS " + cockpit.activeAlertCount; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                                Text { text: cockpit.activeAlertCount === 0 ? "NOMINAL" : "ATTENTION"; color: cockpit.activeAlertCount === 0 ? Theme.platinum : Theme.amber; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                Text { text: "ALERTS " + cockpit.activeAlertCount + "  /  DX " + cockpit.diagnosticFindingCount; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
                             }
                         }
                     }
-                    MinisterialButton { text: cockpit.text("language"); implicitWidth: 82; onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar") }
+
+                    MinisterialButton { text: cockpit.text("language"); implicitWidth: 72; onClicked: cockpit.setLanguage(cockpit.rtl ? "en" : "ar") }
                 }
-                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 2; color: Theme.accent; opacity: 0.55 }
+
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 1; color: Theme.accent; opacity: 0.75 }
             }
 
             StackLayout {
@@ -203,19 +256,19 @@ ApplicationWindow {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 26
-                color: "#0A1117"
+                Layout.preferredHeight: 25
+                color: Theme.shell
                 border.color: Theme.borderSoft
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 10
                     anchors.rightMargin: 10
                     spacing: 8
-                    Text { text: "NEXVARY AVIONICS LAB  /  AEROSPACE ENGINEERING WORKBENCH"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                    Text { text: "NEXVARY AVIONICS LAB  /  COMMAND ENGINEERING INTERFACE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.pixelSize: 7 }
+                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.pixelSize: 6 }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC DATA"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC DATA  •  NO LIVE CONTROL"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 6 }
                 }
             }
         }

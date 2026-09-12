@@ -140,9 +140,9 @@ Canvas {
         c.fillStyle = "#17232C"
         c.strokeStyle = Theme.accent
         c.lineWidth = 1.6
-        if (platformId === "turboprop") drawTurboprop(c, w, h)
-        else if (platformId === "helicopter") drawHelicopter(c, w, h)
-        else if (platformId === "uav") drawUav(c, w, h)
+        if (platformId === "generic-turboprop" || platformId === "turboprop") drawTurboprop(c, w, h)
+        else if (platformId === "generic-helicopter" || platformId === "helicopter") drawHelicopter(c, w, h)
+        else if (platformId === "generic-uav" || platformId === "uav") drawUav(c, w, h)
         else drawJet(c, w, h)
         drawBuses(c, w, h)
         drawNodes(c, w, h)

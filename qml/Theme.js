@@ -7,7 +7,6 @@ var metallicSilver = "#9E9B98"
 var platinum = "#D9D7D4"
 var electricBlue = "#6A88A0"
 
-// Structural surfaces: keep Dark Navy dominant (60–70%).
 var bg = darkNavy
 var shell = "#0A1117"
 var panel = "#121B22"
@@ -23,9 +22,8 @@ var silver = metallicSilver
 var accent = electricBlue
 var cyan = electricBlue
 var blue = electricBlue
-var gold = platinum // legacy compatibility only
+var gold = platinum
 
-// Status-only colors.
 var green = "#63B090"
 var amber = "#B99A62"
 var red = "#B66A6A"
@@ -40,8 +38,8 @@ function stateColor(state) {
 
 function platformCode(id) {
     if (id === "generic-jet") return "JET"
-    if (id === "turboprop") return "TPR"
-    if (id === "helicopter") return "HEL"
-    if (id === "uav") return "UAV"
+    if (id === "generic-turboprop" || id === "turboprop") return "TPR"
+    if (id === "generic-helicopter" || id === "helicopter") return "HEL"
+    if (id === "generic-uav" || id === "uav") return "UAV"
     return "GEN"
 }

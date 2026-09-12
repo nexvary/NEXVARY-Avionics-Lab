@@ -4,6 +4,7 @@ import "Theme.js" as Theme
 
 Item {
     id: page
+    clip: true
     function rowById(rows,id){ for(var i=0;i<rows.length;++i) if(rows[i].id===id) return rows[i]; return ({"value":0,"unit":"","valid":false}) }
     function sensor(id){ return rowById(cockpit.sensorRows,id) }
     function fmt(id,d){ var s=sensor(id); return Number(s.value).toFixed(d)+" "+s.unit }
@@ -172,6 +173,7 @@ Item {
                 color: Theme.panel
                 border.color: Theme.border
                 radius: Theme.radius
+                clip: true
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -194,14 +196,16 @@ Item {
                             color:index%2?Theme.panel2:Theme.panel
                             border.color:Theme.borderSoft
                             radius:Theme.radius
+                            clip: true
                             RowLayout {
                                 anchors.fill:parent
                                 anchors.margins:6
                                 Rectangle { width:4; height:26; color:Theme.stateColor(modelData.state) }
                                 ColumnLayout {
                                     Layout.fillWidth:true
+                                    Layout.minimumWidth:0
                                     spacing:0
-                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize:8; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
+                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize:8; font.bold:true; Layout.fillWidth:true; Layout.minimumWidth:0; elide:Text.ElideRight }
                                     Text { text:modelData.state; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
                                 }
                                 Rectangle {

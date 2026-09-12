@@ -41,6 +41,19 @@ int main() {
     assert(uavReadiness.value("readiness").toInt() == 89);
     assert(uavReadiness.value("state").toString() == "READY");
 
+    assert(b.forceBases().size() == 3);
+    assert(b.forceSquadrons().size() == 4);
+    assert(b.forceTrainingRows().size() == 4);
+    assert(b.forceMaintenancePlanRows().size() == 4);
+    assert(b.forceExecutiveReports().size() == 4);
+    assert(b.forceAvailableBaseCount() == 2);
+    assert(b.forceAssignedPlatformCount() == 26);
+    assert(b.forceReadyPlatformCount() == 22);
+    assert(b.forceFleetReadinessPercent() == 84);
+    assert(b.forceCrewReadinessPercent() == 93);
+    assert(b.forceWeatherConstraintCount() == 1);
+    assert(b.forceOpenMaintenanceCount() == 4);
+
     for (int i = 0; i < 20; ++i) b.step();
     b.runDiagnosticScan();
     assert(b.diagnosticHealthScore() >= 90);

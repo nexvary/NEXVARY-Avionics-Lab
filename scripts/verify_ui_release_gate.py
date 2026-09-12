@@ -25,21 +25,21 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1760-desktop-1920x1080.png", (1920, 1080))
-    require(root / "stage1760-large-2560x1440.png", (2560, 1440))
-    require(root / "stage1760-unified-command-ar.png", (1920, 1080))
-    require(root / "stage1760-unified-command-en.png", (1920, 1080))
-    require(root / "stage1760-air-operations-ar.png", (1920, 1080))
-    require(root / "stage1760-air-operations-en.png", (1920, 1080))
-    require(root / "stage1760-air-readiness-ar.png", (1920, 1080))
-    require(root / "stage1760-air-readiness-en.png", (1920, 1080))
-    require(root / "stage1760-about-system-ar.png", (1920, 1080))
-    require(root / "stage1760-about-us-ar.png", (1920, 1080))
-    require(root / "stage1760-about-us-en.png", (1920, 1080))
-    require(root / "stage1760-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1770-desktop-1920x1080.png", (1920, 1080))
+    require(root / "stage1770-large-2560x1440.png", (2560, 1440))
+    require(root / "stage1770-unified-command-ar.png", (1920, 1080))
+    require(root / "stage1770-unified-command-en.png", (1920, 1080))
+    require(root / "stage1770-air-operations-ar.png", (1920, 1080))
+    require(root / "stage1770-air-operations-en.png", (1920, 1080))
+    require(root / "stage1770-air-readiness-ar.png", (1920, 1080))
+    require(root / "stage1770-air-readiness-en.png", (1920, 1080))
+    require(root / "stage1770-about-system-ar.png", (1920, 1080))
+    require(root / "stage1770-about-us-ar.png", (1920, 1080))
+    require(root / "stage1770-about-us-en.png", (1920, 1080))
+    require(root / "stage1770-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1760-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1760 unified command, air operations, air readiness, desktop/large-display sizing, RTL surfaces and ten locale renders are present.")
+        require(root / f"stage1770-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1770 ministerial command center, air operations, air readiness, desktop/large-display sizing, RTL surfaces and ten locale renders are present.")
 
 
 if __name__ == "__main__":

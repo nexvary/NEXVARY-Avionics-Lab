@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     if (pageIndex >= 0 && pageIndex + 1 < arguments.size()) {
         bool ok = false;
         const int page = arguments.at(pageIndex + 1).toInt(&ok);
-        if (ok && page >= 0 && page <= 10) root->setProperty("selectedPage", page);
+        if (ok && page >= 0 && page <= 11) root->setProperty("selectedPage", page);
     }
 
     if (screenshotIndex >= 0) {

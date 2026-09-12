@@ -1,0 +1,31 @@
+name: CodeQL Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze-cpp:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: c-cpp
+      - name: Configure release build
+        run: cmake -S . -B build-codeql -DCMAKE_BUILD_TYPE=Release -DNEXVARY_WARNINGS_AS_ERRORS=ON
+      - name: Build for CodeQL database
+        run: cmake --build build-codeql -j2
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:c-cpp

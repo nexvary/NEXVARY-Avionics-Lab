@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     if (pageIndex >= 0 && pageIndex + 1 < arguments.size()) {
         bool ok = false;
         const int page = arguments.at(pageIndex + 1).toInt(&ok);
-        if (ok && page >= 0 && page <= 13) root->setProperty("selectedPage", page);
+        if (ok && page >= 0 && page <= 14) root->setProperty("selectedPage", page);
     }
 
     int requestedWidth = window->width();
@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
         QQmlExpression navigationTest(
             qmlContext,
             root,
-            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(11); var opened=(selectedPage===11 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
+            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(12); var opened=(selectedPage===12 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
         );
         const QVariant result = navigationTest.evaluate();
         if (navigationTest.hasError() || !result.toBool()) return 9;

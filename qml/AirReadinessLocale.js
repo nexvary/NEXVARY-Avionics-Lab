@@ -2,30 +2,30 @@
 
 function label(code) {
     switch (code) {
-    case "ar": return "الجاهزية وإدارة العمليات"
-    case "tr": return "HAZIRLIK VE OPERASYON YÖNETİMİ"
-    case "es": return "PREPARACIÓN Y GESTIÓN OPERATIVA"
-    case "de": return "EINSATZBEREITSCHAFT UND BETRIEBSFÜHRUNG"
-    case "it": return "PRONTEZZA E GESTIONE OPERATIVA"
-    case "fr": return "PRÉPARATION ET GESTION DES OPÉRATIONS"
-    case "ur": return "تیاری اور آپریشن مینجمنٹ"
-    case "fa": return "آمادگی و مدیریت عملیات"
-    case "ru": return "ГОТОВНОСТЬ И УПРАВЛЕНИЕ ОПЕРАЦИЯМИ"
-    default: return "AIR READINESS & OPERATIONS"
+    case "ar": return "إدارة القوة الجوية"
+    case "tr": return "HAVA KUVVETİ YÖNETİMİ"
+    case "es": return "GESTIÓN DE FUERZA AÉREA"
+    case "de": return "LUFTSTREITKRÄFTE-MANAGEMENT"
+    case "it": return "GESTIONE FORZA AEREA"
+    case "fr": return "GESTION DE LA FORCE AÉRIENNE"
+    case "ur": return "فضائی فورس انتظام"
+    case "fa": return "مدیریت نیروی هوایی"
+    case "ru": return "УПРАВЛЕНИЕ ВВС"
+    default: return "AIR FORCE MANAGEMENT"
     }
 }
 
 function subtitle(code) {
-    if (code === "ar") return "صورة تنفيذية موحدة للجاهزية والصيانة والأطقم وجدول التدريب داخل بيئة محاكاة آمنة"
-    if (code === "tr") return "Hazırlık, bakım, ekip ve eğitim planını tek güvenli simülasyon görünümünde birleştirir"
-    if (code === "es") return "Integra disponibilidad, mantenimiento, tripulaciones y agenda de entrenamiento en una vista segura"
-    if (code === "de") return "Vereint Bereitschaft, Wartung, Crews und Trainingsplanung in einer sicheren Simulationsansicht"
-    if (code === "it") return "Unifica prontezza, manutenzione, equipaggi e pianificazione addestrativa in una vista sicura"
-    if (code === "fr") return "Unifie disponibilité, maintenance, équipages et planification d'entraînement dans une vue sûre"
-    if (code === "ur") return "تیاری، دیکھ بھال، عملہ اور تربیتی شیڈول کو ایک محفوظ سمولیشن منظر میں یکجا کرتا ہے"
-    if (code === "fa") return "آمادگی، نگهداری، خدمه و برنامه آموزشی را در یک نمای شبیه‌سازی ایمن یکپارچه می‌کند"
-    if (code === "ru") return "Объединяет готовность, обслуживание, экипажи и учебный график в безопасной среде моделирования"
-    return "Executive readiness, maintenance, crew and training-schedule picture for a safe synthetic environment"
+    if (code === "ar") return "إدارة موحدة للقواعد والأسراب والجاهزية والصيانة والأطقم والتدريب داخل بيئة محاكاة آمنة"
+    if (code === "tr") return "Üsler, filolar, hazırlık, bakım, ekip ve eğitimi güvenli bir simülasyon görünümünde birleştirir"
+    if (code === "es") return "Integra bases, escuadrones, disponibilidad, mantenimiento, tripulaciones y entrenamiento en una vista segura"
+    if (code === "de") return "Vereint Basen, Staffeln, Bereitschaft, Wartung, Crews und Training in einer sicheren Simulationsansicht"
+    if (code === "it") return "Unifica basi, squadriglie, prontezza, manutenzione, equipaggi e addestramento in una vista sicura"
+    if (code === "fr") return "Unifie bases, escadrons, disponibilité, maintenance, équipages et formation dans une vue sûre"
+    if (code === "ur") return "اڈوں، اسکواڈرن، تیاری، دیکھ بھال، عملہ اور تربیت کو ایک محفوظ سمولیشن منظر میں یکجا کرتا ہے"
+    if (code === "fa") return "پایگاه‌ها، اسکادران‌ها، آمادگی، نگهداری، خدمه و آموزش را در یک نمای شبیه‌سازی ایمن یکپارچه می‌کند"
+    if (code === "ru") return "Объединяет базы, эскадрильи, готовность, обслуживание, экипажи и обучение в безопасной среде моделирования"
+    return "Unified bases, squadrons, readiness, maintenance, crew and training picture for a safe synthetic environment"
 }
 
 function fleet(code) { return code === "ar" ? "جاهزية الأسطول" : "FLEET READINESS" }

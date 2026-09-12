@@ -59,7 +59,7 @@ ApplicationWindow {
         if (selectedPage === 0) workMode = "EXECUTIVE"
         else if (selectedPage === 5) workMode = "ENGINEERING"
         else if (selectedPage === 9) workMode = "DIAGNOSTIC"
-        else if (selectedPage === 11) workMode = "BRIEF"
+        else if (selectedPage === 12) workMode = "BRIEF"
     }
 
     function setWorkMode(mode) {
@@ -67,7 +67,7 @@ ApplicationWindow {
         if (mode === "EXECUTIVE") navigateTo(0)
         else if (mode === "ENGINEERING") navigateTo(5)
         else if (mode === "DIAGNOSTIC") navigateTo(9)
-        else navigateTo(11)
+        else navigateTo(12)
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
@@ -119,6 +119,7 @@ ApplicationWindow {
                         {"text": cockpit.text("fault_lab"), "icon": "fault"},
                         {"text": cockpit.text("diagnostic_center"), "icon": "diagnostic"},
                         {"text": cockpit.text("verification_center"), "icon": "verify"},
+                        {"text": cockpit.text("air_operations"), "icon": "sensors"},
                         {"text": cockpit.text("about_system"), "icon": "about"},
                         {"text": cockpit.text("about_us"), "icon": "about"}
                     ]
@@ -333,6 +334,7 @@ ApplicationWindow {
                 FaultLabPage {}
                 DiagnosticCenter {}
                 VerificationCenter {}
+                AirOperationsPage {}
                 Item {
                     AboutSystem { anchors.fill: parent; anchors.bottomMargin: 86 }
                     TechnologyStackBanner {

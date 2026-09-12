@@ -20,9 +20,9 @@ int main(int argc, char* argv[]) {
         cockpit.setLanguage(arguments.at(languageIndex + 1));
     }
 
-    const int platformIndex = arguments.indexOf(QStringLiteral("--platform"));
-    if (platformIndex >= 0 && platformIndex + 1 < arguments.size()) {
-        cockpit.setActivePlatform(arguments.at(platformIndex + 1));
+    const int profileIndex = arguments.indexOf(QStringLiteral("--aircraft-profile"));
+    if (profileIndex >= 0 && profileIndex + 1 < arguments.size()) {
+        cockpit.setActivePlatform(arguments.at(profileIndex + 1));
     }
 
     const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));

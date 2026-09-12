@@ -71,10 +71,10 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-jet.png --page 0 --platform generic-jet
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-turboprop.png --page 0 --platform turboprop
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-helicopter.png --page 0 --platform helicopter
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-uav.png --page 0 --platform uav
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-jet.png --page 0 --aircraft-profile generic-jet
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-turboprop.png --page 0 --aircraft-profile turboprop
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-helicopter.png --page 0 --aircraft-profile helicopter
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-executive-uav.png --page 0 --aircraft-profile uav
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-engineering.png --page 5
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-platform-library.png --page 7
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1720-fault-lab.png --page 8

@@ -83,29 +83,29 @@ jobs:
           for lang in ar en tr es de it fr ur fa ru; do
             ./build-qt/nexvary_avionics_hmi --smoke --language "$lang"
           done
-      - name: Capture Stage 1760 unified air command UI release gate
+      - name: Capture Stage 1770 ministerial command-center UI release gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-desktop-1920x1080.png --page 0 --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-large-2560x1440.png --page 0 --aircraft-profile generic-jet --width 2560 --height 1440
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-unified-command-ar.png --page 0 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-unified-command-en.png --page 0 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-air-operations-ar.png --page 11 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-air-operations-en.png --page 11 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-air-readiness-ar.png --page 12 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-air-readiness-en.png --page 12 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-about-us-ar.png --page 14 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1760-about-us-en.png --page 14 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-desktop-1920x1080.png --page 0 --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-large-2560x1440.png --page 0 --aircraft-profile generic-jet --width 2560 --height 1440
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-unified-command-ar.png --page 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-unified-command-en.png --page 0 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-air-operations-ar.png --page 11 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-air-operations-en.png --page 11 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-air-readiness-ar.png --page 12 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-air-readiness-en.png --page 12 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-about-us-ar.png --page 14 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1770-about-us-en.png --page 14 --language en --width 1920 --height 1080
           for lang in ar en tr es de it fr ur fa ru; do
-            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1760-lang-${lang}.png" --page 0 --language "$lang"
+            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1770-lang-${lang}.png" --page 0 --language "$lang"
           done
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1760-unified-air-command-ui-release-gate
-          path: build-qt/stage1760-*.png
+          name: nexvary-avionics-stage1770-ministerial-command-center-ui-release-gate
+          path: build-qt/stage1770-*.png
           if-no-files-found: error

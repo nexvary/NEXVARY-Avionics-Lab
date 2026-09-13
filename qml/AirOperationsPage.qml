@@ -6,7 +6,7 @@ import "AirspaceLocale.js" as AirspaceLocale
 
 Item {
     id: root
-    property string releaseStage: "1840"
+    property string releaseStage: "1850"
 
     ColumnLayout {
         anchors.fill: parent
@@ -14,7 +14,7 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 42
+            Layout.preferredHeight: 44
             color: Theme.shell
             border.color: Theme.borderSoft
             border.width: 1
@@ -30,12 +30,14 @@ Item {
                         {label: AirspaceLocale.picture(cockpit.language), index: 1, accent: Theme.radarGreen},
                         {label: AirspaceLocale.dataHub(cockpit.language), index: 2, accent: Theme.royalGold},
                         {label: AirspaceLocale.routeLab(cockpit.language), index: 3, accent: Theme.rfViolet},
-                        {label: AirspaceLocale.aircraft(cockpit.language), index: 4, accent: Theme.skyBlue}
+                        {label: AirspaceLocale.aircraft(cockpit.language), index: 4, accent: Theme.skyBlue},
+                        {label: cockpit.rtl ? "استجابة C-UAS" : "C-UAS RESPONSE", index: 5, accent: Theme.warmOrange}
                     ]
                     delegate: Rectangle {
                         required property var modelData
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        Layout.minimumWidth: 132
                         color: workspace.currentIndex === modelData.index ? Theme.panel3 : Theme.panel2
                         border.color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.borderSoft
                         border.width: workspace.currentIndex === modelData.index ? 2 : 1
@@ -45,10 +47,10 @@ Item {
                             anchors.centerIn: parent
                             text: modelData.label
                             color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.muted
-                            font.pixelSize: 8
+                            font.pixelSize: modelData.label.length > 18 ? 7 : 8
                             font.bold: true
                             elide: Text.ElideRight
-                            width: parent.width - 10
+                            width: parent.width - 12
                             horizontalAlignment: Text.AlignHCenter
                         }
 
@@ -73,6 +75,7 @@ Item {
             AeronauticalDataHubPage {}
             TrainingRouteLabPage {}
             AircraftStoryboardPage {}
+            CuasResponsePage {}
         }
     }
 }

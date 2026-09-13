@@ -28,6 +28,17 @@ var cyan = electricBlue
 var blue = electricBlue
 var gold = platinum
 
+// Stage 1800 visual-intelligence accents. These are used selectively for
+// radar, RF, aircraft visualization and status differentiation rather than
+// replacing the approved dark navy / gunmetal identity.
+var radarGreen = "#62C59A"
+var signalCyan = "#56B8D8"
+var royalGold = "#D2B36C"
+var rfViolet = "#9B83D5"
+var skyBlue = "#78A9D1"
+var warmOrange = "#D28C62"
+var deepBlue = "#244A63"
+
 var green = "#63B090"
 var amber = "#B99A62"
 var red = "#B66A6A"

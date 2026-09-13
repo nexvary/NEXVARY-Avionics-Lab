@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
         QQmlExpression navigationTest(
             qmlContext,
             root,
-            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(12); var opened=(selectedPage===12 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
+            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(11); var opened=(selectedPage===11 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
         );
         const QVariant result = navigationTest.evaluate();
         if (navigationTest.hasError() || !result.toBool()) return 9;

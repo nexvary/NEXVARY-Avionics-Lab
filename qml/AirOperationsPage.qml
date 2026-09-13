@@ -13,7 +13,7 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 38
+            Layout.preferredHeight: 42
             color: Theme.shell
             border.color: Theme.borderSoft
             border.width: 1
@@ -25,24 +25,30 @@ Item {
 
                 Repeater {
                     model: [
-                        {label: AirspaceLocale.chart(cockpit.language), index: 0, accent: Theme.royalGold},
-                        {label: AirspaceLocale.picture(cockpit.language), index: 1, accent: Theme.signalCyan}
+                        {label: AirspaceLocale.chart(cockpit.language), index: 0, accent: Theme.signalCyan},
+                        {label: AirspaceLocale.picture(cockpit.language), index: 1, accent: Theme.radarGreen},
+                        {label: AirspaceLocale.dataHub(cockpit.language), index: 2, accent: Theme.royalGold},
+                        {label: AirspaceLocale.routeLab(cockpit.language), index: 3, accent: Theme.rfViolet},
+                        {label: AirspaceLocale.aircraft(cockpit.language), index: 4, accent: Theme.skyBlue}
                     ]
                     delegate: Rectangle {
                         required property var modelData
-                        Layout.preferredWidth: 190
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
                         color: workspace.currentIndex === modelData.index ? Theme.panel3 : Theme.panel2
                         border.color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.borderSoft
-                        border.width: 1
+                        border.width: workspace.currentIndex === modelData.index ? 2 : 1
                         radius: Theme.radius
 
                         Text {
                             anchors.centerIn: parent
                             text: modelData.label
-                            color: workspace.currentIndex === modelData.index ? Theme.platinum : Theme.muted
+                            color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.muted
                             font.pixelSize: 8
                             font.bold: true
+                            elide: Text.ElideRight
+                            width: parent.width - 10
+                            horizontalAlignment: Text.AlignHCenter
                         }
 
                         MouseArea {
@@ -51,16 +57,6 @@ Item {
                             onClicked: workspace.currentIndex = modelData.index
                         }
                     }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: workspace.currentIndex === 0 ? "CLASS A–G / AIRPORTS / NAVAIDS / ADS-B" : "RADAR / RF / AIRCRAFT VISUALS"
-                    color: workspace.currentIndex === 0 ? Theme.royalGold : Theme.signalCyan
-                    font.family: "Consolas"
-                    font.pixelSize: 7
-                    font.bold: true
                 }
             }
         }
@@ -73,6 +69,9 @@ Item {
 
             AirspaceClassificationPage {}
             AirPictureIntelligencePage {}
+            AeronauticalDataHubPage {}
+            TrainingRouteLabPage {}
+            AircraftStoryboardPage {}
         }
     }
 }

@@ -1,4 +1,4 @@
 import QtQuick
 
-AirForceCommandCenterV2 {
+AirForceOperationsCenter {
 }

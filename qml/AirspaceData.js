@@ -1,6 +1,6 @@
 .pragma library
 
-// Stage 1810 training dataset. Geometry is intentionally synthetic and must not be
+// Training dataset. Geometry is intentionally synthetic and must not be
 // interpreted as an official aeronautical chart or operational boundary.
 var zones = [
     {id:"SYN-DELTA-C", name:"Delta Training Sector", classCode:"C", controlled:true, floor:"1500 ft", ceiling:"FL195", x:0.31, y:0.24, w:0.27, h:0.16, note:"Synthetic terminal-area training block."},
@@ -35,6 +35,18 @@ var route = [
     {x:0.515, y:0.445},
     {x:0.535, y:0.750},
     {x:0.690, y:0.705}
+]
+
+var routePresets = [
+    {id:"DELTA-SPINE", name:"Delta / Upper Egypt", points:[
+        {x:0.245, y:0.255}, {x:0.515, y:0.445}, {x:0.535, y:0.750}, {x:0.545, y:0.885}
+    ]},
+    {id:"RED-SEA", name:"Cairo / Red Sea", points:[
+        {x:0.515, y:0.445}, {x:0.620, y:0.560}, {x:0.690, y:0.705}, {x:0.755, y:0.535}
+    ]},
+    {id:"WESTERN", name:"Western Training Arc", points:[
+        {x:0.245, y:0.255}, {x:0.180, y:0.500}, {x:0.270, y:0.720}, {x:0.515, y:0.445}
+    ]}
 ]
 
 var classInfo = [

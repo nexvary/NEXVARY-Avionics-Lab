@@ -29,6 +29,20 @@ int main() {
     assert(b.airOperationsTracks().size() == 3);
     assert(b.airOperationsIncidents().size() == 1);
 
+    assert(b.publicFlightTrackCount() == 4);
+    assert(b.publicFlightTracks().size() == 4);
+    assert(b.publicFlightFeedSource() == "PUBLIC ADS-B / DEMO");
+    assert(b.rfSpectrumBins().size() == 64);
+    assert(b.rfSpectrumMode() == "PASSIVE / SYNTHETIC");
+    assert(b.rfPeakFrequencyMhz() >= 100.0);
+    assert(b.rfPeakFrequencyMhz() <= 500.0);
+    assert(b.rfPeakLevelDbm() > -100.0);
+    assert(b.rfPeakLevelDbm() < -30.0);
+    b.fetchPublicFlightFeed("http://example.invalid/feed");
+    assert(b.publicFlightFeedStatus().contains("HTTPS"));
+    b.resetPublicFlightDemo();
+    assert(b.publicFlightTrackCount() == 4);
+
     assert(b.readinessAssets().size() == 4);
     assert(b.readinessMaintenanceRows().size() == 5);
     assert(b.readinessFleetPercent() == 87);

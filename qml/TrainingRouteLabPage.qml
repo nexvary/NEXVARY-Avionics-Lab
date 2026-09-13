@@ -9,7 +9,9 @@ import "RouteAnalysis.js" as RouteAnalysis
 Item {
     id: page
     clip: true
-    property var routeSummary: RouteAnalysis.summary(AirspaceData.route, AirspaceData.zones)
+    property int selectedPreset: 0
+    property var routePoints: AirspaceData.routePresets[selectedPreset].points
+    property var routeSummary: RouteAnalysis.summary(routePoints, AirspaceData.zones)
 
     function classColor(code) {
         if (code === "A") return Theme.royalGold
@@ -28,7 +30,7 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 72
+            Layout.preferredHeight: 76
             color: Theme.panel
             border.color: Theme.border
             border.width: 1
@@ -51,7 +53,7 @@ Item {
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                     }
                     Text {
-                        text: cockpit.rtl ? "تحليل المسافة والقطاعات وتصنيفات المجال على مسار تدريبي غير ملاحي" : "DISTANCE, SECTOR AND AIRSPACE-CLASS REVIEW FOR A NON-NAVIGATIONAL TRAINING ROUTE"
+                        text: cockpit.rtl ? "تحليل المسافة والقطاعات وتصنيفات المجال على مسارات تدريبية قابلة للتبديل" : "DISTANCE, SECTOR AND AIRSPACE-CLASS REVIEW ACROSS SELECTABLE TRAINING ROUTES"
                         color: Theme.radarGreen
                         font.pixelSize: 8
                         font.bold: true
@@ -60,8 +62,32 @@ Item {
                     }
                 }
 
+                ComboBox {
+                    id: routePresetBox
+                    model: AirspaceData.routePresets
+                    textRole: "name"
+                    Layout.preferredWidth: 210
+                    currentIndex: page.selectedPreset
+                    contentItem: Text {
+                        text: routePresetBox.displayText
+                        color: Theme.platinum
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: 8
+                        font.bold: true
+                        elide: Text.ElideRight
+                    }
+                    background: Rectangle {
+                        color: Theme.panel2
+                        border.color: Theme.radarGreen
+                        border.width: 1
+                        radius: Theme.radius
+                    }
+                    onActivated: page.selectedPreset = currentIndex
+                }
+
                 Rectangle {
-                    Layout.preferredWidth: 260
+                    Layout.preferredWidth: 250
                     Layout.preferredHeight: 46
                     color: Theme.panel2
                     border.color: Theme.warmOrange
@@ -80,7 +106,7 @@ Item {
                             horizontalAlignment: Text.AlignHCenter
                         }
                         Text {
-                            text: "APPROXIMATE TRAINING SCALE"
+                            text: AirspaceData.routePresets[page.selectedPreset].id + " / TRAINING SCALE"
                             color: Theme.muted
                             font.family: "Consolas"
                             font.pixelSize: 6
@@ -139,6 +165,7 @@ Item {
                 clip: true
 
                 Canvas {
+                    id: routeCanvas
                     anchors.fill: parent
                     onPaint: {
                         var c = getContext("2d")
@@ -164,8 +191,8 @@ Item {
                         c.strokeStyle = Theme.radarGreen
                         c.lineWidth = 3
                         c.beginPath()
-                        for (var i = 0; i < AirspaceData.route.length; ++i) {
-                            var p = AirspaceData.route[i]
+                        for (var i = 0; i < page.routePoints.length; ++i) {
+                            var p = page.routePoints[i]
                             var px = width * p.x
                             var py = height * p.y
                             if (i === 0) c.moveTo(px, py)
@@ -173,6 +200,13 @@ Item {
                         }
                         c.stroke()
                     }
+                }
+
+                onWidthChanged: routeCanvas.requestPaint()
+                onHeightChanged: routeCanvas.requestPaint()
+                Connections {
+                    target: page
+                    function onSelectedPresetChanged() { routeCanvas.requestPaint() }
                 }
 
                 Repeater {
@@ -199,7 +233,7 @@ Item {
                 }
 
                 Repeater {
-                    model: AirspaceData.route
+                    model: page.routePoints
                     delegate: Rectangle {
                         required property int index
                         required property var modelData
@@ -208,7 +242,7 @@ Item {
                         width: 14
                         height: 14
                         radius: 7
-                        color: index === 0 ? Theme.royalGold : (index === AirspaceData.route.length - 1 ? Theme.warmOrange : Theme.radarGreen)
+                        color: index === 0 ? Theme.royalGold : (index === page.routePoints.length - 1 ? Theme.warmOrange : Theme.radarGreen)
                         border.color: Theme.platinum
                         border.width: 1
                         Text {
@@ -227,8 +261,8 @@ Item {
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     anchors.margins: 8
-                    width: 330
-                    height: 42
+                    width: 350
+                    height: 48
                     color: Theme.panel
                     opacity: 0.95
                     border.color: Theme.radarGreen
@@ -330,7 +364,7 @@ Item {
                         Text { text: cockpit.rtl ? "نقاط المسار" : "ROUTE WAYPOINTS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Repeater {
-                            model: AirspaceData.route
+                            model: page.routePoints
                             delegate: RowLayout {
                                 required property int index
                                 required property var modelData
@@ -356,7 +390,7 @@ Item {
                         Text { text: cockpit.rtl ? "ملاحظات التحليل" : "ANALYSIS NOTES"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Text { text: cockpit.rtl ? "• المسافة تقريبية ومبنية على مقياس تدريب داخلي." : "• Distance is approximate and uses an internal training scale."; color: Theme.silver; font.pixelSize: 7; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                        Text { text: cockpit.rtl ? "• تقاطع القطاعات يعتمد على هندسة مبسطة قابلة للتدقيق." : "• Sector crossing uses deterministic simplified geometry."; color: Theme.silver; font.pixelSize: 7; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                        Text { text: cockpit.rtl ? "• يمكن تبديل المسارات لمقارنة عبور التصنيفات المختلفة." : "• Presets can be switched to compare different class crossings."; color: Theme.silver; font.pixelSize: 7; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         Text { text: cockpit.rtl ? "• لا توجد أوامر طيران أو توجيه تشغيلي حي." : "• No live flight commands or operational guidance are produced."; color: Theme.warmOrange; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                     }
                 }

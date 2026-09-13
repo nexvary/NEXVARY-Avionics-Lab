@@ -83,28 +83,28 @@ jobs:
           for lang in ar en tr es de it fr ur fa ru; do
             ./build-qt/nexvary_avionics_hmi --smoke --language "$lang"
           done
-      - name: Capture Stage 1890 air force management UI release gate
+      - name: Capture Stage 1900 map-first air force management UI release gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-management-overview-1920x1080.png --page 0 --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-management-overview-2560x1440.png --page 0 --aircraft-profile generic-uav --width 2560 --height 1440
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-data-hub-ar.png --page 11 --air-ops-workspace 2 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-aircraft-ar.png --page 11 --air-ops-workspace 4 --language ar --aircraft-profile generic-helicopter --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-cuas-response-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-air-force-management-ar.png --page 12 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1890-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-management-overview-1920x1080.png --page 0 --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-management-overview-2560x1440.png --page 0 --aircraft-profile generic-uav --width 2560 --height 1440
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-data-hub-ar.png --page 11 --air-ops-workspace 2 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-aircraft-ar.png --page 11 --air-ops-workspace 4 --language ar --aircraft-profile generic-helicopter --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-cuas-response-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-air-force-management-ar.png --page 12 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1900-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
           for lang in ar en tr es de it fr ur fa ru; do
-            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1890-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
+            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1900-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
           done
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1890-air-force-management-ui-release-gate
-          path: build-qt/stage1890-*.png
+          name: nexvary-avionics-stage1900-map-first-management-ui-release-gate
+          path: build-qt/stage1900-*.png
           if-no-files-found: error

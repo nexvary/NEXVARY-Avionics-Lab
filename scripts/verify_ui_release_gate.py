@@ -25,20 +25,21 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1810-desktop-1920x1080.png", (1920, 1080))
-    require(root / "stage1810-large-2560x1440.png", (2560, 1440))
-    require(root / "stage1810-airspace-ar.png", (1920, 1080))
-    require(root / "stage1810-airspace-en.png", (1920, 1080))
-    require(root / "stage1810-airspace-large.png", (2560, 1440))
-    require(root / "stage1810-air-force-management-ar.png", (1920, 1080))
-    require(root / "stage1810-air-force-management-en.png", (1920, 1080))
-    require(root / "stage1810-about-system-ar.png", (1920, 1080))
-    require(root / "stage1810-about-us-ar.png", (1920, 1080))
-    require(root / "stage1810-about-us-en.png", (1920, 1080))
-    require(root / "stage1810-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1840-desktop-1920x1080.png", (1920, 1080))
+    require(root / "stage1840-large-2560x1440.png", (2560, 1440))
+    require(root / "stage1840-airspace-ar.png", (1920, 1080))
+    require(root / "stage1840-air-picture-en.png", (1920, 1080))
+    require(root / "stage1840-data-hub-ar.png", (1920, 1080))
+    require(root / "stage1840-route-lab-en.png", (1920, 1080))
+    require(root / "stage1840-aircraft-ar.png", (1920, 1080))
+    require(root / "stage1840-aircraft-large.png", (2560, 1440))
+    require(root / "stage1840-air-force-management-ar.png", (1920, 1080))
+    require(root / "stage1840-about-system-ar.png", (1920, 1080))
+    require(root / "stage1840-about-us-en.png", (1920, 1080))
+    require(root / "stage1840-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1810-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1810 airspace classification chart, public traffic overlay, airports, navaids, training route, force management, RTL and ten locale renders are present.")
+        require(root / f"stage1840-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1840 airspace chart, radar/RF, aeronautical data hub, training route analysis, aircraft storyboard, RTL and ten locale renders are present.")
 
 
 if __name__ == "__main__":

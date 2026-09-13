@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
 
@@ -48,7 +49,7 @@ Rectangle {
             var zones=[[0.43,0.41,0.08,0.12],[0.55,0.47,0.10,0.11]]
             for (var zi=0; zi<zones.length; ++zi) { var z=zones[zi]; c.fillRect(width*z[0],height*z[1],width*z[2],height*z[3]); c.strokeRect(width*z[0],height*z[1],width*z[2],height*z[3]) }
             var cx=width*0.48, cy=height*0.52, r=Math.min(width,height)*0.42
-            c.strokeStyle="#356270"; c.globalAlpha=0.65
+            c.strokeStyle = "#356270"; c.globalAlpha=0.65
             for (var ring=1; ring<=4; ++ring) { c.beginPath(); c.arc(cx,cy,r*ring/4,0,Math.PI*2); c.stroke() }
             for (var a=0; a<360; a+=45) { var rad=a*Math.PI/180; c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+Math.cos(rad)*r,cy+Math.sin(rad)*r); c.stroke() }
             c.globalAlpha=1.0

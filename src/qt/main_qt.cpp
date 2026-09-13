@@ -80,6 +80,14 @@ int main(int argc, char* argv[]) {
         cockpit.setActivePlatform(arguments.at(profileIndex + 1));
     }
 
+    int airOpsWorkspace = 0;
+    const int airOpsWorkspaceIndex = arguments.indexOf(QStringLiteral("--air-ops-workspace"));
+    if (airOpsWorkspaceIndex >= 0 && airOpsWorkspaceIndex + 1 < arguments.size()) {
+        bool ok = false;
+        const int value = arguments.at(airOpsWorkspaceIndex + 1).toInt(&ok);
+        if (ok && value >= 0 && value <= 4) airOpsWorkspace = value;
+    }
+
     const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));
     if (screenshotIndex >= 0) {
         for (int i = 0; i < 80; ++i) cockpit.step();
@@ -87,6 +95,7 @@ int main(int argc, char* argv[]) {
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("cockpit"), &cockpit);
+    engine.rootContext()->setContextProperty(QStringLiteral("airOpsWorkspace"), airOpsWorkspace);
     engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     if (engine.rootObjects().isEmpty()) return 2;
 

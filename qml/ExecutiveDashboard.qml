@@ -12,18 +12,21 @@ Item {
         if (v >= 80) return Theme.royalGold
         return Theme.warmOrange
     }
-    function stateColor(s) {
-        var v = String(s || "").toUpperCase()
-        if (v === "READY" || v === "NOMINAL") return Theme.radarGreen
-        if (v === "LIMITED" || v === "DEGRADED") return Theme.royalGold
-        return Theme.warmOrange
+
+    function stateColor(state) {
+        var s = String(state || "").toUpperCase()
+        if (s === "READY" || s === "AVAILABLE" || s === "NOMINAL" || s === "ON TIME" || s === "CURRENT") return Theme.radarGreen
+        if (s === "LIMITED" || s === "CAUTION" || s === "REVIEW" || s === "PENDING") return Theme.royalGold
+        if (s === "FAULT" || s === "CRITICAL" || s === "CLOSED") return Theme.warmOrange
+        return Theme.signalCyan
     }
-    function overallState() {
-        if (cockpit.airOperationsHighCount > 0 || cockpit.twinFaultCount > 0)
-            return cockpit.rtl ? "يتطلب مراجعة" : "REVIEW REQUIRED"
-        if (cockpit.readinessFleetPercent < 85 || cockpit.activeAlertCount > 0)
+
+    function executiveState() {
+        if (cockpit.forceWeatherConstraintCount > 0 || cockpit.forceOpenMaintenanceCount > 0 || cockpit.airOperationsIncidentCount > 0)
+            return cockpit.rtl ? "توجد عناصر تتطلب مراجعة" : "REVIEW ITEMS PRESENT"
+        if (cockpit.forceFleetReadinessPercent < 85 || cockpit.forceCrewReadinessPercent < 85)
             return cockpit.rtl ? "جاهزية محدودة" : "LIMITED READINESS"
-        return cockpit.rtl ? "مستقر للتدريب" : "TRAINING NOMINAL"
+        return cockpit.rtl ? "الحالة مستقرة" : "MANAGEMENT NOMINAL"
     }
 
     ColumnLayout {
@@ -33,104 +36,230 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 58
+            Layout.preferredHeight: 64
             color: Theme.panel
             border.color: Theme.border
             border.width: 1
             radius: Theme.radius
+
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 9
                 spacing: 10
-                Rectangle { width: 4; Layout.fillHeight: true; color: Theme.signalCyan; radius: 2 }
+
+                Rectangle {
+                    width: 4
+                    Layout.fillHeight: true
+                    color: Theme.signalCyan
+                    radius: 2
+                }
+
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 0
+                    spacing: 1
                     Text {
-                        text: cockpit.rtl ? "مركز القيادة الجوية الموحد" : "UNIFIED AIR COMMAND CENTER"
+                        text: cockpit.rtl ? "نظام إدارة القوة الجوية" : "AIR FORCE MANAGEMENT SYSTEM"
                         color: Theme.platinum
-                        font.pixelSize: 19
+                        font.pixelSize: 20
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         elide: Text.ElideRight
                     }
                     Text {
-                        text: cockpit.rtl ? "صورة جوية • ADS-B • C-UAS • RF سلبي • الجاهزية • الصيانة • التوأم الرقمي" : "AIR PICTURE • ADS-B • AEGIS C-UAS • PASSIVE RF • READINESS • MAINTENANCE • DIGITAL TWIN"
+                        text: cockpit.rtl ? "الجاهزية • القواعد • الأسراب • المجال الجوي • الصيانة • التدريب • التقارير" : "READINESS • BASES • SQUADRONS • AIRSPACE • SUSTAINMENT • TRAINING • REPORTING"
                         color: Theme.signalCyan
-                        font.pixelSize: 7
+                        font.pixelSize: 8
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         elide: Text.ElideRight
                     }
                 }
+
                 Rectangle {
-                    Layout.preferredWidth: 280
+                    Layout.preferredWidth: 300
                     Layout.fillHeight: true
                     color: Theme.panel2
-                    border.color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                    border.color: page.executiveState().indexOf("NOMINAL") >= 0 || page.executiveState().indexOf("مستقرة") >= 0 ? Theme.radarGreen : Theme.royalGold
                     border.width: 1
                     radius: Theme.radius
+
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 7
+                        anchors.margins: 8
                         spacing: 8
                         Rectangle {
-                            width: 32; height: 32; radius: 16; color: "transparent"
-                            border.color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                            width: 34
+                            height: 34
+                            radius: 17
+                            color: "transparent"
+                            border.color: page.executiveState().indexOf("NOMINAL") >= 0 || page.executiveState().indexOf("مستقرة") >= 0 ? Theme.radarGreen : Theme.royalGold
                             border.width: 2
-                            Text { anchors.centerIn: parent; text: cockpit.airOperationsHighCount > 0 ? "!" : "✓"; color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.pixelSize: 15; font.bold: true }
+                            Text {
+                                anchors.centerIn: parent
+                                text: page.executiveState().indexOf("NOMINAL") >= 0 || page.executiveState().indexOf("مستقرة") >= 0 ? "✓" : "!"
+                                color: parent.border.color
+                                font.pixelSize: 15
+                                font.bold: true
+                            }
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 0
-                            Text { text: cockpit.rtl ? "الحالة التنفيذية" : "EXECUTIVE STATE"; color: Theme.muted; font.pixelSize: 6; font.bold: true }
-                            Text { text: page.overallState(); color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Text { text: "AWARENESS • TRAINING • REVIEW"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 5 }
+                            Text { text: cockpit.rtl ? "الحالة الإدارية" : "MANAGEMENT STATE"; color: Theme.muted; font.pixelSize: 6; font.bold: true }
+                            Text { text: page.executiveState(); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: "AWARENESS • READINESS • SUSTAINMENT"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 5 }
                         }
                     }
                 }
             }
         }
 
-        GridLayout {
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            columns: 7
-            columnSpacing: 5
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "المسارات الجوية" : "AIR TRACKS"; value: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); subtitle: cockpit.publicFlightTrackCount + (cockpit.rtl ? " عام" : " PUBLIC"); iconText: "AIR"; accent: Theme.signalCyan }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "حوادث C-UAS" : "C-UAS INCIDENTS"; value: String(cockpit.airOperationsIncidentCount); subtitle: cockpit.airOperationsHighCount + (cockpit.rtl ? " عالية" : " HIGH"); iconText: "CUAS"; accent: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.royalGold }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "ذروة RF" : "RF PEAK"; value: Number(cockpit.rfPeakFrequencyMhz).toFixed(1); subtitle: Number(cockpit.rfPeakLevelDbm).toFixed(0) + " dBm"; iconText: "RF"; accent: Theme.rfViolet }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "جاهزية الأسطول" : "FLEET READY"; value: cockpit.readinessFleetPercent + "%"; subtitle: cockpit.readinessReadyCount + "/" + cockpit.readinessAssets.length + (cockpit.rtl ? " جاهزة" : " READY"); iconText: "RDY"; accent: page.readinessColor(cockpit.readinessFleetPercent) }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "الصيانة" : "MAINTENANCE"; value: String(cockpit.readinessMaintenanceOpenCount); subtitle: cockpit.rtl ? "بنود متابعة" : "FOLLOW-UP"; iconText: "MNT"; accent: Theme.royalGold }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "الصحة التشخيصية" : "DIAGNOSTICS"; value: cockpit.diagnosticHealthScore + "%"; subtitle: cockpit.diagnosticFindingCount + (cockpit.rtl ? " نتائج" : " FINDINGS"); iconText: "DX"; accent: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.warmOrange }
-            StatusCard { Layout.fillWidth: true; Layout.fillHeight: true; title: cockpit.rtl ? "التوأم الرقمي" : "DIGITAL TWIN"; value: String(cockpit.twinNominalCount); subtitle: cockpit.twinFaultCount + (cockpit.rtl ? " أعطال" : " FAULTS"); iconText: "DT"; accent: cockpit.twinFaultCount > 0 ? Theme.warmOrange : Theme.radarGreen }
+            Layout.preferredHeight: 86
+            spacing: 6
+
+            StatusCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: cockpit.rtl ? "جاهزية القوة" : "FORCE READINESS"
+                value: cockpit.forceFleetReadinessPercent + "%"
+                subtitle: cockpit.forceReadyPlatformCount + " / " + cockpit.forceAssignedPlatformCount + (cockpit.rtl ? " منصة" : " PLATFORMS")
+                iconText: "RDY"
+                accent: page.readinessColor(cockpit.forceFleetReadinessPercent)
+            }
+            StatusCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: cockpit.rtl ? "القواعد المتاحة" : "BASE AVAILABILITY"
+                value: cockpit.forceAvailableBaseCount + " / " + cockpit.forceBases.length
+                subtitle: cockpit.forceWeatherConstraintCount + (cockpit.rtl ? " قيود طقس" : " WX LIMITS")
+                iconText: "BAS"
+                accent: cockpit.forceWeatherConstraintCount > 0 ? Theme.royalGold : Theme.radarGreen
+            }
+            StatusCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: cockpit.rtl ? "جاهزية الأطقم" : "CREW READINESS"
+                value: cockpit.forceCrewReadinessPercent + "%"
+                subtitle: cockpit.rtl ? "توافر تدريبي" : "TRAINING AVAILABILITY"
+                iconText: "CRW"
+                accent: page.readinessColor(cockpit.forceCrewReadinessPercent)
+            }
+            StatusCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: cockpit.rtl ? "الصيانة المفتوحة" : "OPEN MAINTENANCE"
+                value: String(cockpit.forceOpenMaintenanceCount)
+                subtitle: cockpit.rtl ? "بنود متابعة" : "FOLLOW-UP ITEMS"
+                iconText: "MNT"
+                accent: cockpit.forceOpenMaintenanceCount > 0 ? Theme.royalGold : Theme.radarGreen
+            }
+            StatusCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: cockpit.rtl ? "الصورة الجوية" : "AIR PICTURE"
+                value: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount)
+                subtitle: cockpit.airOperationsIncidentCount + (cockpit.rtl ? " حوادث" : " INCIDENTS")
+                iconText: "AIR"
+                accent: Theme.signalCyan
+            }
         }
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumHeight: 330
+            Layout.minimumHeight: 420
             spacing: 6
+
+            ColumnLayout {
+                Layout.preferredWidth: 282
+                Layout.minimumWidth: 260
+                Layout.maximumWidth: 310
+                Layout.fillHeight: true
+                spacing: 6
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 34
+                    color: Theme.panel
+                    border.color: Theme.borderSoft
+                    border.width: 1
+                    radius: Theme.radius
+                    Text {
+                        anchors.centerIn: parent
+                        text: cockpit.rtl ? "القواعد والمطارات" : "BASES & AIRFIELDS"
+                        color: Theme.platinum
+                        font.pixelSize: 9
+                        font.bold: true
+                    }
+                }
+
+                ListView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    model: cockpit.forceBases
+                    clip: true
+                    spacing: 5
+                    delegate: Rectangle {
+                        required property var modelData
+                        width: ListView.view.width
+                        height: 86
+                        color: Theme.panel
+                        border.color: page.stateColor(modelData.state)
+                        border.width: 1
+                        radius: Theme.radius
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 7
+                            spacing: 2
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.code; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                            }
+                            Text { text: modelData.region; color: Theme.muted; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text { text: modelData.state; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.fillWidth: true }
+                                Text { text: modelData.weather; color: Theme.silver; font.pixelSize: 6; elide: Text.ElideRight }
+                            }
+                            Text { text: modelData.runway; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5; Layout.fillWidth: true; elide: Text.ElideRight }
+                        }
+                    }
+                }
+            }
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.minimumWidth: 620
+                Layout.minimumWidth: 650
                 color: Theme.panel
                 border.color: Theme.signalCyan
                 border.width: 1
                 radius: Theme.radius
+
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 6
-                    spacing: 4
+                    anchors.margins: 7
+                    spacing: 5
+
                     RowLayout {
                         Layout.fillWidth: true
-                        Text { text: cockpit.rtl ? "الصورة الجوية الموحدة" : "UNIFIED AIR PICTURE"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: cockpit.publicFlightStatus + " • " + cockpit.airOperationsMode; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; elide: Text.ElideRight }
+                        Text { text: cockpit.rtl ? "الصورة الجوية والإدراك الموقفي" : "AIRSPACE & SITUATIONAL AWARENESS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
+                        Text {
+                            text: cockpit.publicFlightFeedStatus + "  •  " + cockpit.airOperationsMode
+                            color: Theme.signalCyan
+                            font.family: "Consolas"
+                            font.pixelSize: 6
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
                     }
+
                     CommandAirMap {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -138,62 +267,114 @@ Item {
                         aegisTracks: cockpit.airOperationsTracks
                         rtl: cockpit.rtl
                     }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 38
+                        spacing: 5
+                        Repeater {
+                            model: [
+                                {label:"ADS-B", value:cockpit.publicFlightTrackCount, color:Theme.signalCyan},
+                                {label:"AEGIS", value:cockpit.airOperationsTrackCount, color:Theme.royalGold},
+                                {label:"C-UAS INC", value:cockpit.airOperationsIncidentCount, color:Theme.warmOrange},
+                                {label:"RF", value:Number(cockpit.rfPeakFrequencyMhz).toFixed(1) + " MHz", color:Theme.rfViolet}
+                            ]
+                            delegate: Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                color: Theme.panel2
+                                border.color: modelData.color
+                                border.width: 1
+                                radius: Theme.radius
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 5
+                                    Text { text: modelData.label; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5; Layout.fillWidth: true }
+                                    Text { text: String(modelData.value); color: modelData.color; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
             ColumnLayout {
-                Layout.preferredWidth: 326
-                Layout.minimumWidth: 300
-                Layout.maximumWidth: 340
-                Layout.fillWidth: false
+                Layout.preferredWidth: 350
+                Layout.minimumWidth: 330
+                Layout.maximumWidth: 380
                 Layout.fillHeight: true
                 spacing: 6
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 166
+                    Layout.preferredHeight: 178
                     color: Theme.panel
-                    border.color: Theme.deepBlue
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 7
                         spacing: 4
-                        Text { text: cockpit.rtl ? "سياق الصورة الجوية" : "AIR PICTURE CONTEXT"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
+                        Text { text: cockpit.rtl ? "جاهزية الأسراب" : "SQUADRON READINESS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        GridLayout {
-                            Layout.fillWidth: true
-                            columns: 2
-                            rowSpacing: 3
-                            columnSpacing: 6
-                            Text { text: cockpit.rtl ? "المصدر" : "SOURCE"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: cockpit.airOperationsSource; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Text { text: cockpit.rtl ? "الإجمالي" : "TRACKS"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: "ADS-B"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.publicFlightTrackCount); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: "AEGIS"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsTrackCount); color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: cockpit.rtl ? "أولوية" : "HIGH+"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsHighCount); color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                        Repeater {
+                            model: cockpit.forceSquadrons
+                            delegate: RowLayout {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                spacing: 5
+                                Text { text: modelData.name; color: Theme.silver; font.pixelSize: 6; Layout.preferredWidth: 112; elide: Text.ElideRight }
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    height: 7
+                                    color: Theme.panel2
+                                    radius: 3
+                                    Rectangle {
+                                        width: parent.width * Math.max(0, Math.min(Number(modelData.ready), Number(modelData.assigned))) / Math.max(1, Number(modelData.assigned))
+                                        height: parent.height
+                                        color: page.stateColor(modelData.state)
+                                        radius: 3
+                                    }
+                                }
+                                Text { text: modelData.ready + "/" + modelData.assigned; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                            }
                         }
-                        Item { Layout.fillHeight: true }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 156
+                    color: Theme.panel
+                    border.color: Theme.royalGold
+                    border.width: 1
+                    radius: Theme.radius
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 7
+                        spacing: 4
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 4
-                            Repeater {
-                                model: [{t:"ADS-B",c:Theme.signalCyan},{t:"C-UAS",c:Theme.royalGold},{t:"RF",c:Theme.rfViolet},{t:"TWIN",c:Theme.radarGreen}]
-                                delegate: Rectangle {
-                                    required property var modelData
-                                    Layout.fillWidth: true
-                                    height: 19
-                                    color: Theme.panel2
-                                    border.color: modelData.c
-                                    border.width: 1
-                                    radius: Theme.radius
-                                    Text { anchors.centerIn: parent; text: modelData.t; color: modelData.c; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                                }
+                            Text { text: cockpit.rtl ? "التدريب والطقس" : "TRAINING & WEATHER"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
+                            Text { text: cockpit.forceWeatherConstraintCount + " WX"; color: cockpit.forceWeatherConstraintCount > 0 ? Theme.royalGold : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                        }
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
+                        ListView {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            model: cockpit.forceTrainingRows
+                            clip: true
+                            spacing: 2
+                            delegate: RowLayout {
+                                required property var modelData
+                                width: ListView.view.width
+                                height: 28
+                                spacing: 5
+                                Text { text: modelData.time; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.preferredWidth: 42 }
+                                Text { text: modelData.item; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
                             }
                         }
                     }
@@ -212,31 +393,35 @@ Item {
                         spacing: 4
                         RowLayout {
                             Layout.fillWidth: true
-                            Text { text: cockpit.rtl ? "الحوادث ذات الأولوية" : "PRIORITY INCIDENTS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-                            Text { text: String(cockpit.airOperationsIncidentCount); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                            Text { text: cockpit.rtl ? "المتابعة والصيانة" : "FOLLOW-UP & SUSTAINMENT"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
+                            Text { text: String(cockpit.forceOpenMaintenanceCount); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
                         }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
+                            model: cockpit.forceMaintenancePlanRows
                             clip: true
                             spacing: 3
-                            model: cockpit.airOperationsIncidents
                             delegate: Rectangle {
                                 required property var modelData
                                 width: ListView.view.width
-                                height: 50
+                                height: 42
                                 color: Theme.panel2
-                                border.color: Theme.warmOrange
+                                border.color: modelData.priority === "P2" ? Theme.royalGold : Theme.borderSoft
                                 border.width: 1
                                 radius: Theme.radius
-                                ColumnLayout {
+                                RowLayout {
                                     anchors.fill: parent
                                     anchors.margins: 5
-                                    spacing: 0
-                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: String(modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
+                                    spacing: 6
+                                    Text { text: modelData.priority; color: modelData.priority === "P2" ? Theme.royalGold : Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 0
+                                        Text { text: modelData.platform + " / " + modelData.item; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.due; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5 }
+                                    }
                                 }
                             }
                         }
@@ -245,123 +430,85 @@ Item {
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 188
-            spacing: 6
-            CuasSummaryPanel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                tracks: cockpit.airOperationsTrackCount
-                incidents: cockpit.airOperationsIncidentCount
-                highCount: cockpit.airOperationsHighCount
-                observations: cockpit.airOperationsObservationCount
-                rtl: cockpit.rtl
-            }
-            RfSpectrumMini {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                bins: cockpit.rfSpectrumBins
-                peakFrequencyMhz: cockpit.rfPeakFrequencyMhz
-                peakLevelDbm: cockpit.rfPeakLevelDbm
-                rtl: cockpit.rtl
-            }
-            AircraftCommandCard {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                rtl: cockpit.rtl
-            }
-        }
-
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 108
+            Layout.preferredHeight: 72
             color: Theme.panel
             border.color: Theme.border
             border.width: 1
             radius: Theme.radius
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 6
-                spacing: 4
-                RowLayout {
-                    Layout.fillWidth: true
-                    Text { text: cockpit.rtl ? "مصفوفة جاهزية المنصات" : "PLATFORM READINESS MATRIX"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-                    Text { text: cockpit.readinessReadyCount + "/" + cockpit.readinessAssets.length + " READY"; color: page.readinessColor(cockpit.readinessFleetPercent); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
-                }
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    spacing: 5
-                    Repeater {
-                        model: cockpit.readinessAssets
-                        delegate: Rectangle {
-                            required property var modelData
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            color: Theme.panel2
-                            border.color: page.stateColor(modelData.state)
-                            border.width: 1
-                            radius: Theme.radius
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.margins: 6
-                                spacing: 6
-                                Rectangle {
-                                    Layout.preferredWidth: 48
-                                    Layout.fillHeight: true
-                                    color: "#0E1820"
-                                    border.color: Theme.deepBlue
-                                    border.width: 1
-                                    radius: Theme.radius
-                                    Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
-                                }
-                                ColumnLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 1
-                                    Text { text: modelData.name || modelData.id; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    RowLayout {
-                                        Layout.fillWidth: true
-                                        Text { text: String(modelData.readiness) + "%"; color: page.readinessColor(Number(modelData.readiness)); font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                                        Item { Layout.fillWidth: true }
-                                        Text { text: String(modelData.state); color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
-                                    }
-                                    Rectangle {
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 5
-                                        color: Theme.shell
-                                        radius: 2
-                                        Rectangle { width: parent.width * Math.max(0, Math.min(1, Number(modelData.readiness)/100)); height: parent.height; radius: 2; color: page.readinessColor(Number(modelData.readiness)) }
-                                    }
-                                    Text { text: (cockpit.rtl ? "طاقم " : "CREW ") + modelData.crewReady + "/" + modelData.crewRequired + " • " + modelData.hoursToInspection + "h"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5; Layout.fillWidth: true; elide: Text.ElideRight }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 22
-            color: Theme.shell
-            border.color: Theme.borderSoft
-            border.width: 1
-            radius: Theme.radius
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 5
-                spacing: 7
-                Text { text: "ADS-B"; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "AEGIS C-UAS"; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "AVIONICS LAB"; color: Theme.skyBlue; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "READINESS OPS"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Item { Layout.fillWidth: true }
-                Text { text: cockpit.rtl ? "تدريب • محاكاة • تحليل • دون تحكم حي" : "TRAINING • SIMULATION • ANALYSIS • NO LIVE CONTROL"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5 }
+                anchors.margins: 7
+                spacing: 6
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: Theme.panel2
+                    border.color: Theme.radarGreen
+                    border.width: 1
+                    radius: Theme.radius
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 0
+                        Text { text: cockpit.rtl ? "الصحة الهندسية" : "ENGINEERING HEALTH"; color: Theme.muted; font.pixelSize: 5; font.bold: true }
+                        Text { text: cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.royalGold; font.family: "Consolas"; font.pixelSize: 12; font.bold: true }
+                        Text { text: cockpit.diagnosticFindingCount + (cockpit.rtl ? " نتائج تشخيص" : " DIAGNOSTIC FINDINGS"); color: Theme.silver; font.pixelSize: 5 }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: Theme.panel2
+                    border.color: cockpit.twinFaultCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                    border.width: 1
+                    radius: Theme.radius
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 0
+                        Text { text: "DIGITAL TWIN"; color: Theme.muted; font.pixelSize: 5; font.bold: true }
+                        Text { text: cockpit.twinNominalCount + " NOMINAL"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.twinFaultCount + (cockpit.rtl ? " أعطال" : " FAULTS"); color: cockpit.twinFaultCount > 0 ? Theme.warmOrange : Theme.silver; font.pixelSize: 5 }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: Theme.panel2
+                    border.color: Theme.rfViolet
+                    border.width: 1
+                    radius: Theme.radius
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 0
+                        Text { text: cockpit.rtl ? "بيانات واتصالات" : "DATA & INTEGRATION"; color: Theme.muted; font.pixelSize: 5; font.bold: true }
+                        Text { text: cockpit.publicFlightFeedSource; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                        Text { text: cockpit.airOperationsSource; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 5; Layout.fillWidth: true; elide: Text.ElideRight }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: Theme.panel2
+                    border.color: cockpit.airOperationsIncidentCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                    border.width: 1
+                    radius: Theme.radius
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 0
+                        Text { text: cockpit.rtl ? "مراجعة الحوادث" : "INCIDENT REVIEW"; color: Theme.muted; font.pixelSize: 5; font.bold: true }
+                        Text { text: String(cockpit.airOperationsIncidentCount); color: cockpit.airOperationsIncidentCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 12; font.bold: true }
+                        Text { text: cockpit.rtl ? "تنسيق وتوثيق فقط" : "COORDINATION / RECORD ONLY"; color: Theme.silver; font.pixelSize: 5 }
+                    }
+                }
             }
         }
     }

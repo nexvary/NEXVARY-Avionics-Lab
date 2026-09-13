@@ -25,20 +25,15 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1900-management-overview-1920x1080.png", (1920, 1080))
-    require(root / "stage1900-management-overview-2560x1440.png", (2560, 1440))
-    require(root / "stage1900-airspace-ar.png", (1920, 1080))
-    require(root / "stage1900-air-picture-en.png", (1920, 1080))
-    require(root / "stage1900-data-hub-ar.png", (1920, 1080))
-    require(root / "stage1900-route-lab-en.png", (1920, 1080))
-    require(root / "stage1900-aircraft-ar.png", (1920, 1080))
-    require(root / "stage1900-cuas-response-en.png", (1920, 1080))
-    require(root / "stage1900-air-force-management-ar.png", (1920, 1080))
-    require(root / "stage1900-about-system-ar.png", (1920, 1080))
-    require(root / "stage1900-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1910-operations-center-1920x1080.png", (1920, 1080))
+    require(root / "stage1910-operations-center-2560x1440.png", (2560, 1440))
+    require(root / "stage1910-airspace-ar.png", (1920, 1080))
+    require(root / "stage1910-air-picture-en.png", (1920, 1080))
+    require(root / "stage1910-air-force-management-ar.png", (1920, 1080))
+    require(root / "stage1910-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1900-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1900 map-first air-force-management rebuild, dominant air picture, compact base availability, squadron readiness, sustainment/training, source-aware data, RTL and ten locale renders are present.")
+        require(root / f"stage1910-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1910 operations-center rebuild, strategic geospatial air picture, airfield pins, force posture, squadron board, sustainment/training, aircraft visual deck, data integration, RTL and ten locale renders are present.")
 
 
 if __name__ == "__main__":

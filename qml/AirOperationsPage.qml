@@ -65,7 +65,7 @@ Item {
             id: workspace
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: 0
+            currentIndex: airOpsWorkspace
 
             AirspaceClassificationPage {}
             AirPictureIntelligencePage {}

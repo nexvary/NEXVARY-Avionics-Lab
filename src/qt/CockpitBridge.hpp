@@ -1,6 +1,7 @@
 #pragma once
 
 #include "air_ops/AirOperationsIntegration.hpp"
+#include "air_ops/PublicFlightFeed.hpp"
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
 #include "diagnostics/DiagnosticTypes.hpp"
@@ -11,6 +12,8 @@
 #include <QStringList>
 #include <QVariantList>
 #include <string>
+
+class QNetworkAccessManager;
 
 namespace nexvary::avionics {
 
@@ -38,6 +41,14 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(int airOperationsIncidentCount READ airOperationsIncidentCount NOTIFY dataChanged)
     Q_PROPERTY(int airOperationsHighCount READ airOperationsHighCount NOTIFY dataChanged)
     Q_PROPERTY(qulonglong airOperationsObservationCount READ airOperationsObservationCount NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList publicFlightTracks READ publicFlightTracks NOTIFY dataChanged)
+    Q_PROPERTY(QString publicFlightFeedSource READ publicFlightFeedSource NOTIFY dataChanged)
+    Q_PROPERTY(QString publicFlightFeedStatus READ publicFlightFeedStatus NOTIFY dataChanged)
+    Q_PROPERTY(int publicFlightTrackCount READ publicFlightTrackCount NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList rfSpectrumBins READ rfSpectrumBins NOTIFY dataChanged)
+    Q_PROPERTY(QString rfSpectrumMode READ rfSpectrumMode NOTIFY dataChanged)
+    Q_PROPERTY(double rfPeakFrequencyMhz READ rfPeakFrequencyMhz NOTIFY dataChanged)
+    Q_PROPERTY(double rfPeakLevelDbm READ rfPeakLevelDbm NOTIFY dataChanged)
     Q_PROPERTY(QVariantList readinessAssets READ readinessAssets NOTIFY dataChanged)
     Q_PROPERTY(QVariantList readinessMaintenanceRows READ readinessMaintenanceRows NOTIFY dataChanged)
     Q_PROPERTY(int readinessFleetPercent READ readinessFleetPercent NOTIFY dataChanged)
@@ -115,6 +126,14 @@ public:
     int airOperationsIncidentCount() const noexcept;
     int airOperationsHighCount() const noexcept;
     qulonglong airOperationsObservationCount() const noexcept;
+    QVariantList publicFlightTracks() const;
+    QString publicFlightFeedSource() const;
+    QString publicFlightFeedStatus() const;
+    int publicFlightTrackCount() const noexcept;
+    QVariantList rfSpectrumBins() const;
+    QString rfSpectrumMode() const;
+    double rfPeakFrequencyMhz() const noexcept;
+    double rfPeakLevelDbm() const noexcept;
     QVariantList readinessAssets() const;
     QVariantList readinessMaintenanceRows() const;
     int readinessFleetPercent() const noexcept;
@@ -185,6 +204,9 @@ public:
     Q_INVOKABLE void setActivePlatform(const QString& id);
     Q_INVOKABLE bool loadAirOperationsReplay(const QString& path);
     Q_INVOKABLE void resetAirOperationsDemo();
+    Q_INVOKABLE bool loadPublicFlightFeedFile(const QString& path);
+    Q_INVOKABLE void fetchPublicFlightFeed(const QString& url);
+    Q_INVOKABLE void resetPublicFlightDemo();
 
 signals:
     void dataChanged();
@@ -213,8 +235,11 @@ private:
     DiagnosticSummary diagnosticSummary_;
     DiagnosticHistory diagnosticHistory_;
     AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
+    PublicFlightFeed publicFlightFeed_{PublicFlightFeed::demo()};
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
+    QNetworkAccessManager* publicFlightNetwork_{nullptr};
     QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
+    QString publicFlightFeedStatus_{QStringLiteral("DEMO / PUBLIC-FEED READY")};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};
     bool replayPaused_{false};

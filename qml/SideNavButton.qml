@@ -6,30 +6,31 @@ import "Theme.js" as Theme
 Button {
     id: control
     property string iconKind: "dashboard"
-    implicitHeight: 46
-    implicitWidth: 190
+    implicitHeight: 52
+    implicitWidth: 200
     checkable: true
 
     contentItem: RowLayout {
-        spacing: 9
+        spacing: 10
         NavIcon {
             kind: control.iconKind
             iconColor: control.checked ? Theme.platinum : Theme.silver
-            Layout.preferredWidth: 19
-            Layout.preferredHeight: 19
+            Layout.preferredWidth: 20
+            Layout.preferredHeight: 20
         }
         Text {
             text: control.text
             color: control.checked ? Theme.platinum : Theme.silver
-            font.pixelSize: 10
+            font.family: /[\u0600-\u06FF]/.test(control.text) ? Theme.arabicKufi : Theme.latinUi
+            font.pixelSize: 12
             font.bold: control.checked
-            font.letterSpacing: 0.2
+            font.letterSpacing: 0.1
             Layout.fillWidth: true
             elide: Text.ElideRight
         }
         Rectangle {
             visible: control.checked
-            width: 5; height: 5; radius: 2.5
+            width: 6; height: 6; radius: 3
             color: Theme.accent
         }
     }

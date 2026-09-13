@@ -25,20 +25,20 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1870-command-center-1920x1080.png", (1920, 1080))
-    require(root / "stage1870-command-center-2560x1440.png", (2560, 1440))
-    require(root / "stage1870-airspace-ar.png", (1920, 1080))
-    require(root / "stage1870-air-picture-en.png", (1920, 1080))
-    require(root / "stage1870-data-hub-ar.png", (1920, 1080))
-    require(root / "stage1870-route-lab-en.png", (1920, 1080))
-    require(root / "stage1870-aircraft-ar.png", (1920, 1080))
-    require(root / "stage1870-cuas-response-en.png", (1920, 1080))
-    require(root / "stage1870-air-force-management-ar.png", (1920, 1080))
-    require(root / "stage1870-about-system-ar.png", (1920, 1080))
-    require(root / "stage1870-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1880-command-center-1920x1080.png", (1920, 1080))
+    require(root / "stage1880-command-center-2560x1440.png", (2560, 1440))
+    require(root / "stage1880-airspace-ar.png", (1920, 1080))
+    require(root / "stage1880-air-picture-en.png", (1920, 1080))
+    require(root / "stage1880-data-hub-ar.png", (1920, 1080))
+    require(root / "stage1880-route-lab-en.png", (1920, 1080))
+    require(root / "stage1880-aircraft-ar.png", (1920, 1080))
+    require(root / "stage1880-cuas-response-en.png", (1920, 1080))
+    require(root / "stage1880-air-force-management-ar.png", (1920, 1080))
+    require(root / "stage1880-about-system-ar.png", (1920, 1080))
+    require(root / "stage1880-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1870-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1870 command map, ADS-B/AEGIS overlay, C-UAS summary, passive RF, aircraft visual card, compact readiness matrix, RTL and ten locale renders are present.")
+        require(root / f"stage1880-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1880 visual air command center, expanded command map, ADS-B/AEGIS overlay, C-UAS summary, passive RF, aircraft explorer, compact readiness matrix, RTL and ten locale renders are present.")
 
 
 if __name__ == "__main__":

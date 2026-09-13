@@ -6,6 +6,7 @@ import "AirspaceLocale.js" as AirspaceLocale
 
 Item {
     id: root
+    property string releaseStage: "1840"
 
     ColumnLayout {
         anchors.fill: parent

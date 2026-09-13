@@ -25,20 +25,20 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1890-management-overview-1920x1080.png", (1920, 1080))
-    require(root / "stage1890-management-overview-2560x1440.png", (2560, 1440))
-    require(root / "stage1890-airspace-ar.png", (1920, 1080))
-    require(root / "stage1890-air-picture-en.png", (1920, 1080))
-    require(root / "stage1890-data-hub-ar.png", (1920, 1080))
-    require(root / "stage1890-route-lab-en.png", (1920, 1080))
-    require(root / "stage1890-aircraft-ar.png", (1920, 1080))
-    require(root / "stage1890-cuas-response-en.png", (1920, 1080))
-    require(root / "stage1890-air-force-management-ar.png", (1920, 1080))
-    require(root / "stage1890-about-system-ar.png", (1920, 1080))
-    require(root / "stage1890-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1900-management-overview-1920x1080.png", (1920, 1080))
+    require(root / "stage1900-management-overview-2560x1440.png", (2560, 1440))
+    require(root / "stage1900-airspace-ar.png", (1920, 1080))
+    require(root / "stage1900-air-picture-en.png", (1920, 1080))
+    require(root / "stage1900-data-hub-ar.png", (1920, 1080))
+    require(root / "stage1900-route-lab-en.png", (1920, 1080))
+    require(root / "stage1900-aircraft-ar.png", (1920, 1080))
+    require(root / "stage1900-cuas-response-en.png", (1920, 1080))
+    require(root / "stage1900-air-force-management-ar.png", (1920, 1080))
+    require(root / "stage1900-about-system-ar.png", (1920, 1080))
+    require(root / "stage1900-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1890-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1890 air-force-management restructure, map-first executive overview, base/airfield status, squadron readiness, training/weather, sustainment, airspace awareness, RTL and ten locale renders are present.")
+        require(root / f"stage1900-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1900 map-first air-force-management rebuild, dominant air picture, compact base availability, squadron readiness, sustainment/training, source-aware data, RTL and ten locale renders are present.")
 
 
 if __name__ == "__main__":

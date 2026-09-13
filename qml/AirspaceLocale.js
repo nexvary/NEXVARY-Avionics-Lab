@@ -17,6 +17,9 @@ function label(code) {
 
 function chart(code) { return code === "ar" ? "خريطة المجال الجوي" : "AIRSPACE CHART" }
 function picture(code) { return code === "ar" ? "الصورة الجوية و RF" : "AIR PICTURE / RF" }
+function dataHub(code) { return code === "ar" ? "مركز البيانات" : "DATA HUB" }
+function routeLab(code) { return code === "ar" ? "مختبر المسار" : "ROUTE LAB" }
+function aircraft(code) { return code === "ar" ? "استعراض الطائرة" : "AIRCRAFT" }
 function subtitle(code) {
     return code === "ar"
         ? "تصنيف مرئي للمجال الجوي، المطارات والمساعدات الملاحية ومسارات الطيران العامة — بيانات تدريبية"

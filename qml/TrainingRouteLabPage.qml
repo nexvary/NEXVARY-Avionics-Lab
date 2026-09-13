@@ -33,16 +33,33 @@ Item {
             border.color: Theme.border
             border.width: 1
             radius: Theme.radius
+
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 10
                 spacing: 12
+
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 2
-                    Text { text: cockpit.rtl ? "مختبر تحليل المسار التدريبي" : "TRAINING ROUTE LAB"; color: Theme.platinum; font.pixelSize: 20; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
-                    Text { text: cockpit.rtl ? "تحليل المسافة والقطاعات وتصنيفات المجال على مسار تدريبي غير ملاحي" : "DISTANCE, SECTOR AND AIRSPACE-CLASS REVIEW FOR A NON-NAVIGATIONAL TRAINING ROUTE"; color: Theme.radarGreen; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                    Text {
+                        text: cockpit.rtl ? "مختبر تحليل المسار التدريبي" : "TRAINING ROUTE LAB"
+                        color: Theme.platinum
+                        font.pixelSize: 20
+                        font.bold: true
+                        Layout.fillWidth: true
+                        horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                    }
+                    Text {
+                        text: cockpit.rtl ? "تحليل المسافة والقطاعات وتصنيفات المجال على مسار تدريبي غير ملاحي" : "DISTANCE, SECTOR AND AIRSPACE-CLASS REVIEW FOR A NON-NAVIGATIONAL TRAINING ROUTE"
+                        color: Theme.radarGreen
+                        font.pixelSize: 8
+                        font.bold: true
+                        Layout.fillWidth: true
+                        elide: Text.ElideRight
+                    }
                 }
+
                 Rectangle {
                     Layout.preferredWidth: 260
                     Layout.preferredHeight: 46
@@ -54,8 +71,22 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 6
                         spacing: 1
-                        Text { text: AirspaceLocale.notForNavigation(cockpit.language); color: Theme.warmOrange; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-                        Text { text: "APPROXIMATE TRAINING SCALE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text {
+                            text: AirspaceLocale.notForNavigation(cockpit.language)
+                            color: Theme.warmOrange
+                            font.pixelSize: 8
+                            font.bold: true
+                            Layout.fillWidth: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                        Text {
+                            text: "APPROXIMATE TRAINING SCALE"
+                            color: Theme.muted
+                            font.family: "Consolas"
+                            font.pixelSize: 6
+                            Layout.fillWidth: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
                     }
                 }
             }
@@ -118,13 +149,18 @@ Item {
                         c.lineWidth = 1
                         for (var gx = 0; gx <= 10; ++gx) {
                             var x = width * gx / 10
-                            c.beginPath(); c.moveTo(x, 0); c.lineTo(x, height); c.stroke()
+                            c.beginPath()
+                            c.moveTo(x, 0)
+                            c.lineTo(x, height)
+                            c.stroke()
                         }
                         for (var gy = 0; gy <= 8; ++gy) {
                             var y = height * gy / 8
-                            c.beginPath(); c.moveTo(0, y); c.lineTo(width, y); c.stroke()
+                            c.beginPath()
+                            c.moveTo(0, y)
+                            c.lineTo(width, y)
+                            c.stroke()
                         }
-
                         c.strokeStyle = Theme.radarGreen
                         c.lineWidth = 3
                         c.beginPath()
@@ -151,7 +187,14 @@ Item {
                         opacity: 0.16
                         border.color: page.classColor(modelData.classCode)
                         border.width: 1
-                        Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 16; font.bold: true }
+                        Text {
+                            anchors.centerIn: parent
+                            text: modelData.classCode
+                            color: Theme.platinum
+                            font.family: "Consolas"
+                            font.pixelSize: 16
+                            font.bold: true
+                        }
                     }
                 }
 
@@ -168,7 +211,15 @@ Item {
                         color: index === 0 ? Theme.royalGold : (index === AirspaceData.route.length - 1 ? Theme.warmOrange : Theme.radarGreen)
                         border.color: Theme.platinum
                         border.width: 1
-                        Text { x: 17; y: -3; text: "WP" + (index + 1); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                        Text {
+                            x: 17
+                            y: -3
+                            text: "WP" + (index + 1)
+                            color: Theme.platinum
+                            font.family: "Consolas"
+                            font.pixelSize: 7
+                            font.bold: true
+                        }
                     }
                 }
 
@@ -187,8 +238,23 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 5
                         spacing: 1
-                        Text { text: routeSummary.advisory; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-                        Text { text: "CLASSES  " + routeSummary.classes.join(" / "); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text {
+                            text: routeSummary.advisory
+                            color: Theme.radarGreen
+                            font.family: "Consolas"
+                            font.pixelSize: 7
+                            font.bold: true
+                            Layout.fillWidth: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                        Text {
+                            text: "CLASSES  " + routeSummary.classes.join(" / ")
+                            color: Theme.silver
+                            font.family: "Consolas"
+                            font.pixelSize: 6
+                            Layout.fillWidth: true
+                            horizontalAlignment: Text.AlignHCenter
+                        }
                     }
                 }
             }
@@ -200,7 +266,7 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 220
+                    Layout.preferredHeight: 230
                     color: Theme.panel
                     border.color: Theme.radarGreen
                     border.width: 1
@@ -228,8 +294,22 @@ Item {
                                 RowLayout {
                                     anchors.fill: parent
                                     anchors.margins: 6
-                                    Rectangle { width: 28; height: 28; radius: 14; color: Theme.panel3; border.color: page.classColor(modelData.classCode); border.width: 1; Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true } }
-                                    ColumnLayout { Layout.fillWidth: true; spacing: 0; Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }; Text { text: modelData.floor + " → " + modelData.ceiling; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 } }
+                                    spacing: 6
+                                    Rectangle {
+                                        width: 28
+                                        height: 28
+                                        radius: 14
+                                        color: Theme.panel3
+                                        border.color: page.classColor(modelData.classCode)
+                                        border.width: 1
+                                        Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                    }
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 0
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.floor + " → " + modelData.ceiling; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                                    }
                                 }
                             }
                         }

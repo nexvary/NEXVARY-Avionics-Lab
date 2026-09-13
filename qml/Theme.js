@@ -14,8 +14,6 @@ var panel2 = "#18232C"
 var panel3 = gunmetal
 var elevated = "#24313B"
 
-// Ministerial polish: visible 1 px metallic framing for primary panels,
-// with a restrained soft border for nested/internal elements.
 var border = metallicSilver
 var borderSoft = "#46515A"
 var frameWidth = 1
@@ -28,9 +26,6 @@ var cyan = electricBlue
 var blue = electricBlue
 var gold = platinum
 
-// Stage 1800 visual-intelligence accents. These are used selectively for
-// radar, RF, aircraft visualization and status differentiation rather than
-// replacing the approved dark navy / gunmetal identity.
 var radarGreen = "#62C59A"
 var signalCyan = "#56B8D8"
 var royalGold = "#D2B36C"
@@ -42,7 +37,20 @@ var deepBlue = "#244A63"
 var green = "#63B090"
 var amber = "#B99A62"
 var red = "#B66A6A"
-var radius = 2
+var radius = 4
+
+// Stage 1920 readability system.
+// Arabic uses a real Kufi family when it is present on the host OS. Qt will
+// fall back to the platform Arabic font when the family is not installed.
+var arabicKufi = "Noto Kufi Arabic"
+var latinUi = "Segoe UI"
+var mono = "Consolas"
+var titlePx = 26
+var sectionPx = 13
+var bodyPx = 11
+var smallPx = 9
+
+function uiFont(rtl) { return rtl ? arabicKufi : latinUi }
 
 function stateColor(state) {
     if (state === "NOMINAL") return green

@@ -23,7 +23,7 @@ jobs:
         run: cmake -S . -B build-win -A x64 -DNEXVARY_BUILD_QT_HMI=ON -DNEXVARY_WARNINGS_AS_ERRORS=ON -DCMAKE_PREFIX_PATH='C:\Qt\6.8.3\msvc2022_64'
       - name: Build complete Windows release configuration
         run: cmake --build build-win --config Release
-      - name: Run Stage 1790 Windows verification
+      - name: Run Stage 1800 Windows verification
         shell: pwsh
         run: |
           $env:PATH = "C:\Qt\6.8.3\msvc2022_64\bin;$env:PATH"
@@ -41,6 +41,7 @@ jobs:
           & 'C:\Qt\6.8.3\msvc2022_64\bin\windeployqt.exe' --release --qmldir qml --compiler-runtime package\nexvary_avionics_hmi.exe
           if (!(Test-Path package\nexvary_avionics_hmi.exe)) { throw 'Packaged HMI executable missing' }
           if (!(Test-Path package\Qt6Core.dll)) { throw 'Qt runtime deployment incomplete' }
+          if (!(Test-Path package\Qt6Network.dll)) { throw 'Qt network runtime deployment incomplete' }
           if (!(Test-Path package\release-manifest.json)) { throw 'Release manifest missing from package' }
           if (!(Test-Path package\examples\nominal-diagnostic.json)) { throw 'Diagnostic example missing from package' }
       - name: Create portable ZIP
@@ -57,7 +58,7 @@ jobs:
           if (!(Test-Path dist-installer\NEXVARY-Avionics-Lab-Setup.exe)) { throw 'Installer was not generated' }
       - uses: actions/upload-artifact@v4
         with:
-          name: NEXVARY-Avionics-Lab-Windows-v3.2.0-Stage1790
+          name: NEXVARY-Avionics-Lab-Windows-v3.2.0-Stage1800
           path: |
             dist-installer/NEXVARY-Avionics-Lab-Setup.exe
             NEXVARY-Avionics-Lab-v3.2.0-Portable.zip

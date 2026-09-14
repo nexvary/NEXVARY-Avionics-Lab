@@ -374,7 +374,7 @@ Item {
                             Repeater {
                                 model: [
                                     {label:cockpit.rtl ? "تقارير جاهزة" : "READY REPORTS", value:"3 / 4", color:Theme.radarGreen},
-                                    {label:cockpit.rtl ? "سجل الإصدار" : "RELEASE MANIFEST", value:"v3.3.0", color:Theme.signalCyan},
+                                    {label:cockpit.rtl ? "سجل الإصدار" : "RELEASE MANIFEST", value:"v3.4.0", color:Theme.signalCyan},
                                     {label:cockpit.rtl ? "نطاق البيانات" : "DATA SCOPE", value:"SYNTHETIC", color:Theme.royalGold}
                                 ]
                                 delegate: Rectangle {

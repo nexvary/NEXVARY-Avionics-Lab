@@ -137,13 +137,13 @@ Item {
                             anchors.fill: parent
                             anchors.margins: 10
                             spacing: 2
-                            Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
-                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "v3.2.0 / STAGE 1720"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
-                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: 10; font.bold: true }
+                            Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: Theme.secondaryPx; font.bold: true }
+                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "v3.4.0 / STAGE 1970"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: Theme.smallPx; font.bold: true }
                             Item { Layout.fillHeight: true }
-                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: Theme.smallPx }
                         }
                     }
                 }

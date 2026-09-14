@@ -50,3 +50,24 @@ No third-party image, icon or UI asset from these references is embedded in the 
 - QML runtime, navigation/back-stack, RTL and ten-locale gate.
 - Real application screenshots at 1920×1080 and 2560×1440.
 - Windows installer and portable ZIP.
+
+## Final real-image review and corrections
+
+The first Stage 1970 build was not accepted on CI status alone. The generated 1920×1080 and 2560×1440 images were opened and reviewed visually, and the following issues were corrected before the release gate was declared stable:
+
+1. The executive safety line escaped the command header and overlapped the map in the 1920×1080 Arabic, Urdu and Persian captures. The RTL header now reserves the required height and keeps every line inside its border.
+2. The image named for C-UAS Detection opened the Airspace page because the command-line workspace parser stopped at index 5. Workspace 6 is now accepted and initial-route validation fails the smoke test if the requested page is not actually shown.
+3. The C-UAS page had excessive unused plot space and weak information density. It now contains a continuously animated passive radar sweep, bearing ticks, range rings, geofence, track history, classification labels and a passive RF spectrum panel.
+4. The RF mini-panel initially displayed its fallback level instead of provider evidence. Its peak level is now bound to the current RF source and the final captured training scenario shows `-64.5 dBm`.
+5. The back-stack smoke previously used an invalid C-UAS workspace index and could pass while displaying a blank StackLayout item. It now visits the real incidents workspace and validates its restored state.
+6. A dedicated runtime motion assertion was added. The final QML matrix contains 50 cases and fails if the radar sweep does not advance during execution.
+
+The final visual pass covered:
+
+- Command Overview: English 1920×1080, Arabic 1920×1080 and Arabic 2560×1440
+- C-UAS Detection/Awareness with animated sweep and passive RF evidence
+- Aircraft Visual Explorer plus jet, turboprop, helicopter and UAV engineering variants
+- Common Air Picture, Flight Tracking, Route Lab, Aeronautical Data Hub, Platform Library, Fleet, Bases/Airfields, Data Sources and Diagnostics
+- Ten-locale shell/route smoke including RTL verification for AR, UR and FA
+
+The committed application produced 28 PNG files. The final screenshot, CI, CodeQL and Windows packaging runs all completed successfully for implementation commit `efa1d1d54585ee683613a4d1412672cf19807052`.

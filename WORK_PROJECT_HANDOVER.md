@@ -1,102 +1,112 @@
 # NEXVARY Avionics Lab — Work Project Handover
 
-Last updated: 2026-09-14  
-Repository: `nexvary/NEXVARY-Avionics-Lab`  
-Branch: `main`  
-Stable implementation commit: `1fc3029ebbe25306be333b8653686b400c20fd91`  
-Release identity: `v3.3.0 / Stage 1960`
+Last updated: 2026-09-14
+Repository: `nexvary/NEXVARY-Avionics-Lab`
+Branch: `main`
+Stable implementation commit: `efa1d1d54585ee683613a4d1412672cf19807052`
+Release identity: `v3.4.0 / Stage 1970`
 
 ## Current stable state
 
-Stage 1960 continues directly from Stage 1950 and preserves all existing avionics engineering, Digital Twin, diagnostics, replay, trends, verification, Force Management, public ADS-B, AEGIS awareness, C-UAS management, reporting and provider functions.
+Stage 1970 continues directly from Stage 1960. It preserves the existing avionics engineering, Digital Twin, diagnostics, replay, trends, verification, Force Management, public ADS-B, AEGIS awareness, C-UAS management, reporting and provider functions while replacing the weak executive composition and crude aircraft graphics identified in the real-image review.
 
-The recorded UI review identified mixed routing, crowded dashboard composition, map-label collisions, undersized text, collapsed Route Lab/Data Hub panes, a sparse Platform Library center, and a generic legacy mark. Those defects are addressed in the stable implementation commit.
+The stable implementation has been built and tested on Linux and Windows, exercised through the Qt/QML route and locale matrix, checked with sanitizers and CodeQL, captured in 28 real application screenshots, and packaged as both a Windows installer and portable ZIP.
 
 ## Approved visual system
 
-The command identity remains Deep Black + Royal Gold:
+The command identity remains Deep Black + Royal Gold, supported by controlled operational colors:
 
 - Deep Black foundation: `#000000` / `#02070B`
-- Navy-black technical surfaces: `#050D13` / `#07131A` / `#0A1821`
-- Royal Gold brand/selected executive state: `#D4AF37`
+- Near-black technical surfaces: `#050D13` / `#07131A` / `#0A1821`
+- Royal Gold brand and selected executive state: `#D4AF37`
 - Platinum primary text: `#F2F5F7`
 - Metallic Silver secondary text: `#9EABB5`
-- Electric Blue/Cyan: operational tracks, data and active Air Operations context
+- Electric Blue/Cyan: public flight information, active tracks and Air Operations context
 - Radar Green: nominal readiness and healthy sources
-- Violet: passive RF and airspace classification
-- Amber/Orange/Red: caution, incident and critical states only
-- Structural borders remain 1 px; selected controls use 1.5 px. Gold is used deliberately instead of covering every card.
+- Violet: passive RF and classification evidence
+- Amber/Orange/Red: caution, incidents and critical states only
+- Structural borders remain 1 px; selected controls use approximately 1.5 px. Gold is intentionally restrained instead of surrounding every panel.
 
-The shared scale is 24–30 px for main/display titles, 16 px section headings, 14 px body information, 12 px secondary information, and 11 px small labels. No changed QML surface contains a numeric font size below 10 px. Arabic prefers Noto Kufi Arabic and the shell mirrors correctly for RTL.
+The shared scale is 24–30 px for main/display titles, 15–18 px for section headings, 12–15 px for normal information and at least 10–11 px for secondary text. Arabic prefers Noto Kufi Arabic, and the application shell mirrors for RTL.
 
-## Stage 1960 implementation
+## Stage 1970 implementation
 
-- Replaced the generic gold aircraft badge with a code-native NEXVARY silver/electric-blue N/X avionics monogram and restrained gold registration point.
-- Enlarged and clarified the navigation rail branding and connected each group to a meaningful accent while keeping Royal Gold as the command identity.
-- Corrected route mapping:
-  - Command / Common Air Picture → dedicated Common Air Picture workspace.
-  - Air Operations / Flight Tracking → dedicated Public Flight Tracking workspace.
-  - C-UAS sections → dedicated workspace index 6 with correct back-stack restoration.
-- Expanded Air Operations from six to seven independent workspaces.
-- Reorganized the Command Overview around the large Common Air Picture, Force Readiness, Squadron Readiness, Bases/Airfields, Maintenance, Training and a compact Alerts/Incidents strip.
-- Removed the crowded Aircraft Explorer/Data Integration detail row from the executive hierarchy; those functions remain available in their own workspaces.
-- Added fixed collision-free ADS-B and AEGIS annotation rails to the strategic map, with cyan public tracks and semantic awareness colors.
-- Repaired QML layout constraints that collapsed the Route Lab map and Aeronautical Data Hub catalog.
-- Converted the Data Hub catalog into readable 72 px records with class colors, altitude bands, provenance notes and controlled/advisory state.
-- Added a large aircraft technical schematic, subsystem nodes, Digital Twin status and diagnostic-health display to Platform Library.
-- Increased shared Arabic/Latin typography and passive RF labels without introducing sub-10 px text.
-- Preserved the safety boundary: awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis only. No weapons assignment, engagement, fire control, jamming, spoofing, takeover or destructive interception was added.
+- Rebuilt Command Overview around one dominant Common Air Picture rather than equal-strength dashboard cards.
+- Introduced a briefing-first executive band, a dedicated decision column and a full-width airfield strip to remove the large unused zones and compressed lower content seen in Stage 1960.
+- Added a code-native NEXVARY N/X avionics mark with platinum/silver geometry, electric-blue identity detail and restrained Royal Gold registration emphasis.
+- Added Presentation Mode (`F11`) that removes navigation/footer clutter while retaining brand, title and operational status.
+- Rebuilt the strategic map with geographic layers, range/grid context, public ADS-B tracks, AEGIS awareness tracks, track history, route/sector overlays and a continuously animated radar sweep.
+- Replaced the childlike single-polygon aircraft drawings with original engineering-grade planform and side-elevation components for jet, turboprop, helicopter and UAV platforms.
+- Added technical grids, reference dimensions, systems buses, subsystem nodes, health/diagnostic state, readiness, maintenance and Digital Twin evidence to aircraft views.
+- Corrected the C-UAS startup route so workspace 6 opens the real Detection/Awareness surface instead of the Airspace page.
+- Added a dense passive C-UAS tactical plot with 10-degree bearing ticks, 30-degree major ticks, range rings, geofence, track history, labels and animated sweep.
+- Added a passive-only RF spectrum panel to the C-UAS surface and bound it to the live peak evidence (`-64.5 dBm` in the final captured scenario).
+- Added a runtime radar-motion assertion; the QML gate now fails if the sweep angle does not advance.
+- Corrected the C-UAS back-stack smoke test to exercise the real incidents route instead of an invalid blank StackLayout index.
+- Increased C-UAS and shared UI typography and aligned About/System Governance surfaces with `v3.4.0 / Stage 1970`.
+- Corrected the 1920×1080 Arabic/Urdu/Persian executive-header height so the safety line remains inside its panel and no longer overlaps the map.
+- Preserved the safety boundary: awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis only. No weapons assignment, autonomous engagement, fire control, jamming, spoofing, takeover or destructive interception was added.
 
 ## Verified stable gates
 
-Implementation commit `1fc3029` is verified by the following completed GitHub runs:
+Implementation commit `efa1d1d54585ee683613a4d1412672cf19807052` is verified by these completed GitHub runs:
 
 | Gate | Result |
 |---|---:|
 | Linux C++20 Release build + tests + release smoke | PASS |
 | Windows C++20 Release build + tests + release smoke | PASS |
 | Qt 6 Release build and Qt-enabled CTest | 30/30 PASS |
-| QML route/workspace/locale/back-stack/RTL gate | 49/49 PASS |
-| Stage 1960 real screenshot gate | 25/25 PASS |
+| QML route/workspace/locale/back-stack/RTL/radar-motion gate | 50/50 PASS |
+| Stage 1970 real screenshot gate | 28/28 PASS |
 | ASan/UBSan suite | 29/29 PASS |
 | Source security baseline | PASS |
 | CodeQL C++ analysis | PASS |
-| Windows MSVC/Qt verification | 30/30 + 49/49 PASS |
-| Windows deploy, manifest and diagnostics verification | PASS |
+| Windows MSVC/Qt verification | 30/30 + 50/50 PASS |
+| Windows deploy, release manifest and archive integrity | PASS |
 | Inno Setup installer and portable ZIP | GENERATED |
 
 Runs:
 
-- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34866674589
-- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34866674587
-- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34866674586
+- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34898422533
+- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34898422543
+- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34898422517
 
 ## Real screenshot set
 
-Artifact: `nexvary-avionics-stage1960-command-ui-release-gate`  
-Artifact ID: `10356808944`  
-Compressed size: `6,401,882 bytes`
+Artifact: `nexvary-avionics-stage1970-command-ui-release-gate`
+Artifact ID: `10370116261`
+Compressed size: `8,881,895 bytes`
 
-It contains:
+The 28-image set includes:
 
-- `stage1960-command-overview-en-1920x1080.png`
-- `stage1960-command-overview-ar-1920x1080.png`
-- `stage1960-command-overview-ar-2560x1440.png`
-- Common Air Picture, Flight Tracking, Route Lab, Aeronautical Data Hub, Aircraft Visual, Platform Library, Airspace, Fleet, Bases/Airfields, C-UAS Detection, Data Sources and Arabic Diagnostics captures
-- Ten locale captures: AR, EN, TR, ES, DE, IT, FR, UR, FA and RU
+- `stage1970-command-overview-en-1920x1080.png`
+- `stage1970-command-overview-ar-1920x1080.png`
+- `stage1970-command-overview-ar-2560x1440.png`
+- `stage1970-cuas-detection-en.png`
+- `stage1970-aircraft-visual-en.png`
+- Jet, turboprop, helicopter and UAV engineering views
+- Common Air Picture, Flight Tracking, Route Lab, Data Hub, Platform Library, Bases, Fleet, Data Sources and Diagnostics
+- Ten-locale smoke captures: AR, EN, TR, ES, DE, IT, FR, UR, FA and RU
 
-The local visual review covered the 1920×1080 English and Arabic overview plus affected Common Air Picture, Flight Tracking, Route Lab, Data Hub and Platform Library surfaces. CI regenerated the final 25-image set from the committed application and verified PNG signatures, dimensions and minimum file size.
+The committed application generated the images. Visual review explicitly checked executive density, empty space, text scale, clipping, RTL header flow, map labeling, C-UAS route identity, radar/RF evidence and aircraft drawing quality. These are real application captures, not mockups.
 
 ## Windows deliverables
 
-Artifact: `NEXVARY-Avionics-Lab-Windows-v3.3.0-Stage1960`  
-Artifact ID: `10357756920`  
-Compressed artifact size: `57,023,614 bytes`
+Artifact: `NEXVARY-Avionics-Lab-Windows-v3.4.0-Stage1970`
+Artifact ID: `10369578748`
+Compressed artifact size: `57,031,354 bytes`
+Artifact SHA-256: `cb398f5964d94c1433751e03e4020f62a332cf481cd40944c23ce105a14afb81`
 
 Inside the artifact:
 
 - Installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
-- Portable package: `NEXVARY-Avionics-Lab-v3.3.0-Portable.zip`
+  - Size: `23,201,398 bytes`
+  - SHA-256: `63afe6cd747c17b95554b47682cbfb9bf3b1bc162fed5ee43d12205cded40f83`
+- Portable package: `NEXVARY-Avionics-Lab-v3.4.0-Portable.zip`
+  - Size: `34,938,267 bytes`
+  - SHA-256: `afa0124e217788603bf16538f9192fa7f55cb0276f2bc3e09b686012b80acd10`
+  - Archive integrity: PASS; 1,337 files; uncompressed size `87,757,790 bytes`
+  - Release manifest: Qt `6.8.3`, version `3.4.0`, Stage `1970`, channel `training-simulation`
 
 Expected build-tree paths:
 
@@ -104,8 +114,10 @@ Expected build-tree paths:
 - Linux CLI: `build/nexvary_avionics_lab`
 - Windows HMI before packaging: `build-win/Release/nexvary_avionics_hmi.exe`
 - Windows installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
-- Windows portable ZIP: `NEXVARY-Avionics-Lab-v3.3.0-Portable.zip`
+- Windows portable ZIP: `NEXVARY-Avionics-Lab-v3.4.0-Portable.zip`
 
 ## Continuation point
 
-Continue from Stage 1960 without restarting or repeating the completed visual audit. Preserve the Deep Black + Royal Gold brand hierarchy and semantic operational colors. The next functional batch may deepen weather/airfield provider views and map-layer controls, but must retain the current route separation, typography floor, RTL behavior, safety boundary and release gates.
+Continue from Stage 1970 without restarting or repeating the completed audit. Preserve the Deep Black + Royal Gold hierarchy, professional aircraft components, dominant command map, animated passive radar, semantic operational colors, typography floor, RTL behavior, route validation, presentation mode and safety boundary.
+
+The next functional batch may deepen weather/airfield providers and operator-controlled map layers, but it must keep the release gates and should add visual evidence only when the surface is genuinely exercised by its route smoke.

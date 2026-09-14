@@ -24,6 +24,10 @@ Canvas {
         c.stroke()
     }
 
+    function oval(c, cx, cy, rx, ry) {
+        c.ellipse(cx - rx, cy - ry, rx * 2, ry * 2)
+    }
+
     function polygon(c, pts, w, h) {
         c.beginPath()
         c.moveTo(w * pts[0][0], h * pts[0][1])
@@ -116,8 +120,8 @@ Canvas {
         c.fillStyle="#0A1218"
         c.strokeStyle=Theme.royalGold
         c.globalAlpha=.82
-        c.beginPath(); c.ellipse(w*.478,h*.45,w*.014,h*.085,0,0,Math.PI*2); fillStroke(c)
-        c.beginPath(); c.ellipse(w*.522,h*.45,w*.014,h*.085,0,0,Math.PI*2); fillStroke(c)
+        c.beginPath(); root.oval(c,w*.478,h*.45,w*.014,h*.085); fillStroke(c)
+        c.beginPath(); root.oval(c,w*.522,h*.45,w*.014,h*.085); fillStroke(c)
         c.globalAlpha=1
 
         c.fillStyle="#263D48"
@@ -176,7 +180,7 @@ Canvas {
 
         c.fillStyle="#0A141B"
         c.strokeStyle=Theme.signalCyan
-        c.beginPath(); c.ellipse(w*.5,h*.245,w*.025,h*.085,0,0,Math.PI*2); fillStroke(c)
+        c.beginPath(); root.oval(c,w*.5,h*.245,w*.025,h*.085); fillStroke(c)
     }
 
     function drawHelicopter(c,w,h) {
@@ -185,7 +189,7 @@ Canvas {
         c.strokeStyle=Theme.signalCyan
         c.lineWidth=1.2
         c.globalAlpha=.62
-        c.beginPath(); c.ellipse(w*.50,h*.39,w*.405,h*.23,0,0,Math.PI*2); c.stroke()
+        c.beginPath(); root.oval(c,w*.50,h*.39,w*.405,h*.23); c.stroke()
         c.beginPath(); c.moveTo(w*.08,h*.39); c.lineTo(w*.92,h*.39); c.stroke()
         c.beginPath(); c.moveTo(w*.50,h*.11); c.lineTo(w*.50,h*.68); c.stroke()
         c.globalAlpha=1
@@ -216,7 +220,7 @@ Canvas {
 
         c.fillStyle="#081218"
         c.strokeStyle=Theme.signalCyan
-        c.beginPath(); c.ellipse(w*.50,h*.31,w*.055,h*.105,0,0,Math.PI*2); fillStroke(c)
+        c.beginPath(); root.oval(c,w*.50,h*.31,w*.055,h*.105); fillStroke(c)
     }
 
     function drawUav(c,w,h) {
@@ -240,7 +244,7 @@ Canvas {
 
         c.fillStyle="#0A141A"
         c.strokeStyle=Theme.signalCyan
-        c.beginPath(); c.ellipse(w*.50,h*.42,w*.045,h*.14,0,0,Math.PI*2); fillStroke(c)
+        c.beginPath(); root.oval(c,w*.50,h*.42,w*.045,h*.14); fillStroke(c)
 
         c.strokeStyle=Theme.rfViolet
         c.lineWidth=1.2

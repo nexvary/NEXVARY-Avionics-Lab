@@ -24,6 +24,10 @@ Canvas {
         c.stroke()
     }
 
+    function oval(c, cx, cy, rx, ry) {
+        c.ellipse(cx - rx, cy - ry, rx * 2, ry * 2)
+    }
+
     function setAirframeStyle(c,w,h) {
         var g=c.createLinearGradient(w*.08,h*.28,w*.92,h*.70)
         g.addColorStop(0,"#0C171E")
@@ -135,7 +139,7 @@ Canvas {
 
         c.fillStyle="#02070B"
         c.strokeStyle=Theme.metallicSilver
-        c.beginPath();c.ellipse(w*.083,h*.61,w*.025,h*.045,0,0,Math.PI*2);fillStroke(c)
+        c.beginPath();root.oval(c,w*.083,h*.61,w*.025,h*.045);fillStroke(c)
     }
 
     function drawTurboprop(c,w,h) {
@@ -230,7 +234,7 @@ Canvas {
 
         c.fillStyle="#07131A"
         c.strokeStyle=Theme.rfViolet
-        c.beginPath();c.ellipse(w*.74,h*.50,w*.055,h*.035,0,0,Math.PI*2);fillStroke(c)
+        c.beginPath();root.oval(c,w*.74,h*.50,w*.055,h*.035);fillStroke(c)
     }
 
     function drawSystems(c,w,h) {

@@ -32,7 +32,11 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 96
+            // Noto Kufi Arabic, Urdu and Persian have a taller three-line
+            // executive brief than the Latin fonts.  Preserve the approved
+            // type scale instead of allowing the safety line to bleed into
+            // the Common Air Picture at 1920x1080.
+            Layout.preferredHeight: cockpit.rtl ? 110 : 96
             color: Theme.shell
             border.color: Theme.border
             border.width: 1

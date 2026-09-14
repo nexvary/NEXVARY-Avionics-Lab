@@ -212,7 +212,7 @@ Item {
                                         spacing: 9
                                         layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
                                         Rectangle {
-                                            Layout.preferredWidth: 132
+                                            Layout.preferredWidth: 190
                                             Layout.fillHeight: true
                                             color: Theme.shell
                                             border.color: Theme.borderSoft
@@ -223,7 +223,7 @@ Item {
                                             Layout.fillWidth: true
                                             spacing: 3
                                             Text { text: modelData.tail + "  /  " + modelData.category; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; elide: Text.ElideRight }
-                                            Text { text: modelData.name; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 14; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; elide: Text.ElideRight }
+                                            Text { text: modelData.name; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.bodyPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft; elide: Text.ElideRight }
                                             RowLayout {
                                                 Layout.fillWidth: true
                                                 Text { text: cockpit.rtl ? "الجاهزية" : "READINESS"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true }

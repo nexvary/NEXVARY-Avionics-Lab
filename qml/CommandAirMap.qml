@@ -8,11 +8,21 @@ Rectangle {
     property var publicTracks: []
     property var aegisTracks: []
     property bool rtl: false
+    property real sweepAngle: 0
     color: "#0A0A0A"
     border.color: Theme.border
     border.width: 1
     radius: Theme.radius
     clip: true
+
+    NumberAnimation on sweepAngle {
+        from: 0
+        to: 360
+        duration: 7200
+        loops: Animation.Infinite
+        running: root.visible
+    }
+    onSweepAngleChanged: mapCanvas.requestPaint()
 
     function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)) }
     function xFor(lon) { return clamp((Number(lon) - 20.0) / 45.0, 0.03, 0.97) * width }
@@ -44,7 +54,7 @@ Rectangle {
             c.beginPath(); c.moveTo(width*0.00,height*0.36); c.lineTo(width*0.11,height*0.32); c.lineTo(width*0.22,height*0.35); c.lineTo(width*0.31,height*0.42); c.lineTo(width*0.40,height*0.45); c.lineTo(width*0.46,height*0.43); c.lineTo(width*0.49,height*0.49); c.lineTo(width*0.52,height*0.63); c.lineTo(width*0.57,height*0.93); c.lineTo(width*0.00,height*0.93); c.closePath(); c.fill(); c.stroke()
             c.beginPath(); c.moveTo(width*0.49,height*0.49); c.lineTo(width*0.58,height*0.44); c.lineTo(width*0.68,height*0.38); c.lineTo(width*0.77,height*0.36); c.lineTo(width*0.86,height*0.42); c.lineTo(width*0.98,height*0.49); c.lineTo(width*0.98,height*0.93); c.lineTo(width*0.57,height*0.93); c.lineTo(width*0.52,height*0.63); c.closePath(); c.fill(); c.stroke()
             c.fillStyle = "#111111"; c.beginPath(); c.moveTo(width*0.50,height*0.55); c.lineTo(width*0.535,height*0.57); c.lineTo(width*0.58,height*0.96); c.lineTo(width*0.545,height*0.96); c.closePath(); c.fill()
-            c.fillStyle = "#9E9B98"; c.font = "bold 11px Sans Serif"; c.fillText("EGYPT",width*0.24,height*0.64); c.fillText("SINAI",width*0.48,height*0.58); c.fillText("SAUDI ARABIA",width*0.67,height*0.74); c.fillText("LEVANT",width*0.58,height*0.34); c.fillText("MEDITERRANEAN",width*0.20,height*0.29)
+            c.fillStyle = "#9E9B98"; c.font = "bold 12px Noto Sans"; c.fillText("EGYPT",width*0.24,height*0.64); c.fillText("SINAI",width*0.48,height*0.58); c.fillText("SAUDI ARABIA",width*0.67,height*0.74); c.fillText("LEVANT",width*0.58,height*0.34); c.fillText("MEDITERRANEAN",width*0.20,height*0.29)
             c.strokeStyle = Theme.warmOrange; c.fillStyle = "rgba(210,140,98,0.10)"; c.lineWidth = 1.2
             var zones=[[0.43,0.41,0.08,0.12],[0.55,0.47,0.10,0.11]]
             for (var zi=0; zi<zones.length; ++zi) { var z=zones[zi]; c.fillRect(width*z[0],height*z[1],width*z[2],height*z[3]); c.strokeRect(width*z[0],height*z[1],width*z[2],height*z[3]) }
@@ -53,7 +63,7 @@ Rectangle {
             for (var ring=1; ring<=4; ++ring) { c.beginPath(); c.arc(cx,cy,r*ring/4,0,Math.PI*2); c.stroke() }
             for (var a=0; a<360; a+=45) { var rad=a*Math.PI/180; c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+Math.cos(rad)*r,cy+Math.sin(rad)*r); c.stroke() }
             c.globalAlpha=1.0
-            var sweep=(cockpit.tick%360)*Math.PI/180
+            var sweep=(root.sweepAngle-90)*Math.PI/180
             c.fillStyle="rgba(212,175,55,0.08)"; c.beginPath(); c.moveTo(cx,cy); c.arc(cx,cy,r,sweep-0.30,sweep+0.30); c.closePath(); c.fill()
             c.strokeStyle=Theme.signalCyan; c.globalAlpha=0.8; c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+Math.cos(sweep)*r,cy+Math.sin(sweep)*r); c.stroke(); c.globalAlpha=1.0
         }
@@ -87,7 +97,7 @@ Rectangle {
             x: root.xFor(modelData.longitude)-18
             y: root.yFor(modelData.latitude)-18
             Rectangle { anchors.centerIn: parent; width: 16; height: 16; rotation: 45; color: "transparent"; border.color: root.threatColor(modelData.threatLevel); border.width: 2 }
-            Text { anchors.left: parent.right; anchors.verticalCenter: parent.verticalCenter; text: modelData.trackId; color: root.threatColor(modelData.threatLevel); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+            Text { anchors.left: parent.right; anchors.verticalCenter: parent.verticalCenter; text: modelData.trackId; color: root.threatColor(modelData.threatLevel); font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
             MouseArea { id: aegisArea; anchors.fill: parent; hoverEnabled: true }
             ToolTip.visible: aegisArea.containsMouse
             ToolTip.text: modelData.trackId + " • " + modelData.classification + " • " + modelData.threatLevel
@@ -100,12 +110,12 @@ Rectangle {
         color: "#D0000000"; border.color: Theme.border; border.width: 1; radius: Theme.radius
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 7; spacing: 3
-            Text { text: root.rtl ? "مفتاح الرموز" : "SYMBOL LEGEND"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+            Text { text: root.rtl ? "مفتاح الرموز" : "SYMBOL LEGEND"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
             Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-            RowLayout { Rectangle { width: 12; height: 3; color: Theme.signalCyan } Text { text: root.rtl ? "طيران عام / ADS-B" : "PUBLIC / ADS-B"; color: Theme.silver; font.pixelSize: 10 } }
-            RowLayout { Rectangle { width: 10; height: 10; rotation:45; color:"transparent"; border.color:Theme.royalGold; border.width:1 } Text { text: "AEGIS / C-UAS"; color: Theme.silver; font.pixelSize: 10 } }
-            RowLayout { Rectangle { width: 10; height: 10; color:"transparent"; border.color:Theme.warmOrange; border.width:1 } Text { text: root.rtl ? "منطقة مقيدة" : "RESTRICTED ZONE"; color: Theme.silver; font.pixelSize: 10 } }
-            RowLayout { Rectangle { width: 10; height: 10; radius:5; color:Theme.radarGreen } Text { text: root.rtl ? "مصدر/موقع" : "SITE / SOURCE"; color: Theme.silver; font.pixelSize: 10 } }
+            RowLayout { Rectangle { width: 12; height: 3; color: Theme.signalCyan } Text { text: root.rtl ? "طيران عام / ADS-B" : "PUBLIC / ADS-B"; color: Theme.silver; font.pixelSize: Theme.smallPx } }
+            RowLayout { Rectangle { width: 10; height: 10; rotation:45; color:"transparent"; border.color:Theme.royalGold; border.width:1 } Text { text: "AEGIS / C-UAS"; color: Theme.silver; font.pixelSize: Theme.smallPx } }
+            RowLayout { Rectangle { width: 10; height: 10; color:"transparent"; border.color:Theme.warmOrange; border.width:1 } Text { text: root.rtl ? "منطقة مقيدة" : "RESTRICTED ZONE"; color: Theme.silver; font.pixelSize: Theme.smallPx } }
+            RowLayout { Rectangle { width: 10; height: 10; radius:5; color:Theme.radarGreen } Text { text: root.rtl ? "مصدر/موقع" : "SITE / SOURCE"; color: Theme.silver; font.pixelSize: Theme.smallPx } }
         }
     }
 
@@ -115,18 +125,18 @@ Rectangle {
         color: "#D0000000"; border.color: Theme.signalCyan; border.width: 1; radius: Theme.radius
         GridLayout {
             anchors.fill: parent; anchors.margins: 7; columns:2; rowSpacing:2; columnSpacing:8
-            Text { text: root.rtl ? "عام" : "PUBLIC"; color: Theme.muted; font.pixelSize: 10 }
-            Text { text: String(root.publicTracks.length); color: Theme.signalCyan; font.family:"Consolas"; font.pixelSize: 10; font.bold:true }
-            Text { text: "AEGIS"; color: Theme.muted; font.pixelSize: 10 }
-            Text { text: String(root.aegisTracks.length); color: Theme.royalGold; font.family:"Consolas"; font.pixelSize: 10; font.bold:true }
-            Text { text: root.rtl ? "النمط" : "MODE"; color: Theme.muted; font.pixelSize: 10 }
-            Text { text: "AWARENESS"; color: Theme.radarGreen; font.family:"Consolas"; font.pixelSize: 10; font.bold:true }
+            Text { text: root.rtl ? "عام" : "PUBLIC"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+            Text { text: String(root.publicTracks.length); color: Theme.signalCyan; font.family:"Consolas"; font.pixelSize: Theme.smallPx; font.bold:true }
+            Text { text: "AEGIS"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+            Text { text: String(root.aegisTracks.length); color: Theme.royalGold; font.family:"Consolas"; font.pixelSize: Theme.smallPx; font.bold:true }
+            Text { text: root.rtl ? "النمط" : "MODE"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+            Text { text: "AWARENESS"; color: Theme.radarGreen; font.family:"Consolas"; font.pixelSize: Theme.smallPx; font.bold:true }
         }
     }
 
     Text {
         anchors.right: parent.right; anchors.bottom: parent.bottom; anchors.margins: 7
         text: root.rtl ? "خريطة تشغيلية تدريبية / ليست للملاحة" : "TRAINING OPERATIONAL VIEW / NOT FOR NAVIGATION"
-        color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10
+        color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx
     }
 }

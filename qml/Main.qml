@@ -18,6 +18,7 @@ ApplicationWindow {
     property string selectedRoute: "overview"
     property string activeGroup: "command"
     property string workMode: "COMMAND"
+    property bool presentationMode: false
     property var navigationHistory: []
     property real uiScale: Math.max(0.94, Math.min(1.30, width / 1920.0))
     property bool rtlLayoutVerified: cockpit.rtl && shellLayout.layoutDirection === Qt.RightToLeft && navigationRail.x > width / 2
@@ -239,6 +240,16 @@ ApplicationWindow {
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
 
+    Shortcut {
+        sequence: "F11"
+        onActivated: root.presentationMode = !root.presentationMode
+    }
+
+    onPresentationModeChanged: {
+        if (presentationMode) root.showFullScreen()
+        else root.showMaximized()
+    }
+
     RowLayout {
         id: shellLayout
         anchors.fill: parent
@@ -247,6 +258,7 @@ ApplicationWindow {
 
         Rectangle {
             id: navigationRail
+            visible: !root.presentationMode
             Layout.preferredWidth: Math.round(292 * root.uiScale)
             Layout.minimumWidth: 272
             Layout.maximumWidth: 328
@@ -263,11 +275,11 @@ ApplicationWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 82
+                    Layout.preferredHeight: 88
                     spacing: 11
                     layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
-                    NexvaryMark { Layout.preferredWidth: 62; Layout.preferredHeight: 62 }
+                    NexvaryMark { Layout.preferredWidth: 70; Layout.preferredHeight: 70 }
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
@@ -275,7 +287,7 @@ ApplicationWindow {
                             text: "NEXVARY"
                             color: Theme.platinum
                             font.family: Theme.latinUi
-                            font.pixelSize: 19
+                            font.pixelSize: 21
                             font.bold: true
                             font.letterSpacing: 2.5
                             Layout.fillWidth: true
@@ -285,7 +297,7 @@ ApplicationWindow {
                             text: "AVIONICS LAB"
                             color: Theme.signalCyan
                             font.family: Theme.latinUi
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             font.letterSpacing: 1.3
                             Layout.fillWidth: true
@@ -295,7 +307,7 @@ ApplicationWindow {
                             text: cockpit.rtl ? "منصة قيادة وهندسة الطيران" : "AIR COMMAND • ENGINEERING"
                             color: Theme.accent
                             font.family: Theme.uiFont(cockpit.rtl)
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             Layout.fillWidth: true
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             elide: Text.ElideRight
@@ -359,18 +371,18 @@ ApplicationWindow {
                                 text: cockpit.rtl ? "حالة المنصة" : "PLATFORM STATUS"
                                 color: Theme.platinum
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.smallPx
                                 font.bold: true
                                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             }
-                            Text { text: cockpit.activeAlertCount === 0 ? "READY" : "CHECK"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.activeAlertCount === 0 ? "READY" : "CHECK"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                         }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10 }
-                        Text { text: cockpit.rtl ? "لا يوجد مسار تحكم حي" : "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
+                        Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                        Text { text: cockpit.rtl ? "لا يوجد مسار تحكم حي" : "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
                         Text { text: cockpit.rtl ? "تدريب • تحقق • تحليل" : "TRAINING • VERIFICATION • ANALYSIS"; color: Theme.signalCyan; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
                         Item { Layout.fillHeight: true }
-                        Text { text: "v3.3.0  •  VISUAL GATE 1960"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
+                        Text { text: "v3.4.0  •  MINISTERIAL GATE 1970"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                     }
                 }
             }
@@ -384,7 +396,7 @@ ApplicationWindow {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: Math.round(88 * root.uiScale)
+                Layout.preferredHeight: Math.round((root.presentationMode ? 78 : 88) * root.uiScale)
                 Layout.minimumHeight: 82
                 color: Theme.panel
                 border.color: Theme.border
@@ -408,6 +420,12 @@ ApplicationWindow {
                         onClicked: root.goBack()
                     }
 
+                    NexvaryMark {
+                        visible: root.presentationMode
+                        Layout.preferredWidth: 52
+                        Layout.preferredHeight: 52
+                    }
+
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 2
@@ -429,7 +447,7 @@ ApplicationWindow {
                                 text: root.groupLabel()
                                 color: root.groupAccent()
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.smallPx
                                 font.bold: true
                             }
                             Text { text: "/"; color: Theme.metallicSilver; font.pixelSize: 12 }
@@ -438,7 +456,7 @@ ApplicationWindow {
                                 text: root.routeLabel()
                                 color: Theme.silver
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.smallPx
                                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                                 elide: Text.ElideRight
                             }
@@ -446,7 +464,7 @@ ApplicationWindow {
                     }
 
                     RowLayout {
-                        visible: root.width >= 2100 || (root.selectedPage === 0 && root.width >= 1740)
+                        visible: !root.presentationMode && (root.width >= 2100 || (root.selectedPage === 0 && root.width >= 1740))
                         spacing: 5
                         layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
                         MinisterialButton { text: "CMD"; checkable: true; checked: root.workMode === "COMMAND"; implicitWidth: 62; accent: Theme.royalGold; onClicked: root.setWorkMode("COMMAND") }
@@ -458,7 +476,7 @@ ApplicationWindow {
                     Rectangle {
                         Layout.preferredWidth: 178
                         Layout.preferredHeight: 54
-                        visible: root.width >= 1540
+                        visible: !root.presentationMode && root.width >= 1540
                         color: Theme.panel2
                         border.color: Theme.border
                         border.width: 1
@@ -473,22 +491,23 @@ ApplicationWindow {
                                 color: Theme.panel3
                                 border.color: Theme.accent
                                 border.width: 1
-                                Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: 11; font.bold: true }
+                                Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: cockpit.activePlatformCategory; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
-                                Text { text: cockpit.activePlatformName; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
+                                Text { text: cockpit.activePlatformCategory; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
+                                Text { text: cockpit.activePlatformName; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
                             }
                         }
                     }
 
                     ComboBox {
                         id: scenarioBox
+                        visible: !root.presentationMode
                         model: cockpit.scenarios
                         Layout.preferredWidth: 132
-                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 10; font.family: Theme.mono; elide: Text.ElideRight }
+                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: Theme.smallPx; font.family: Theme.mono; elide: Text.ElideRight }
                         background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border; border.width: 1 }
                         onActivated: cockpit.setScenario(currentText)
                     }
@@ -509,14 +528,22 @@ ApplicationWindow {
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: cockpit.activeAlertCount === 0 ? "NOMINAL" : "ATTENTION"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
-                                Text { text: "ALERTS " + cockpit.activeAlertCount + " • DX " + cockpit.diagnosticFindingCount; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10 }
+                                Text { text: cockpit.activeAlertCount === 0 ? "NOMINAL" : "ATTENTION"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                                Text { text: "ALERTS " + cockpit.activeAlertCount + " • DX " + cockpit.diagnosticFindingCount; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                             }
                         }
                     }
 
+                    MinisterialButton {
+                        text: root.presentationMode ? (cockpit.rtl ? "خروج من العرض" : "EXIT PRESENT") : (cockpit.rtl ? "عرض وزاري" : "PRESENT")
+                        implicitWidth: root.presentationMode ? 122 : 104
+                        accent: Theme.royalGold
+                        onClicked: root.presentationMode = !root.presentationMode
+                    }
+
                     ComboBox {
                         id: languageBox
+                        visible: !root.presentationMode
                         model: root.languageOptions
                         textRole: "name"
                         Layout.preferredWidth: 116
@@ -527,7 +554,7 @@ ApplicationWindow {
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                             font.family: Theme.uiFont(cockpit.rtl)
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             elide: Text.ElideRight
                         }
@@ -573,8 +600,9 @@ ApplicationWindow {
             }
 
             Rectangle {
+                visible: !root.presentationMode
                 Layout.fillWidth: true
-                Layout.preferredHeight: 32
+                Layout.preferredHeight: root.presentationMode ? 0 : 34
                 color: Theme.shell
                 border.color: Theme.border
                 border.width: 1
@@ -584,9 +612,9 @@ ApplicationWindow {
                     anchors.rightMargin: 12
                     spacing: 10
                     layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
-                    Text { text: "NEXVARY AVIONICS LAB  /  v3.3.0"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
+                    Text { text: "NEXVARY AVIONICS LAB  /  v3.4.0"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.44 }
+                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.44 }
                     Item { Layout.fillWidth: true }
                     Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC  •  NO LIVE CONTROL"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; elide: Text.ElideRight }
                 }

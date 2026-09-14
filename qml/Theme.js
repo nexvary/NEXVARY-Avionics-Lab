@@ -45,19 +45,19 @@ var amber = "#F4B942"
 var red = "#F06262"
 var radius = 7
 
-// Stage 1960 readability system.
+// Stage 1970 ministerial readability system.
 var arabicKufi = "Noto Kufi Arabic"
 var latinUi = "Noto Sans"
 var mono = "Noto Sans Mono"
-var displayPx = 30
-var titlePx = 26
-var pageTitlePx = 24
-var sectionPx = 16
-var bodyPx = 14
-var secondaryPx = 12
-var smallPx = 11
-var navGroupPx = 11
-var navItemPx = 13
+var displayPx = 32
+var titlePx = 28
+var pageTitlePx = 26
+var sectionPx = 17
+var bodyPx = 15
+var secondaryPx = 13
+var smallPx = 12
+var navGroupPx = 12
+var navItemPx = 14
 
 function uiFont(rtl) { return rtl ? arabicKufi : latinUi }
 

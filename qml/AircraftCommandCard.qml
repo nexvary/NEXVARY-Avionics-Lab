@@ -22,7 +22,7 @@ Rectangle {
                 text: root.rtl ? "مستكشف المنصة الجوية" : "AIRCRAFT VISUAL EXPLORER"
                 color: Theme.platinum
                 font.family: Theme.uiFont(root.rtl)
-                font.pixelSize: 13
+                font.pixelSize: Theme.sectionPx
                 font.bold: true
                 Layout.fillWidth: true
             }
@@ -30,7 +30,7 @@ Rectangle {
                 text: Theme.platformCode(cockpit.activePlatformId)
                 color: Theme.skyBlue
                 font.family: Theme.mono
-                font.pixelSize: 11
+                font.pixelSize: Theme.smallPx
                 font.bold: true
             }
         }
@@ -43,7 +43,7 @@ Rectangle {
             spacing: 9
 
             Rectangle {
-                Layout.preferredWidth: 170
+                Layout.preferredWidth: 205
                 Layout.fillHeight: true
                 color: "#111111"
                 border.color: Theme.border
@@ -68,7 +68,7 @@ Rectangle {
                     text: cockpit.activePlatformName
                     color: Theme.platinum
                     font.family: Theme.uiFont(root.rtl)
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.bodyPx
                     font.bold: true
                     Layout.fillWidth: true
                     elide: Text.ElideRight
@@ -77,7 +77,7 @@ Rectangle {
                     text: cockpit.activePlatformCategory + " • " + cockpit.activePlatformPropulsion
                     color: Theme.skyBlue
                     font.family: Theme.uiFont(root.rtl)
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.smallPx
                     Layout.fillWidth: true
                     elide: Text.ElideRight
                 }
@@ -89,12 +89,12 @@ Rectangle {
                     columns: 2
                     rowSpacing: 5
                     columnSpacing: 8
-                    Text { text: root.rtl ? "الصحة التشخيصية" : "DX HEALTH"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
-                    Text { text: cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.warmOrange; font.family: Theme.mono; font.pixelSize: 11; font.bold: true }
-                    Text { text: root.rtl ? "التوأم الرقمي" : "DIGITAL TWIN"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
-                    Text { text: cockpit.twinNominalCount + " NOM"; color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: 11 }
-                    Text { text: root.rtl ? "التنبيهات" : "ALERTS"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
-                    Text { text: String(cockpit.activeAlertCount); color: cockpit.activeAlertCount ? Theme.warmOrange : Theme.radarGreen; font.family: Theme.mono; font.pixelSize: 11 }
+                    Text { text: root.rtl ? "الصحة التشخيصية" : "DX HEALTH"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                    Text { text: cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.warmOrange; font.family: Theme.mono; font.pixelSize: Theme.secondaryPx; font.bold: true }
+                    Text { text: root.rtl ? "التوأم الرقمي" : "DIGITAL TWIN"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                    Text { text: cockpit.twinNominalCount + " NOM"; color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.secondaryPx }
+                    Text { text: root.rtl ? "التنبيهات" : "ALERTS"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                    Text { text: String(cockpit.activeAlertCount); color: cockpit.activeAlertCount ? Theme.warmOrange : Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.secondaryPx }
                 }
             }
         }
@@ -112,7 +112,7 @@ Rectangle {
                 delegate: Rectangle {
                     required property var modelData
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 30
+                    Layout.preferredHeight: 34
                     color: cockpit.activePlatformId === modelData.id ? Theme.panel3 : Theme.panel2
                     border.color: cockpit.activePlatformId === modelData.id ? Theme.skyBlue : Theme.borderSoft
                     border.width: 1
@@ -122,7 +122,7 @@ Rectangle {
                         text: modelData.t
                         color: cockpit.activePlatformId === modelData.id ? Theme.platinum : Theme.muted
                         font.family: Theme.mono
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                     }
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: cockpit.setActivePlatform(modelData.id) }

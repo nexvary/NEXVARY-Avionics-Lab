@@ -52,8 +52,8 @@ Item {
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 2
-                    Text { text: cockpit.rtl ? "الاستعراض البصري للطائرة" : "AIRCRAFT VISUAL STORYBOARD"; color: Theme.platinum; font.pixelSize: Theme.pageTitlePx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
-                    Text { text: cockpit.rtl ? "عرض تقني للمنصة والأنظمة والجاهزية والتوأم الرقمي في شاشة واحدة" : "TECHNICAL PLATFORM, SYSTEM, READINESS AND DIGITAL-TWIN STORY IN ONE VISUAL WORKSPACE"; color: Theme.skyBlue; font.pixelSize: Theme.secondaryPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                    Text { text: cockpit.rtl ? "الاستعراض البصري للطائرة" : "AIRCRAFT ENGINEERING VIEW"; color: Theme.platinum; font.pixelSize: Theme.pageTitlePx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
+                    Text { text: cockpit.rtl ? "عرض تقني للمنصة والأنظمة والجاهزية والتوأم الرقمي في شاشة واحدة" : "AIRFRAME, SYSTEM HEALTH, READINESS AND DIGITAL-TWIN STATUS IN ONE ENGINEERING WORKSPACE"; color: Theme.skyBlue; font.pixelSize: Theme.secondaryPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
                 }
                 Rectangle {
                     Layout.preferredWidth: 250
@@ -66,8 +66,8 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 6
                         spacing: 1
-                        Text { text: cockpit.activePlatformName; color: Theme.royalGold; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
-                        Text { text: cockpit.activePlatformCategory + "  •  " + cockpit.activePlatformPropulsion; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+                        Text { text: cockpit.activePlatformName; color: Theme.royalGold; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+                        Text { text: cockpit.activePlatformCategory + "  •  " + cockpit.activePlatformPropulsion; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
                     }
                 }
             }
@@ -99,13 +99,13 @@ Item {
                             border.color: modelData.active ? Theme.skyBlue : Theme.borderSoft
                             border.width: 1
                             radius: Theme.radius
-                            Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 0
-                            Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 12; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Text { text: modelData.category; color: modelData.active ? Theme.skyBlue : Theme.muted; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: modelData.name; color: Theme.platinum; font.pixelSize: Theme.secondaryPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: modelData.category; color: modelData.active ? Theme.skyBlue : Theme.muted; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
                         }
                     }
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: cockpit.setActivePlatform(modelData.id) }
@@ -134,7 +134,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "المشهد التقني" : "TECHNICAL VIEW"; color: Theme.platinum; font.pixelSize: Theme.sectionPx; font.bold: true; Layout.fillWidth: true }
-                        Text { text: "DIGITAL TWIN  •  " + cockpit.twinNominalCount + " NOMINAL / " + cockpit.twinDegradedCount + " DEGRADED"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                        Text { text: "DIGITAL TWIN  •  " + cockpit.twinNominalCount + " NOMINAL / " + cockpit.twinDegradedCount + " DEGRADED"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
 
@@ -272,22 +272,22 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 4
-                        Text { text: cockpit.rtl ? "بطاقة المنصة" : "PLATFORM CARD"; color: Theme.platinum; font.pixelSize: 13; font.bold: true }
+                        Text { text: cockpit.rtl ? "بطاقة المنصة" : "PLATFORM CARD"; color: Theme.platinum; font.pixelSize: Theme.sectionPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: profile.description || ""; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap; maximumLineCount: 3; elide: Text.ElideRight }
+                        Text { text: profile.description || ""; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap; maximumLineCount: 3; elide: Text.ElideRight }
                         GridLayout {
                             Layout.fillWidth: true
                             columns: 4
                             rowSpacing: 2
                             columnSpacing: 6
-                            Text { text: "SYS"; color: Theme.muted; font.pixelSize: 10 }
-                            Text { text: String(profile.systemCount || 0); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "CH"; color: Theme.muted; font.pixelSize: 10 }
-                            Text { text: String(profile.channelCount || 0); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "DX"; color: Theme.muted; font.pixelSize: 10 }
-                            Text { text: String(profile.diagnosticRuleCount || 0); color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "SCN"; color: Theme.muted; font.pixelSize: 10 }
-                            Text { text: String(profile.scenarioCount || 0); color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: "SYS"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+                            Text { text: String(profile.systemCount || 0); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "CH"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+                            Text { text: String(profile.channelCount || 0); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "DX"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+                            Text { text: String(profile.diagnosticRuleCount || 0); color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "SCN"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+                            Text { text: String(profile.scenarioCount || 0); color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                         }
                     }
                 }
@@ -303,7 +303,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "عقد التوأم الرقمي" : "DIGITAL-TWIN NODES"; color: Theme.platinum; font.pixelSize: 13; font.bold: true }
+                        Text { text: cockpit.rtl ? "عقد التوأم الرقمي" : "DIGITAL-TWIN NODES"; color: Theme.platinum; font.pixelSize: Theme.sectionPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
                             Layout.fillWidth: true
@@ -324,9 +324,9 @@ Item {
                                     anchors.margins: 5
                                     spacing: 6
                                     Rectangle { width: 7; height: 7; radius: 3; color: Theme.stateColor(modelData.state) }
-                                    Text { text: modelData.label || modelData.id; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: Math.round(Number(modelData.health)) + "%"; color: Theme.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                                    Text { text: modelData.state; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.preferredWidth: 64 }
+                                    Text { text: modelData.label || modelData.id; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: Math.round(Number(modelData.health)) + "%"; color: Theme.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                                    Text { text: modelData.state; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.preferredWidth: 64 }
                                 }
                             }
                         }
@@ -344,13 +344,13 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "حالة الاستعراض" : "STORYBOARD STATUS"; color: Theme.platinum; font.pixelSize: 13; font.bold: true }
+                        Text { text: cockpit.rtl ? "حالة الاستعراض" : "ENGINEERING STATUS"; color: Theme.platinum; font.pixelSize: Theme.sectionPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: "DIAGNOSTIC HEALTH  " + cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.amber; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                        Text { text: "ACTIVE ALERTS  " + cockpit.activeAlertCount; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 10 }
-                        Text { text: "TRAINING FAULTS  " + cockpit.activeTrainingFaultCount; color: cockpit.activeTrainingFaultCount === 0 ? Theme.silver : Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 10 }
+                        Text { text: "DIAGNOSTIC HEALTH  " + cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.amber; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                        Text { text: "ACTIVE ALERTS  " + cockpit.activeAlertCount; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.warmOrange; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
+                        Text { text: "TRAINING FAULTS  " + cockpit.activeTrainingFaultCount; color: cockpit.activeTrainingFaultCount === 0 ? Theme.silver : Theme.warmOrange; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
                         Item { Layout.fillHeight: true }
-                        Text { text: cockpit.rtl ? "عرض هندسي/تدريبي — لا تحكم حي بالطائرة" : "ENGINEERING / TRAINING VIEW — NO LIVE AIRCRAFT CONTROL"; color: Theme.warmOrange; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap }
+                        Text { text: cockpit.rtl ? "عرض هندسي/تدريبي — لا تحكم حي بالطائرة" : "ENGINEERING / TRAINING VIEW — NO LIVE AIRCRAFT CONTROL"; color: Theme.warmOrange; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap }
                     }
                 }
             }

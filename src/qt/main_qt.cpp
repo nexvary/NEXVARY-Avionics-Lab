@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
         QQmlExpression navigationTest(
             qmlContext,
             root,
-            QStringLiteral("navigationHistory=[]; initializeView(0,0,0,0,0); navigateRoute('maintenance',12,5,'force-management'); var forceOpened=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5 && navigationHistory.length===1); navigateRoute('cuas-incidents',11,52,'cuas'); var cuasOpened=(selectedPage===11 && selectedRoute==='cuas-incidents' && currentWorkspace()===52 && navigationHistory.length===2); goBack(); var forceRestored=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5); goBack(); forceOpened && cuasOpened && forceRestored && selectedPage===0 && selectedRoute==='overview' && currentWorkspace()===0 && navigationHistory.length===0")
+            QStringLiteral("navigationHistory=[]; initializeView(0,0,0,0,0); navigateRoute('maintenance',12,5,'force-management'); var forceOpened=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5 && navigationHistory.length===1); navigateRoute('cuas-incidents',11,62,'cuas'); var cuasOpened=(selectedPage===11 && selectedRoute==='cuas-incidents' && currentWorkspace()===62 && navigationHistory.length===2); goBack(); var forceRestored=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5); goBack(); forceOpened && cuasOpened && forceRestored && selectedPage===0 && selectedRoute==='overview' && currentWorkspace()===0 && navigationHistory.length===0")
         );
         const QVariant result = navigationTest.evaluate();
         if (navigationTest.hasError() || !result.toBool()) return 9;

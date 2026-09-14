@@ -11,8 +11,8 @@ Rectangle {
     property bool rtl: false
     property string modeLabel: "COMMON AIR PICTURE"
 
-    color: "#050505"
-    border.color: "#665820"
+    color: Theme.panel2
+    border.color: Theme.border
     border.width: 1
     radius: 7
     clip: true
@@ -36,9 +36,9 @@ Rectangle {
     }
 
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#0A0A0A" }
-        GradientStop { position: 0.50; color: "#080808" }
-        GradientStop { position: 1.0; color: "#000000" }
+        GradientStop { position: 0.0; color: Theme.panel2 }
+        GradientStop { position: 0.50; color: Theme.bg }
+        GradientStop { position: 1.0; color: Theme.deepBlack }
     }
 
     Canvas {
@@ -51,10 +51,10 @@ Rectangle {
             var w = width
             var h = height
 
-            c.fillStyle = "#080808"
+            c.fillStyle = Theme.bg
             c.fillRect(0, 0, w, h)
 
-            c.strokeStyle = "#342E16"
+            c.strokeStyle = Theme.grid
             c.lineWidth = 1
             c.globalAlpha = 0.72
             for (var gx = 1; gx < 11; ++gx) {
@@ -67,7 +67,7 @@ Rectangle {
             }
             c.globalAlpha = 1
 
-            c.fillStyle = "#111111"
+            c.fillStyle = Theme.panel
             c.beginPath()
             c.moveTo(0, 0)
             c.lineTo(w, 0)
@@ -76,8 +76,8 @@ Rectangle {
             c.bezierCurveTo(w*0.37,h*0.18,w*0.21,h*0.28,0,h*0.21)
             c.closePath(); c.fill()
 
-            c.fillStyle = "#1A1A1A"
-            c.strokeStyle = "#9E9B98"
+            c.fillStyle = Theme.panel3
+            c.strokeStyle = Theme.metallicSilver
             c.lineWidth = 1.4
             c.beginPath()
             c.moveTo(0,h*0.35)
@@ -104,11 +104,11 @@ Rectangle {
             c.lineTo(w*0.51,h*0.63)
             c.closePath(); c.fill(); c.stroke()
 
-            c.fillStyle = "#151515"
+            c.fillStyle = Theme.panel2
             c.beginPath(); c.moveTo(w*.505,h*.53); c.lineTo(w*.535,h*.56); c.lineTo(w*.58,h*.96); c.lineTo(w*.545,h*.96); c.closePath(); c.fill()
             c.beginPath(); c.moveTo(w*.49,h*.48); c.lineTo(w*.505,h*.51); c.lineTo(w*.52,h*.74); c.lineTo(w*.505,h*.72); c.closePath(); c.fill()
 
-            c.fillStyle = "#9E9B98"
+            c.fillStyle = Theme.silver
             c.font = root.rtl ? "700 13px 'Noto Kufi Arabic'" : "700 13px 'Noto Sans'"
             c.fillText(root.rtl ? "البحر المتوسط" : "MEDITERRANEAN", w*.15, h*.17)
             c.fillText(root.rtl ? "مصر" : "EGYPT", w*.27, h*.63)
@@ -134,19 +134,19 @@ Rectangle {
             c.globalAlpha=1
 
             c.lineWidth = 2.4
-            c.strokeStyle = "#D4AF37"
+            c.strokeStyle = Theme.signalCyan
             c.setLineDash([10,7])
             c.beginPath(); c.moveTo(w*.18,h*.45); c.bezierCurveTo(w*.35,h*.38,w*.48,h*.44,w*.66,h*.28); c.stroke()
-            c.strokeStyle = "#D4AF37"
+            c.strokeStyle = Theme.royalGold
             c.beginPath(); c.moveTo(w*.34,h*.77); c.bezierCurveTo(w*.45,h*.61,w*.58,h*.58,w*.73,h*.70); c.stroke()
             c.setLineDash([])
 
             var cx=w*.91, cy=h*.12, rr=28
-            c.strokeStyle="#9E9B98"; c.lineWidth=1.2
+            c.strokeStyle=Theme.metallicSilver; c.lineWidth=1.2
             c.beginPath(); c.arc(cx,cy,rr,0,Math.PI*2); c.stroke()
             c.beginPath(); c.moveTo(cx,cy-rr); c.lineTo(cx,cy+rr); c.stroke()
             c.beginPath(); c.moveTo(cx-rr,cy); c.lineTo(cx+rr,cy); c.stroke()
-            c.fillStyle="#F2F2F2"; c.font="700 10px monospace"; c.fillText("N",cx-4,cy-rr-7)
+            c.fillStyle=Theme.platinum; c.font="700 10px monospace"; c.fillText("N",cx-4,cy-rr-7)
         }
         onWidthChanged: requestPaint()
         onHeightChanged: requestPaint()
@@ -173,30 +173,30 @@ Rectangle {
                         required property int index
                         width: 3; height: 3; radius: 2
                         x: 20; y: 42 + index * 8
-                        color: "#D4AF37"
+                        color: Theme.signalCyan
                         opacity: .52 - index * .09
                     }
                 }
-                Rectangle { anchors.centerIn: parent; width: 30; height: 4; radius: 2; color: "#D4AF37" }
-                Rectangle { anchors.centerIn: parent; width: 4; height: 25; radius: 2; color: "#F2F2F2" }
-                Rectangle { anchors.horizontalCenter: parent.horizontalCenter; anchors.top: parent.top; width: 5; height: 10; radius: 2; color: "#D4AF37" }
+                Rectangle { anchors.centerIn: parent; width: 30; height: 4; radius: 2; color: Theme.signalCyan }
+                Rectangle { anchors.centerIn: parent; width: 4; height: 25; radius: 2; color: Theme.platinum }
+                Rectangle { anchors.horizontalCenter: parent.horizontalCenter; anchors.top: parent.top; width: 5; height: 10; radius: 2; color: Theme.signalCyan }
             }
 
             Rectangle {
-                visible: index < 2
+                visible: false
                 x: -154
                 y: -92 + index * 38
                 width: 146; height: 32
                 radius: 4
                 color: "#E60A0A0A"
-                border.color: "#665820"
+                border.color: Theme.border
                 border.width: 1
                 Column {
                     anchors.fill: parent
                     anchors.margins: 4
                     spacing: 0
-                    Text { text: modelData.callsign || modelData.icao24 || "PUBLIC TRACK"; color: "#F2F2F2"; font.family: Theme.mono; font.pixelSize: 10; font.bold: true; width: parent.width; elide: Text.ElideRight }
-                    Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  / ADS-B"; color: "#D4AF37"; font.family: Theme.mono; font.pixelSize: 10; width: parent.width; elide: Text.ElideRight }
+                    Text { text: modelData.callsign || modelData.icao24 || "PUBLIC TRACK"; color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; width: parent.width; elide: Text.ElideRight }
+                    Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  / ADS-B"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; width: parent.width; elide: Text.ElideRight }
                 }
             }
 
@@ -233,6 +233,7 @@ Rectangle {
             }
 
             Rectangle {
+                visible: false
                 x: parent.x > root.width * .72 ? -166 : 28
                 y: -70 + index * 48
                 width: 158; height: 38
@@ -244,14 +245,84 @@ Rectangle {
                     anchors.fill: parent
                     anchors.margins: 5
                     spacing: 0
-                    Text { text: (modelData.trackId || "TRACK") + "  /  " + (modelData.classification || "UNKNOWN"); color: root.threatColor(modelData.threatLevel); font.family: Theme.mono; font.pixelSize: 10; font.bold: true; width: parent.width; elide: Text.ElideRight }
-                    Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  •  " + Math.round(Number(modelData.confidence || 0) * 100) + "%"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10; width: parent.width; elide: Text.ElideRight }
+                    Text { text: (modelData.trackId || "TRACK") + "  /  " + (modelData.classification || "UNKNOWN"); color: root.threatColor(modelData.threatLevel); font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; width: parent.width; elide: Text.ElideRight }
+                    Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  •  " + Math.round(Number(modelData.confidence || 0) * 100) + "%"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx; width: parent.width; elide: Text.ElideRight }
                 }
             }
 
             MouseArea { id: ama; x: -23; y: -23; width: 46; height: 46; hoverEnabled: true }
             ToolTip.visible: ama.containsMouse
             ToolTip.text: (modelData.trackId || "TRACK") + " • " + (modelData.classification || "UNKNOWN") + " • " + (modelData.threatLevel || "REVIEW")
+        }
+    }
+
+    Column {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.leftMargin: 14
+        anchors.topMargin: 104
+        spacing: 5
+        z: 5
+        Repeater {
+            model: root.publicTracks
+            delegate: Rectangle {
+                required property int index
+                required property var modelData
+                visible: index < 4
+                width: 190
+                height: 38
+                color: Theme.panel2
+                border.color: Theme.signalCyan
+                border.width: 1
+                radius: 5
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 5
+                    spacing: 6
+                    Rectangle { width: 7; height: 7; radius: 4; color: Theme.signalCyan }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+                        Text { text: modelData.callsign || modelData.icao24 || "PUBLIC TRACK"; color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                        Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  /  ADS-B"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                    }
+                }
+            }
+        }
+    }
+
+    Column {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: 14
+        anchors.topMargin: 104
+        spacing: 5
+        z: 5
+        Repeater {
+            model: root.aegisTracks
+            delegate: Rectangle {
+                required property int index
+                required property var modelData
+                visible: index < 4
+                width: 202
+                height: 40
+                color: Theme.panel2
+                border.color: root.threatColor(modelData.threatLevel)
+                border.width: 1
+                radius: 5
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 5
+                    spacing: 7
+                    Rectangle { width: 10; height: 10; rotation: 45; color: Theme.panel3; border.color: root.threatColor(modelData.threatLevel); border.width: 2 }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+                        Text { text: (modelData.trackId || "TRACK") + "  /  " + (modelData.classification || "UNKNOWN"); color: root.threatColor(modelData.threatLevel); font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                        Text { text: Math.round(Number(modelData.altitudeMeters || 0)) + " M  •  " + Math.round(Number(modelData.confidence || 0) * 100) + "%"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                    }
+                }
+            }
         }
     }
 
@@ -269,7 +340,7 @@ Rectangle {
                 color: Number(modelData.supportPercent) >= 90 ? "#1A1A1A" : "#1A1A1A"
                 border.color: Number(modelData.supportPercent) >= 90 ? "#63E2A6" : "#F5B44C"
                 border.width: 2
-                Text { anchors.centerIn: parent; text: "✦"; color: parent.border.color; font.pixelSize: 11; font.bold: true }
+                Text { anchors.centerIn: parent; text: "✦"; color: parent.border.color; font.pixelSize: Theme.smallPx; font.bold: true }
             }
 
             Rectangle {
@@ -285,7 +356,7 @@ Rectangle {
                         text: modelData.name || "AIRFIELD"
                         color: "#F2F2F2"
                         font.family: Theme.uiFont(root.rtl)
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                         elide: Text.ElideRight
                         width: parent.width
@@ -294,7 +365,7 @@ Rectangle {
                         text: (modelData.runway || "RWY") + "  •  " + Number(modelData.supportPercent || 0) + "%"
                         color: Number(modelData.supportPercent) >= 90 ? "#63E2A6" : "#F5B44C"
                         font.family: Theme.mono
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         width: parent.width
                         elide: Text.ElideRight
                     }
@@ -311,7 +382,7 @@ Rectangle {
         height: 82
         radius: 6
         color: "#E80A0A0A"
-        border.color: "#665820"
+        border.color: Theme.border
         border.width: 1
 
         ColumnLayout {
@@ -331,7 +402,7 @@ Rectangle {
                 text: root.rtl ? "ADS-B عام • AEGIS وعي جوي • قواعد ومطارات" : "PUBLIC ADS-B • AEGIS AWARENESS • BASES & AIRFIELDS"
                 color: "#D4AF37"
                 font.family: Theme.uiFont(root.rtl)
-                font.pixelSize: 10
+                font.pixelSize: Theme.smallPx
                 font.bold: true
                 Layout.fillWidth: true
                 elide: Text.ElideRight
@@ -340,7 +411,7 @@ Rectangle {
                 text: root.rtl ? "المصدر: عام / إعادة / بيانات تدريبية بحسب التغذية" : "SOURCE: PUBLIC / REPLAY / SYNTHETIC BY FEED"
                 color: "#9E9B98"
                 font.family: Theme.uiFont(root.rtl)
-                font.pixelSize: 10
+                font.pixelSize: Theme.smallPx
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -355,7 +426,7 @@ Rectangle {
         height: 58
         radius: 6
         color: "#E80A0A0A"
-        border.color: "#665820"
+        border.color: Theme.border
         border.width: 1
 
         RowLayout {
@@ -370,14 +441,14 @@ Rectangle {
                     text: root.rtl ? "حالة تكامل البيانات" : "DATA INTEGRATION"
                     color: "#9E9B98"
                     font.family: Theme.uiFont(root.rtl)
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.smallPx
                     font.bold: true
                 }
                 Text {
                     text: "ADS-B " + root.publicTracks.length + "   AEGIS " + root.aegisTracks.length + "   BASES " + root.bases.length
                     color: "#F2F2F2"
                     font.family: Theme.mono
-                    font.pixelSize: 11
+                    font.pixelSize: Theme.smallPx
                     font.bold: true
                 }
             }

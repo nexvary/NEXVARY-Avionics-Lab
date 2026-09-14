@@ -25,20 +25,24 @@ def require(path: pathlib.Path, expected=None):
 
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "build-qt")
-    require(root / "stage1950-command-overview-en-1920x1080.png", (1920, 1080))
-    require(root / "stage1950-command-overview-ar-1920x1080.png", (1920, 1080))
-    require(root / "stage1950-command-overview-ar-2560x1440.png", (2560, 1440))
-    require(root / "stage1950-airspace-ar.png", (1920, 1080))
-    require(root / "stage1950-air-picture-en.png", (1920, 1080))
-    require(root / "stage1950-aircraft-visual-en.png", (1920, 1080))
-    require(root / "stage1950-force-fleet-ar.png", (1920, 1080))
-    require(root / "stage1950-bases-airfields-en.png", (1920, 1080))
-    require(root / "stage1950-cuas-detection-en.png", (1920, 1080))
-    require(root / "stage1950-data-sources-en.png", (1920, 1080))
-    require(root / "stage1950-diagnostic-ar.png", (1920, 1080))
+    require(root / "stage1960-command-overview-en-1920x1080.png", (1920, 1080))
+    require(root / "stage1960-command-overview-ar-1920x1080.png", (1920, 1080))
+    require(root / "stage1960-command-overview-ar-2560x1440.png", (2560, 1440))
+    require(root / "stage1960-airspace-ar.png", (1920, 1080))
+    require(root / "stage1960-common-air-picture-en.png", (1920, 1080))
+    require(root / "stage1960-flight-tracking-en.png", (1920, 1080))
+    require(root / "stage1960-route-lab-en.png", (1920, 1080))
+    require(root / "stage1960-aeronautical-data-en.png", (1920, 1080))
+    require(root / "stage1960-aircraft-visual-en.png", (1920, 1080))
+    require(root / "stage1960-force-fleet-ar.png", (1920, 1080))
+    require(root / "stage1960-bases-airfields-en.png", (1920, 1080))
+    require(root / "stage1960-platform-library-en.png", (1920, 1080))
+    require(root / "stage1960-cuas-detection-en.png", (1920, 1080))
+    require(root / "stage1960-data-sources-en.png", (1920, 1080))
+    require(root / "stage1960-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
-        require(root / f"stage1950-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1950 verifies map-first command hierarchy, grouped workspaces, force-management visuals, passive C-UAS radar, provider health, production typography, Arabic RTL and ten-locale rendering.")
+        require(root / f"stage1960-lang-{code}.png", (1720, 1000))
+    print("UI RELEASE GATE PASS: Stage 1960 verifies map-first command hierarchy, independent Common Air Picture and Flight Tracking workspaces, grouped navigation, force-management visuals, passive C-UAS radar, provider health, production typography, Arabic RTL and ten-locale rendering.")
 
 
 if __name__ == "__main__":

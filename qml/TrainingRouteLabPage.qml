@@ -55,7 +55,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "تحليل المسافة والقطاعات وتصنيفات المجال على مسارات تدريبية قابلة للتبديل" : "DISTANCE, SECTOR AND AIRSPACE-CLASS REVIEW ACROSS SELECTABLE TRAINING ROUTES"
                         color: Theme.radarGreen
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -73,7 +73,7 @@ Item {
                         color: Theme.platinum
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                         elide: Text.ElideRight
                     }
@@ -100,7 +100,7 @@ Item {
                         Text {
                             text: AirspaceLocale.notForNavigation(cockpit.language)
                             color: Theme.warmOrange
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
@@ -109,7 +109,7 @@ Item {
                             text: AirspaceData.routePresets[page.selectedPreset].id + " / TRAINING SCALE"
                             color: Theme.muted
                             font.family: "Consolas"
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -141,9 +141,9 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 2
-                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 10; font.bold: true }
+                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: Theme.smallPx; font.bold: true }
                         Text { text: String(modelData.value); color: modelData.color; font.family: "Consolas"; font.pixelSize: 20; font.bold: true }
-                        Text { text: "TRAINING ANALYSIS"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
+                        Text { text: "TRAINING ANALYSIS"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
                     }
                 }
             }
@@ -158,6 +158,7 @@ Item {
                 id: mapFrame
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.minimumWidth: 650
                 color: "#111111"
                 border.color: Theme.border
                 border.width: 1
@@ -251,7 +252,7 @@ Item {
                             text: "WP" + (index + 1)
                             color: Theme.platinum
                             font.family: "Consolas"
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                         }
                     }
@@ -276,7 +277,7 @@ Item {
                             text: routeSummary.advisory
                             color: Theme.radarGreen
                             font.family: "Consolas"
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
@@ -285,7 +286,7 @@ Item {
                             text: "CLASSES  " + routeSummary.classes.join(" / ")
                             color: Theme.silver
                             font.family: "Consolas"
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -295,6 +296,8 @@ Item {
 
             ColumnLayout {
                 Layout.preferredWidth: 390
+                Layout.minimumWidth: 380
+                Layout.maximumWidth: 400
                 Layout.fillHeight: true
                 spacing: 7
 
@@ -309,7 +312,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "القطاعات المتقاطعة" : "CROSSED AIRSPACE"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "القطاعات المتقاطعة" : "CROSSED AIRSPACE"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
                             Layout.fillWidth: true
@@ -336,13 +339,13 @@ Item {
                                         color: Theme.panel3
                                         border.color: page.classColor(modelData.classCode)
                                         border.width: 1
-                                        Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                                        Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                                     }
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 0
-                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.floor + " → " + modelData.ceiling; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.floor + " → " + modelData.ceiling; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
                                     }
                                 }
                             }
@@ -361,7 +364,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "نقاط المسار" : "ROUTE WAYPOINTS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "نقاط المسار" : "ROUTE WAYPOINTS"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Repeater {
                             model: page.routePoints
@@ -369,8 +372,8 @@ Item {
                                 required property int index
                                 required property var modelData
                                 Layout.fillWidth: true
-                                Text { text: "WP" + (index + 1); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 42 }
-                                Text { text: "X " + modelData.x.toFixed(3) + "   Y " + modelData.y.toFixed(3); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true }
+                                Text { text: "WP" + (index + 1); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true; Layout.preferredWidth: 42 }
+                                Text { text: "X " + modelData.x.toFixed(3) + "   Y " + modelData.y.toFixed(3); color: Theme.silver; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
                             }
                         }
                     }
@@ -387,11 +390,11 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "ملاحظات التحليل" : "ANALYSIS NOTES"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "ملاحظات التحليل" : "ANALYSIS NOTES"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: cockpit.rtl ? "• المسافة تقريبية ومبنية على مقياس تدريب داخلي." : "• Distance is approximate and uses an internal training scale."; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                        Text { text: cockpit.rtl ? "• يمكن تبديل المسارات لمقارنة عبور التصنيفات المختلفة." : "• Presets can be switched to compare different class crossings."; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-                        Text { text: cockpit.rtl ? "• لا توجد أوامر طيران أو توجيه تشغيلي حي." : "• No live flight commands or operational guidance are produced."; color: Theme.warmOrange; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                        Text { text: cockpit.rtl ? "• المسافة تقريبية ومبنية على مقياس تدريب داخلي." : "• Distance is approximate and uses an internal training scale."; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                        Text { text: cockpit.rtl ? "• يمكن تبديل المسارات لمقارنة عبور التصنيفات المختلفة." : "• Presets can be switched to compare different class crossings."; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                        Text { text: cockpit.rtl ? "• لا توجد أوامر طيران أو توجيه تشغيلي حي." : "• No live flight commands or operational guidance are produced."; color: Theme.warmOrange; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                     }
                 }
             }

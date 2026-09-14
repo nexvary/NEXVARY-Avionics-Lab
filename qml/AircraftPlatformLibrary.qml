@@ -33,7 +33,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "مكتبة منصات الطائرات" : "AIRCRAFT PLATFORM LIBRARY"
                         color: Theme.platinum
-                        font.pixelSize: 20
+                        font.pixelSize: Theme.pageTitlePx
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -41,14 +41,14 @@ Item {
                     Text {
                         text: cockpit.rtl ? "ملفات تدريبية عامة متعددة المنصات • توأم رقمي • قنوات • تشخيص • سيناريوهات" : "MULTI-PLATFORM TRAINING PROFILES / DIGITAL TWIN / CHANNEL MAP / DIAGNOSTICS / SCENARIOS"
                         color: Theme.accent
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                         font.letterSpacing: 0.5
                     }
                     Text {
                         text: cockpit.rtl ? "لا تمثل هذه الملفات طرازات تشغيلية أو بيانات صيانة مصنّع" : "GENERIC TRAINING PROFILES — NO OEM MAINTENANCE DATA OR LIVE AIRCRAFT CONTROL"
                         color: Theme.muted
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                     }
                 }
                 StatusCard { Layout.preferredWidth: 150; Layout.fillHeight: true; title: "PROFILES"; value: String(cockpit.platformProfiles.length); subtitle: "GENERIC TYPES"; iconText: "PL"; accent: Theme.accent }
@@ -71,7 +71,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 9
                     spacing: 5
-                    Text { text: cockpit.rtl ? "المنصات المتاحة" : "AVAILABLE TRAINING PLATFORMS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                    Text { text: cockpit.rtl ? "المنصات المتاحة" : "AVAILABLE TRAINING PLATFORMS"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                     ListView {
                         Layout.fillWidth: true
@@ -97,14 +97,14 @@ Item {
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 0
-                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true }
-                                        Text { text: modelData.category; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true }
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: Theme.secondaryPx; font.bold: true; Layout.fillWidth: true }
+                                        Text { text: modelData.category; color: Theme.accent; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
                                     }
-                                    Text { text: modelData.active ? "ACTIVE" : "SELECT"; color: modelData.active ? Theme.green : Theme.silver; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                                    Text { text: modelData.active ? "ACTIVE" : "SELECT"; color: modelData.active ? Theme.green : Theme.silver; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                                 }
-                                Text { text: modelData.propulsion; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
-                                Text { text: modelData.description; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight }
-                                Text { text: modelData.systemCount + " SYSTEMS  •  " + modelData.channelCount + " CHANNELS  •  " + modelData.diagnosticFamilyCount + " DX FAMILIES"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
+                                Text { text: modelData.propulsion; color: Theme.silver; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
+                                Text { text: modelData.description; color: Theme.muted; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight }
+                                Text { text: modelData.systemCount + " SYSTEMS  •  " + modelData.channelCount + " CHANNELS  •  " + modelData.diagnosticFamilyCount + " DX FAMILIES"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
                             }
                         }
                     }
@@ -127,7 +127,7 @@ Item {
                             Layout.fillWidth: true
                             spacing: 1
                             Text { text: page.currentProfile().name || "—"; color: Theme.platinum; font.pixelSize: 18; font.bold: true }
-                            Text { text: (page.currentProfile().category || "—") + "  /  " + (page.currentProfile().propulsion || "—"); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: (page.currentProfile().category || "—") + "  /  " + (page.currentProfile().propulsion || "—"); color: Theme.accent; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
                         }
                         Rectangle {
                             Layout.preferredWidth: 168
@@ -138,13 +138,95 @@ Item {
                             ColumnLayout {
                                 anchors.centerIn: parent
                                 spacing: 0
-                                Text { text: "PROFILE ACTIVE"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.alignment: Qt.AlignHCenter }
-                                Text { text: "SYNTHETIC / OFFLINE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.alignment: Qt.AlignHCenter }
+                                Text { text: "PROFILE ACTIVE"; color: Theme.green; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true; Layout.alignment: Qt.AlignHCenter }
+                                Text { text: "SYNTHETIC / OFFLINE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.alignment: Qt.AlignHCenter }
                             }
                         }
                     }
-                    Text { text: page.currentProfile().description || ""; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                    Text { text: page.currentProfile().description || ""; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 300
+                        Layout.minimumHeight: 260
+                        spacing: 8
+
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            color: Theme.panel2
+                            border.color: Theme.signalCyan
+                            border.width: 1
+                            radius: Theme.radius
+                            clip: true
+                            AircraftSchematic {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                platformId: cockpit.activePlatformId
+                                subsystemRows: cockpit.twinRows
+                                accent: Theme.signalCyan
+                            }
+                            Rectangle {
+                                anchors.left: parent.left
+                                anchors.top: parent.top
+                                anchors.margins: 10
+                                width: 230
+                                height: 54
+                                color: Theme.panel
+                                border.color: Theme.signalCyan
+                                border.width: 1
+                                radius: Theme.radius
+                                ColumnLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 7
+                                    spacing: 0
+                                    Text { text: cockpit.rtl ? "الملف التقني للمنصة" : "PLATFORM TECHNICAL PROFILE"; color: Theme.signalCyan; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
+                                    Text { text: (page.currentProfile().name || "GENERIC").toUpperCase(); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.secondaryPx; font.bold: true }
+                                }
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.preferredWidth: 260
+                            Layout.fillHeight: true
+                            color: Theme.panel2
+                            border.color: Theme.border
+                            border.width: 1
+                            radius: Theme.radius
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                spacing: 8
+                                Text { text: cockpit.rtl ? "حالة التوأم الرقمي" : "DIGITAL TWIN STATUS"; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.sectionPx; font.bold: true }
+                                Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "NOMINAL"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
+                                    Text { text: String(cockpit.twinNominalCount); color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.sectionPx; font.bold: true }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: "DEGRADED"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
+                                    Text { text: String(cockpit.twinDegradedCount); color: cockpit.twinDegradedCount ? Theme.amber : Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.sectionPx; font.bold: true }
+                                }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text { text: cockpit.rtl ? "الصحة التشخيصية" : "DIAGNOSTIC HEALTH"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
+                                    Text { text: cockpit.diagnosticHealthScore + "%"; color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.sectionPx; font.bold: true }
+                                }
+                                Rectangle {
+                                    Layout.fillWidth: true
+                                    height: 8
+                                    radius: 4
+                                    color: Theme.panel3
+                                    Rectangle { width: parent.width * cockpit.diagnosticHealthScore / 100; height: parent.height; radius: 4; color: Theme.radarGreen }
+                                }
+                                Item { Layout.fillHeight: true }
+                                Text { text: cockpit.rtl ? "ملف تدريبي عام • لا توجد بيانات مصنّع" : "GENERIC TRAINING PROFILE • NO OEM DATA"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                            }
+                        }
+                    }
 
                     GridLayout {
                         Layout.fillWidth: true
@@ -156,7 +238,7 @@ Item {
                             Layout.fillWidth: true; Layout.preferredHeight: 205; color: Theme.panel2; border.color: Theme.border; radius: Theme.radius
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 9; spacing: 4
-                                Text { text: cockpit.rtl ? "خريطة الأنظمة" : "SYSTEM MAP"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                                Text { text: cockpit.rtl ? "خريطة الأنظمة" : "SYSTEM MAP"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                                 Repeater {
                                     model: page.currentProfile().systems || []
@@ -164,8 +246,8 @@ Item {
                                         required property var modelData
                                         Layout.fillWidth: true
                                         Rectangle { width: 5; height: 5; radius: 2; color: Theme.green }
-                                        Text { text: modelData; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
-                                        Text { text: "MONITORED"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
+                                        Text { text: modelData; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
+                                        Text { text: "MONITORED"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
                                     }
                                 }
                             }
@@ -175,15 +257,15 @@ Item {
                             Layout.fillWidth: true; Layout.preferredHeight: 205; color: Theme.panel2; border.color: Theme.border; radius: Theme.radius
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 9; spacing: 4
-                                Text { text: cockpit.rtl ? "عائلات التشخيص" : "DIAGNOSTIC FAMILIES"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                                Text { text: cockpit.rtl ? "عائلات التشخيص" : "DIAGNOSTIC FAMILIES"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                                 Repeater {
                                     model: page.currentProfile().diagnosticFamilies || []
                                     delegate: RowLayout {
                                         required property var modelData
                                         Layout.fillWidth: true
-                                        Text { text: "DX"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                                        Text { text: modelData; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
+                                        Text { text: "DX"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                                        Text { text: modelData; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
                                     }
                                 }
                             }
@@ -193,15 +275,15 @@ Item {
                             Layout.fillWidth: true; Layout.preferredHeight: 188; color: Theme.panel2; border.color: Theme.border; radius: Theme.radius
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 9; spacing: 4
-                                Text { text: cockpit.rtl ? "قنوات القياس" : "TELEMETRY CHANNEL MAP"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                                Text { text: cockpit.rtl ? "قنوات القياس" : "TELEMETRY CHANNEL MAP"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                                 Repeater {
                                     model: page.currentProfile().channels || []
                                     delegate: RowLayout {
                                         required property var modelData
                                         Layout.fillWidth: true
-                                        Text { text: "CH"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
-                                        Text { text: modelData; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true }
+                                        Text { text: "CH"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: Theme.smallPx }
+                                        Text { text: modelData; color: Theme.silver; font.family: "Consolas"; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
                                     }
                                 }
                             }
@@ -211,7 +293,7 @@ Item {
                             Layout.fillWidth: true; Layout.preferredHeight: 188; color: Theme.panel2; border.color: Theme.border; radius: Theme.radius
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 9; spacing: 4
-                                Text { text: cockpit.rtl ? "سيناريوهات التدريب" : "TRAINING SCENARIOS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                                Text { text: cockpit.rtl ? "سيناريوهات التدريب" : "TRAINING SCENARIOS"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                                 Repeater {
                                     model: page.currentProfile().trainingScenarios || []
@@ -219,12 +301,12 @@ Item {
                                         required property int index
                                         required property var modelData
                                         Layout.fillWidth: true
-                                        Text { text: "S" + (index + 1); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                                        Text { text: modelData; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
+                                        Text { text: "S" + (index + 1); color: Theme.accent; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
+                                        Text { text: modelData; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true }
                                     }
                                 }
                                 Item { Layout.fillHeight: true }
-                                Text { text: cockpit.rtl ? "التبديل بين الملفات يعيد تهيئة جلسة المحاكاة ويحافظ على فصل سجل التشخيص بين المنصات." : "Changing platform resets the synthetic session and isolates diagnostic history between platform contexts."; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                                Text { text: cockpit.rtl ? "التبديل بين الملفات يعيد تهيئة جلسة المحاكاة ويحافظ على فصل سجل التشخيص بين المنصات." : "Changing platform resets the synthetic session and isolates diagnostic history between platform contexts."; color: Theme.muted; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                             }
                         }
                     }

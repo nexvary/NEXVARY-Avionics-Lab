@@ -5,9 +5,9 @@ with open(p,'r',encoding='utf-8') as f:d=json.load(f)
 assert d['schema']=='nexvary-avionics-release-manifest/v1'
 assert d['product']=='NEXVARY Avionics Lab'
 assert d['version']=='3.3.0'
-assert d['stage']==1950
+assert d['stage']==1960
 assert d['scope']=='training-simulation-only'
 assert len(d['dependencies'])>=4
 for dep in d['dependencies']:
     assert dep['name'] and dep['version'] and dep['license'] and dep['source']
-print('Stage 1950 release manifest verified')
+print('Stage 1960 release manifest verified')

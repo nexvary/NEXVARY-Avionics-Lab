@@ -6,8 +6,8 @@ import "AirspaceLocale.js" as AirspaceLocale
 
 Item {
     id: root
-    property string releaseStage: "1850"
-    property int selectedWorkspace: Math.max(0, Math.min(5, airOpsWorkspace))
+    property string releaseStage: "1960"
+    property int selectedWorkspace: Math.max(0, Math.min(6, airOpsWorkspace))
     property int cuasSection: 0
 
     ColumnLayout {
@@ -16,7 +16,7 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 44
+            Layout.preferredHeight: 50
             color: Theme.shell
             border.color: Theme.borderSoft
             border.width: 1
@@ -25,7 +25,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 5
                 spacing: 5
-
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
                 Repeater {
                     model: [
                         {label: AirspaceLocale.chart(cockpit.language), index: 0, accent: Theme.signalCyan},
@@ -33,30 +33,29 @@ Item {
                         {label: AirspaceLocale.dataHub(cockpit.language), index: 2, accent: Theme.royalGold},
                         {label: AirspaceLocale.routeLab(cockpit.language), index: 3, accent: Theme.rfViolet},
                         {label: AirspaceLocale.aircraft(cockpit.language), index: 4, accent: Theme.skyBlue},
-                        {label: cockpit.rtl ? "استجابة C-UAS" : "C-UAS RESPONSE", index: 5, accent: Theme.warmOrange}
+                        {label: cockpit.rtl ? "تتبع الرحلات" : "FLIGHT TRACKING", index: 5, accent: Theme.signalCyan},
+                        {label: cockpit.rtl ? "استجابة C-UAS" : "C-UAS RESPONSE", index: 6, accent: Theme.warmOrange}
                     ]
                     delegate: Rectangle {
                         required property var modelData
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        Layout.minimumWidth: 132
+                        Layout.minimumWidth: 112
                         color: root.selectedWorkspace === modelData.index ? Theme.panel3 : Theme.panel2
-                        border.color: root.selectedWorkspace === modelData.index ? Theme.royalGold : Theme.borderSoft
+                        border.color: root.selectedWorkspace === modelData.index ? modelData.accent : Theme.borderSoft
                         border.width: root.selectedWorkspace === modelData.index ? Theme.activeFrameWidth : Theme.frameWidth
                         radius: Theme.radius
-
                         Text {
                             anchors.centerIn: parent
                             text: modelData.label
                             color: root.selectedWorkspace === modelData.index ? Theme.platinum : Theme.muted
                             font.family: Theme.uiFont(cockpit.rtl)
-                            font.pixelSize: modelData.label.length > 22 ? 10 : 11
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             elide: Text.ElideRight
                             width: parent.width - 12
                             horizontalAlignment: Text.AlignHCenter
                         }
-
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
@@ -68,16 +67,15 @@ Item {
         }
 
         StackLayout {
-            id: workspace
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: root.selectedWorkspace
-
             AirspaceClassificationPage {}
-            AirPictureIntelligencePage {}
+            CommonAirPicturePage {}
             AeronauticalDataHubPage {}
             TrainingRouteLabPage {}
             AircraftStoryboardPage {}
+            FlightTrackingPage {}
             CuasResponsePage { selectedSection: root.cuasSection }
         }
     }

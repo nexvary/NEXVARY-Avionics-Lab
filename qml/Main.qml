@@ -46,16 +46,16 @@ ApplicationWindow {
                 ]
             },
             {
-                id: "air-operations", label: tr("airOps"), accent: Theme.royalGold, open: true,
+                id: "air-operations", label: tr("airOps"), accent: Theme.signalCyan, open: true,
                 entries: [
                     {route:"airspace", label:tr("airspace"), icon:"airspace", page:11, workspace:0},
-                    {route:"flight-tracking", label:tr("flightTracking"), icon:"radar", page:11, workspace:1},
+                    {route:"flight-tracking", label:tr("flightTracking"), icon:"radar", page:11, workspace:5},
                     {route:"route-lab", label:tr("routeLab"), icon:"route", page:11, workspace:3},
                     {route:"aeronautical-data", label:tr("aeroData"), icon:"data", page:11, workspace:2}
                 ]
             },
             {
-                id: "force-management", label: tr("force"), accent: Theme.royalGold, open: true,
+                id: "force-management", label: tr("force"), accent: Theme.radarGreen, open: true,
                 entries: [
                     {route:"fleet", label:tr("fleet"), icon:"fleet", page:12, workspace:0},
                     {route:"squadrons", label:tr("squadrons"), icon:"fleet", page:12, workspace:1},
@@ -66,7 +66,7 @@ ApplicationWindow {
                 ]
             },
             {
-                id: "engineering", label: tr("engineering"), accent: Theme.royalGold, open: false,
+                id: "engineering", label: tr("engineering"), accent: Theme.skyBlue, open: false,
                 entries: [
                     {route:"system-health", label:tr("health"), icon:"health", page:1, workspace:0},
                     {route:"sensors", label:tr("sensors"), icon:"sensors", page:2, workspace:0},
@@ -80,16 +80,16 @@ ApplicationWindow {
                 ]
             },
             {
-                id: "cuas", label: tr("cuas"), accent: Theme.royalGold, open: false,
+                id: "cuas", label: tr("cuas"), accent: Theme.warmOrange, open: false,
                 entries: [
-                    {route:"cuas-detection", label:tr("detection"), icon:"radar", page:11, workspace:50},
-                    {route:"cuas-classification", label:tr("classification"), icon:"classify", page:11, workspace:51},
-                    {route:"cuas-incidents", label:tr("incidents"), icon:"incident", page:11, workspace:52},
-                    {route:"cuas-coordination", label:tr("coordination"), icon:"response", page:11, workspace:53}
+                    {route:"cuas-detection", label:tr("detection"), icon:"radar", page:11, workspace:60},
+                    {route:"cuas-classification", label:tr("classification"), icon:"classify", page:11, workspace:61},
+                    {route:"cuas-incidents", label:tr("incidents"), icon:"incident", page:11, workspace:62},
+                    {route:"cuas-coordination", label:tr("coordination"), icon:"response", page:11, workspace:63}
                 ]
             },
             {
-                id: "system", label: tr("system"), accent: Theme.royalGold, open: false,
+                id: "system", label: tr("system"), accent: Theme.metallicSilver, open: false,
                 entries: [
                     {route:"data-sources", label:tr("sources"), icon:"source", page:15, workspace:0},
                     {route:"audit", label:tr("audit"), icon:"verify", page:16, workspace:0},
@@ -123,9 +123,9 @@ ApplicationWindow {
 
     function applyWorkspace(page, workspace) {
         if (page === 11) {
-            if (workspace >= 50) {
-                airOperationsPage.selectedWorkspace = 5
-                airOperationsPage.cuasSection = Math.max(0, Math.min(3, workspace - 50))
+            if (workspace >= 60) {
+                airOperationsPage.selectedWorkspace = 6
+                airOperationsPage.cuasSection = Math.max(0, Math.min(3, workspace - 60))
             } else {
                 airOperationsPage.selectedWorkspace = workspace
             }
@@ -152,7 +152,7 @@ ApplicationWindow {
     }
 
     function currentWorkspace() {
-        if (selectedPage === 11) return airOperationsPage.selectedWorkspace === 5 ? 50 + airOperationsPage.cuasSection : airOperationsPage.selectedWorkspace
+        if (selectedPage === 11) return airOperationsPage.selectedWorkspace === 6 ? 60 + airOperationsPage.cuasSection : airOperationsPage.selectedWorkspace
         if (selectedPage === 12) return forceManagementPage.selectedWorkspace
         if (selectedPage === 16) return governancePage.selectedWorkspace
         return 0
@@ -169,13 +169,13 @@ ApplicationWindow {
 
     function initializeView(index, airWorkspace, forceWorkspace, cuasSection, systemWorkspace) {
         if (index === 11) {
-            const routes = ["airspace", "common-picture", "aeronautical-data", "route-lab", "aircraft-visuals", "cuas-detection"]
-            const groups = ["air-operations", "command", "air-operations", "air-operations", "engineering", "cuas"]
-            const workspace = Math.max(0, Math.min(5, airWorkspace))
-            if (workspace === 5) {
+            const routes = ["airspace", "common-picture", "aeronautical-data", "route-lab", "aircraft-visuals", "flight-tracking", "cuas-detection"]
+            const groups = ["air-operations", "command", "air-operations", "air-operations", "engineering", "air-operations", "cuas"]
+            const workspace = Math.max(0, Math.min(6, airWorkspace))
+            if (workspace === 6) {
                 const section = Math.max(0, Math.min(3, Number(cuasSection || 0)))
                 const cuasRoutes = ["cuas-detection", "cuas-classification", "cuas-incidents", "cuas-coordination"]
-                activateRoute(cuasRoutes[section], 11, 50 + section, "cuas", false)
+                activateRoute(cuasRoutes[section], 11, 60 + section, "cuas", false)
             } else {
                 activateRoute(routes[workspace], 11, workspace, groups[workspace], false)
             }
@@ -230,6 +230,13 @@ ApplicationWindow {
         return tr("command")
     }
 
+    function groupAccent() {
+        const groups = navigationGroups()
+        for (let g = 0; g < groups.length; ++g)
+            if (groups[g].id === activeGroup) return groups[g].accent
+        return Theme.royalGold
+    }
+
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
 
     RowLayout {
@@ -240,9 +247,9 @@ ApplicationWindow {
 
         Rectangle {
             id: navigationRail
-            Layout.preferredWidth: Math.round(278 * root.uiScale)
-            Layout.minimumWidth: 258
-            Layout.maximumWidth: 316
+            Layout.preferredWidth: Math.round(292 * root.uiScale)
+            Layout.minimumWidth: 272
+            Layout.maximumWidth: 328
             Layout.fillHeight: true
             color: Theme.shell
             border.color: Theme.border
@@ -256,11 +263,11 @@ ApplicationWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 68
+                    Layout.preferredHeight: 82
                     spacing: 11
                     layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
-                    NexvaryMark { Layout.preferredWidth: 48; Layout.preferredHeight: 48 }
+                    NexvaryMark { Layout.preferredWidth: 62; Layout.preferredHeight: 62 }
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
@@ -276,7 +283,7 @@ ApplicationWindow {
                         }
                         Text {
                             text: "AVIONICS LAB"
-                            color: Theme.silver
+                            color: Theme.signalCyan
                             font.family: Theme.latinUi
                             font.pixelSize: 11
                             font.bold: true
@@ -285,7 +292,7 @@ ApplicationWindow {
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         }
                         Text {
-                            text: cockpit.rtl ? "منصة إدارة ووعي هندسية" : "COMMAND & ENGINEERING PLATFORM"
+                            text: cockpit.rtl ? "منصة قيادة وهندسة الطيران" : "AIR COMMAND • ENGINEERING"
                             color: Theme.accent
                             font.family: Theme.uiFont(cockpit.rtl)
                             font.pixelSize: 10
@@ -361,9 +368,9 @@ ApplicationWindow {
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10 }
                         Text { text: cockpit.rtl ? "لا يوجد مسار تحكم حي" : "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
-                        Text { text: cockpit.rtl ? "تدريب • تحقق • تحليل" : "TRAINING • VERIFICATION • ANALYSIS"; color: Theme.accent; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "تدريب • تحقق • تحليل" : "TRAINING • VERIFICATION • ANALYSIS"; color: Theme.signalCyan; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
                         Item { Layout.fillHeight: true }
-                        Text { text: "v3.3.0  •  VISUAL GATE 1950"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
+                        Text { text: "v3.3.0  •  VISUAL GATE 1960"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
                     }
                 }
             }
@@ -420,12 +427,12 @@ ApplicationWindow {
                             layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
                             Text {
                                 text: root.groupLabel()
-                                color: Theme.accent
+                                color: root.groupAccent()
                                 font.family: Theme.uiFont(cockpit.rtl)
                                 font.pixelSize: 11
                                 font.bold: true
                             }
-                            Text { text: "/"; color: Theme.border; font.pixelSize: 11 }
+                            Text { text: "/"; color: Theme.metallicSilver; font.pixelSize: 12 }
                             Text {
                                 Layout.fillWidth: true
                                 text: root.routeLabel()
@@ -529,7 +536,7 @@ ApplicationWindow {
                     }
                 }
 
-                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 2; color: Theme.accent; opacity: 0.78 }
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 2; color: root.groupAccent(); opacity: 0.78 }
             }
 
             StackLayout {
@@ -581,7 +588,7 @@ ApplicationWindow {
                     Item { Layout.fillWidth: true }
                     Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.44 }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC  •  NO LIVE CONTROL"; color: Theme.accent; font.family: Theme.mono; font.pixelSize: 10; elide: Text.ElideRight }
+                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC  •  NO LIVE CONTROL"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; elide: Text.ElideRight }
                 }
             }
         }

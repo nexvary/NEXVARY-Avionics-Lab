@@ -1,51 +1,51 @@
 .pragma library
 
-// NEXVARY Aerospace Command identity — Deep Black / Royal Gold / Platinum.
-// Operational state colors remain semantic; structural chrome is monochrome/gold.
+// NEXVARY Aerospace Command identity.
+// Deep Black and Royal Gold define the brand. Operational layers use restrained
+// electric blue, radar green and violet so status remains readable at a glance.
 var deepBlack = "#000000"
-var darkNavy = deepBlack // Compatibility alias for legacy components.
-var gunmetal = "#1A1A1A"
-var metallicSilver = "#9E9B98"
-var platinum = "#F2F2F2"
-var electricBlue = "#D4AF37" // Compatibility alias; active chrome is Royal Gold.
+var darkNavy = "#061018"
+var gunmetal = "#1B2A34"
+var metallicSilver = "#9EABB5"
+var platinum = "#F2F5F7"
+var electricBlue = "#168DFF"
 
-var bg = deepBlack
-var shell = "#0A0A0A"
-var panel = "#111111"
-var panel2 = "#151515"
-var panel3 = gunmetal
-var elevated = "#202020"
+var bg = "#02070B"
+var shell = "#050D13"
+var panel = "#07131A"
+var panel2 = "#0A1821"
+var panel3 = "#10232D"
+var elevated = "#142B36"
 
-var border = "#D4AF37"
-var borderSoft = "#665820"
-var goldGlow = "#24D4AF37"
+var border = "#294653"
+var borderSoft = "#1B3440"
+var borderStrong = "#D4AF37"
+var goldGlow = "#20D4AF37"
 var frameWidth = 1
 var activeFrameWidth = 1.5
-var grid = "#292514"
+var grid = "#17323E"
 var text = platinum
-var muted = "#8E8E8E"
+var muted = "#80919B"
 var silver = metallicSilver
 var accent = "#D4AF37"
-var cyan = accent
-var blue = accent
-var gold = accent
+var cyan = "#2CCEFF"
+var blue = electricBlue
+var gold = "#D4AF37"
 
-var radarGreen = "#62C59A"
-var signalCyan = "#D4AF37"
+var radarGreen = "#46E2A0"
+var signalCyan = "#2CCEFF"
 var royalGold = "#D4AF37"
-var rfViolet = "#C9B458"
-var skyBlue = "#D4AF37"
-var warmOrange = "#D28C62"
-var deepBlue = "#665820"
+var rfViolet = "#A984E9"
+var skyBlue = "#65BFFF"
+var warmOrange = "#FF9B54"
+var deepBlue = "#0A5F9E"
 
-var green = "#63B090"
-var amber = "#B99A62"
-var red = "#B66A6A"
-var radius = 6
+var green = "#46D49B"
+var amber = "#F4B942"
+var red = "#F06262"
+var radius = 7
 
-// Stage 1950 readability system.
-// Arabic uses a real Kufi family when it is present on the host OS. Qt will
-// fall back to the platform Arabic font when the family is not installed.
+// Stage 1960 readability system.
 var arabicKufi = "Noto Kufi Arabic"
 var latinUi = "Noto Sans"
 var mono = "Noto Sans Mono"
@@ -53,11 +53,11 @@ var displayPx = 30
 var titlePx = 26
 var pageTitlePx = 24
 var sectionPx = 16
-var bodyPx = 13
-var secondaryPx = 11
-var smallPx = 10
-var navGroupPx = 10
-var navItemPx = 12
+var bodyPx = 14
+var secondaryPx = 12
+var smallPx = 11
+var navGroupPx = 11
+var navItemPx = 13
 
 function uiFont(rtl) { return rtl ? arabicKufi : latinUi }
 

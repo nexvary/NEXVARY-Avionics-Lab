@@ -20,9 +20,9 @@ Rectangle {
         spacing: 4
         RowLayout {
             Layout.fillWidth: true
-            Text { text: root.rtl ? "مراقبة الطيف الترددي السلبي" : "PASSIVE RF SPECTRUM"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
+            Text { text: root.rtl ? "مراقبة الطيف الترددي السلبي" : "PASSIVE RF SPECTRUM"; color: Theme.platinum; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.sectionPx; font.bold: true; Layout.fillWidth: true }
             Rectangle { width: 7; height: 7; radius: 4; color: Theme.radarGreen }
-            Text { text: Number(root.peakFrequencyMhz).toFixed(1) + " MHz"; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+            Text { text: Number(root.peakFrequencyMhz).toFixed(1) + " MHz"; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: Theme.smallPx; font.bold: true }
         }
         Rectangle {
             Layout.fillWidth: true
@@ -47,8 +47,8 @@ Rectangle {
                     }
                 }
             }
-            Text { anchors.left: parent.left; anchors.top: parent.top; anchors.margins: 5; text: "-30"; color: Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
-            Text { anchors.left: parent.left; anchors.bottom: parent.bottom; anchors.margins: 5; text: "-110"; color: Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
+            Text { anchors.left: parent.left; anchors.top: parent.top; anchors.margins: 5; text: "-30"; color: Theme.muted; font.family:"Consolas"; font.pixelSize: Theme.smallPx }
+            Text { anchors.left: parent.left; anchors.bottom: parent.bottom; anchors.margins: 5; text: "-110"; color: Theme.muted; font.family:"Consolas"; font.pixelSize: Theme.smallPx }
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
@@ -60,9 +60,9 @@ Rectangle {
         }
         RowLayout {
             Layout.fillWidth: true
-            Text { text: root.rtl ? "استقبال / عرض فقط" : "RECEIVE / VISUALIZE ONLY"; color: Theme.radarGreen; font.pixelSize: 10; font.bold: true }
+            Text { text: root.rtl ? "استقبال / عرض فقط" : "RECEIVE / VISUALIZE ONLY"; color: Theme.radarGreen; font.pixelSize: Theme.smallPx; font.bold: true }
             Item { Layout.fillWidth: true }
-            Text { text: Number(root.peakLevelDbm).toFixed(1) + " dBm PEAK"; color: Theme.silver; font.family:"Consolas"; font.pixelSize: 10 }
+            Text { text: Number(root.peakLevelDbm).toFixed(1) + " dBm PEAK"; color: Theme.silver; font.family:"Consolas"; font.pixelSize: Theme.smallPx }
         }
     }
 }

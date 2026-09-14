@@ -43,11 +43,11 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: 92
             radius: 8
-            border.color: "#665820"
+            border.color: Theme.border
             border.width: 1
             gradient: Gradient {
-                GradientStop { position: 0.0; color: "#151515" }
-                GradientStop { position: 1.0; color: "#111111" }
+                GradientStop { position: 0.0; color: Theme.panel2 }
+                GradientStop { position: 1.0; color: Theme.panel }
             }
 
             RowLayout {
@@ -55,14 +55,14 @@ Item {
                 anchors.margins: 13
                 spacing: 14
 
-                Rectangle { width: 6; Layout.fillHeight: true; radius: 3; color: "#D4AF37" }
+                Rectangle { width: 6; Layout.fillHeight: true; radius: 3; color: Theme.royalGold }
 
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 3
                     Text {
                         text: cockpit.rtl ? "مركز عمليات وإدارة القوة الجوية" : "AIR FORCE OPERATIONS & MANAGEMENT CENTER"
-                        color: "#F2F2F2"
+                        color: Theme.platinum
                         font.family: Theme.uiFont(cockpit.rtl)
                         font.pixelSize: Theme.titlePx
                         font.bold: true
@@ -72,9 +72,9 @@ Item {
                     }
                     Text {
                         text: cockpit.rtl ? "الصورة الجوية المشتركة • القواعد والمطارات • جاهزية الأسراب • الأطقم • الصيانة • التدريب" : "COMMON AIR PICTURE • BASES & AIRFIELDS • SQUADRON READINESS • CREWS • SUSTAINMENT • TRAINING"
-                        color: "#D4AF37"
+                        color: Theme.royalGold
                         font.family: Theme.uiFont(cockpit.rtl)
-                        font.pixelSize: 11
+                        font.pixelSize: Theme.smallPx
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -82,9 +82,9 @@ Item {
                     }
                     Text {
                         text: cockpit.rtl ? "وعي موقفي وإدارة وتدريب — لا تحكم حي بالطائرات ولا وظائف اشتباك" : "SITUATIONAL AWARENESS / MANAGEMENT / TRAINING — NO LIVE AIRCRAFT CONTROL OR ENGAGEMENT"
-                        color: "#9E9B98"
+                        color: Theme.silver
                         font.family: Theme.uiFont(cockpit.rtl)
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.smallPx
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         elide: Text.ElideRight
@@ -105,7 +105,7 @@ Item {
                             width: 116
                             height: 58
                             radius: 7
-                            color: "#151515"
+                            color: Theme.panel2
                             border.color: Theme.border
                             border.width: 1
                             Column {
@@ -113,9 +113,9 @@ Item {
                                 spacing: 2
                                 Text {
                                     text: modelData.k
-                                    color: "#9E9B98"
+                                    color: Theme.silver
                                     font.family: Theme.uiFont(cockpit.rtl)
-                                    font.pixelSize: 10
+                                    font.pixelSize: Theme.smallPx
                                     font.bold: true
                                     anchors.horizontalCenter: parent.horizontalCenter
                                 }
@@ -159,8 +159,8 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 128
                     radius: 8
-                    color: "#111111"
-                    border.color: "#665820"
+                    color: Theme.panel
+                    border.color: Theme.border
                     border.width: 1
 
                     ColumnLayout {
@@ -172,9 +172,9 @@ Item {
                             Layout.fillWidth: true
                             Text {
                                 text: cockpit.rtl ? "القواعد والمطارات" : "BASES & AIRFIELDS"
-                                color: "#F2F2F2"
+                                color: Theme.platinum
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 15
+                                font.pixelSize: Theme.sectionPx
                                 font.bold: true
                                 Layout.fillWidth: true
                             }
@@ -182,7 +182,7 @@ Item {
                                 text: cockpit.forceWeatherConstraintCount + (cockpit.rtl ? " قيود طقس" : " WEATHER CONSTRAINTS")
                                 color: cockpit.forceWeatherConstraintCount > 0 ? "#F5B44C" : "#63E2A6"
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 10
+                                font.pixelSize: Theme.smallPx
                                 font.bold: true
                             }
                         }
@@ -198,7 +198,7 @@ Item {
                                     Layout.fillWidth: true
                                     Layout.fillHeight: true
                                     radius: 7
-                                    color: "#151515"
+                                    color: Theme.panel2
                                     border.color: Theme.border
                                     border.width: 1
 
@@ -220,23 +220,23 @@ Item {
                                             spacing: 2
                                             Text {
                                                 text: modelData.name
-                                                color: "#F2F2F2"
+                                                color: Theme.platinum
                                                 font.family: Theme.uiFont(cockpit.rtl)
-                                                font.pixelSize: 11
+                                                font.pixelSize: Theme.smallPx
                                                 font.bold: true
                                                 Layout.fillWidth: true
                                                 elide: Text.ElideRight
                                             }
                                             Text {
                                                 text: modelData.runway + "  •  " + modelData.weather
-                                                color: "#9E9B98"
+                                                color: Theme.silver
                                                 font.family: Theme.uiFont(cockpit.rtl)
-                                                font.pixelSize: 10
+                                                font.pixelSize: Theme.smallPx
                                                 Layout.fillWidth: true
                                                 elide: Text.ElideRight
                                             }
                                             Rectangle {
-                                                Layout.fillWidth: true; height: 7; radius: 3; color: "#2A2A2A"
+                                                Layout.fillWidth: true; height: 7; radius: 3; color: Theme.panel3
                                                 Rectangle { width: parent.width * Number(modelData.supportPercent) / 100; height: parent.height; radius: 3; color: Number(modelData.supportPercent) >= 90 ? "#63E2A6" : "#F5B44C" }
                                             }
                                         }
@@ -266,8 +266,8 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 168
                     radius: 8
-                    color: "#111111"
-                    border.color: "#665820"
+                    color: Theme.panel
+                    border.color: Theme.border
                     border.width: 1
 
                     ColumnLayout {
@@ -278,10 +278,10 @@ Item {
                         RowLayout {
                             Layout.fillWidth: true
                             Text {
-                                text: cockpit.rtl ? "الموقف العام للقوة" : "FORCE SITUATION"
-                                color: "#F2F2F2"
+                                text: cockpit.rtl ? "جاهزية القوة" : "FORCE READINESS"
+                                color: Theme.platinum
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 15
+                                font.pixelSize: Theme.sectionPx
                                 font.bold: true
                                 Layout.fillWidth: true
                             }
@@ -290,12 +290,12 @@ Item {
                                 text: cockpit.forceFleetReadinessPercent >= 85 ? (cockpit.rtl ? "اسمي" : "NOMINAL") : (cockpit.rtl ? "مراجعة" : "REVIEW")
                                 color: cockpit.forceFleetReadinessPercent >= 85 ? "#63E2A6" : "#F5B44C"
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 10
+                                font.pixelSize: Theme.smallPx
                                 font.bold: true
                             }
                         }
 
-                        Rectangle { Layout.fillWidth: true; height: 1; color: "#2A2A2A" }
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.panel3 }
 
                         GridLayout {
                             Layout.fillWidth: true
@@ -303,18 +303,18 @@ Item {
                             rowSpacing: 8
                             columnSpacing: 10
 
-                            Text { text: cockpit.rtl ? "المنصات الجاهزة" : "READY"; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
+                            Text { text: cockpit.rtl ? "المنصات الجاهزة" : "READY"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
                             Text { text: cockpit.forceReadyPlatformCount + "/" + cockpit.forceAssignedPlatformCount; color: page.readinessColor(cockpit.forceFleetReadinessPercent); font.family: Theme.mono; font.pixelSize: 13; font.bold: true }
-                            Text { text: cockpit.rtl ? "الحوادث" : "INCIDENTS"; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
+                            Text { text: cockpit.rtl ? "الحوادث" : "INCIDENTS"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
                             Text { text: String(cockpit.airOperationsIncidentCount); color: cockpit.airOperationsIncidentCount > 0 ? "#FF8A67" : "#63E2A6"; font.family: Theme.mono; font.pixelSize: 13; font.bold: true }
-                            Text { text: cockpit.rtl ? "المسارات" : "TRACKS"; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
-                            Text { text: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); color: "#D4AF37"; font.family: Theme.mono; font.pixelSize: 13; font.bold: true }
-                            Text { text: cockpit.rtl ? "قيود الطقس" : "WEATHER"; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
+                            Text { text: cockpit.rtl ? "المسارات" : "TRACKS"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
+                            Text { text: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); color: Theme.royalGold; font.family: Theme.mono; font.pixelSize: 13; font.bold: true }
+                            Text { text: cockpit.rtl ? "قيود الطقس" : "WEATHER"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
                             Text { text: String(cockpit.forceWeatherConstraintCount); color: cockpit.forceWeatherConstraintCount > 0 ? "#F5B44C" : "#63E2A6"; font.family: Theme.mono; font.pixelSize: 13; font.bold: true }
                         }
 
                         Rectangle {
-                            Layout.fillWidth: true; height: 8; radius: 4; color: "#2A2A2A"
+                            Layout.fillWidth: true; height: 8; radius: 4; color: Theme.panel3
                             Rectangle { width: parent.width * cockpit.forceFleetReadinessPercent / 100; height: parent.height; radius: 4; color: page.readinessColor(cockpit.forceFleetReadinessPercent) }
                         }
                     }
@@ -324,7 +324,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     radius: 8
-                    color: "#111111"
+                    color: Theme.panel
                     border.color: Theme.border
                     border.width: 1
 
@@ -337,9 +337,9 @@ Item {
                             Layout.fillWidth: true
                             Text {
                                 text: cockpit.rtl ? "جاهزية الأسراب" : "SQUADRON READINESS"
-                                color: "#F2F2F2"
+                                color: Theme.platinum
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 15
+                                font.pixelSize: Theme.sectionPx
                                 font.bold: true
                                 Layout.fillWidth: true
                             }
@@ -347,12 +347,12 @@ Item {
                                 text: cockpit.forceReadyPlatformCount + "/" + cockpit.forceAssignedPlatformCount
                                 color: page.readinessColor(cockpit.forceFleetReadinessPercent)
                                 font.family: Theme.mono
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.smallPx
                                 font.bold: true
                             }
                         }
 
-                        Rectangle { Layout.fillWidth: true; height: 1; color: "#2A2A2A" }
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.panel3 }
 
                         ListView {
                             Layout.fillWidth: true
@@ -377,15 +377,15 @@ Item {
 
                                     Rectangle {
                                         width: 50; height: 50; radius: 7
-                                        color: "#0A0A0A"
-                                        border.color: "#665820"
+                                        color: Theme.shell
+                                        border.color: Theme.border
                                         border.width: 1
                                         Text {
                                             anchors.centerIn: parent
                                             text: modelData.platform.indexOf("UAV") >= 0 ? "UAV" : (modelData.platform.indexOf("Hel") >= 0 ? "HEL" : "JET")
                                             color: page.stateColor(modelData.state)
                                             font.family: Theme.mono
-                                            font.pixelSize: 10
+                                            font.pixelSize: Theme.smallPx
                                             font.bold: true
                                         }
                                     }
@@ -397,9 +397,9 @@ Item {
                                             Layout.fillWidth: true
                                             Text {
                                                 text: modelData.name
-                                                color: "#F2F2F2"
+                                                color: Theme.platinum
                                                 font.family: Theme.uiFont(cockpit.rtl)
-                                                font.pixelSize: 11
+                                                font.pixelSize: Theme.smallPx
                                                 font.bold: true
                                                 Layout.fillWidth: true
                                                 elide: Text.ElideRight
@@ -408,20 +408,20 @@ Item {
                                                 text: modelData.ready + "/" + modelData.assigned
                                                 color: page.stateColor(modelData.state)
                                                 font.family: Theme.mono
-                                                font.pixelSize: 11
+                                                font.pixelSize: Theme.smallPx
                                                 font.bold: true
                                             }
                                         }
                                         Text {
                                             text: modelData.platform + "  •  CREW " + modelData.crewReady + "/" + modelData.crewRequired
-                                            color: "#9E9B98"
+                                            color: Theme.silver
                                             font.family: Theme.uiFont(cockpit.rtl)
-                                            font.pixelSize: 10
+                                            font.pixelSize: Theme.smallPx
                                             Layout.fillWidth: true
                                             elide: Text.ElideRight
                                         }
                                         Rectangle {
-                                            Layout.fillWidth: true; height: 8; radius: 4; color: "#2A2A2A"
+                                            Layout.fillWidth: true; height: 8; radius: 4; color: Theme.panel3
                                             Rectangle { width: parent.width * Number(modelData.ready) / Math.max(1, Number(modelData.assigned)); height: parent.height; radius: 4; color: page.stateColor(modelData.state) }
                                         }
                                     }
@@ -435,7 +435,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 210
                     radius: 8
-                    color: "#111111"
+                    color: Theme.panel
                     border.color: Theme.border
                     border.width: 1
 
@@ -448,16 +448,16 @@ Item {
                             Layout.fillWidth: true
                             Text {
                                 text: cockpit.rtl ? "الصيانة والتدريب" : "SUSTAINMENT & TRAINING"
-                                color: "#F2F2F2"
+                                color: Theme.platinum
                                 font.family: Theme.uiFont(cockpit.rtl)
-                                font.pixelSize: 15
+                                font.pixelSize: Theme.sectionPx
                                 font.bold: true
                                 Layout.fillWidth: true
                             }
-                            Text { text: cockpit.forceOpenMaintenanceCount + " MNT"; color: "#F5B44C"; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.forceOpenMaintenanceCount + " MNT"; color: Theme.amber; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                         }
 
-                        Rectangle { Layout.fillWidth: true; height: 1; color: "#2A2A2A" }
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.panel3 }
 
                         ListView {
                             Layout.fillWidth: true
@@ -470,13 +470,13 @@ Item {
                                 width: ListView.view.width
                                 height: 25
                                 spacing: 7
-                                Text { text: modelData.priority; color: modelData.priority === "P2" ? "#FF8A67" : "#F5B44C"; font.family: Theme.mono; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 30 }
-                                Text { text: modelData.platform + " / " + modelData.item; color: "#F2F2F2"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: modelData.due; color: "#9E9B98"; font.family: Theme.mono; font.pixelSize: 10 }
+                                Text { text: modelData.priority; color: modelData.priority === "P2" ? "#FF8A67" : "#F5B44C"; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.preferredWidth: 30 }
+                                Text { text: modelData.platform + " / " + modelData.item; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.due; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                             }
                         }
 
-                        Rectangle { Layout.fillWidth: true; height: 1; color: "#2A3C45" }
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
 
                         ListView {
                             Layout.fillWidth: true
@@ -489,10 +489,63 @@ Item {
                                 width: ListView.view.width
                                 height: 25
                                 spacing: 7
-                                Text { text: modelData.time; color: "#D4AF37"; font.family: Theme.mono; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 50 }
-                                Text { text: modelData.group; color: "#F2F2F2"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 98; elide: Text.ElideRight }
-                                Text { text: modelData.item; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
+                                Text { text: modelData.time; color: Theme.royalGold; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.preferredWidth: 50 }
+                                Text { text: modelData.group; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; Layout.preferredWidth: 98; elide: Text.ElideRight }
+                                Text { text: modelData.item; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 104
+            color: Theme.panel
+            border.color: Theme.border
+            border.width: 1
+            radius: Theme.radius
+            RowLayout {
+                anchors.fill: parent
+                anchors.margins: 9
+                spacing: 8
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+
+                ColumnLayout {
+                    Layout.preferredWidth: 225
+                    spacing: 2
+                    Text { text: cockpit.rtl ? "التنبيهات والحوادث" : "ALERTS & INCIDENTS"; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.sectionPx; font.bold: true }
+                    Text { text: cockpit.rtl ? "ملخص تنفيذي — التفاصيل في مساحة الحوادث" : "EXECUTIVE SUMMARY — DETAILS IN INCIDENT WORKSPACE"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
+                }
+
+                Repeater {
+                    model: [
+                        {label: cockpit.rtl ? "الحوادث" : "INCIDENTS", value: cockpit.airOperationsIncidentCount, note: cockpit.rtl ? "سجل الأدلة متاح" : "EVIDENCE LOG READY", color: cockpit.airOperationsIncidentCount ? Theme.warmOrange : Theme.radarGreen},
+                        {label: cockpit.rtl ? "الصيانة المفتوحة" : "OPEN MAINTENANCE", value: cockpit.forceOpenMaintenanceCount, note: cockpit.rtl ? "حسب الأولوية والمنصة" : "BY PRIORITY / PLATFORM", color: cockpit.forceOpenMaintenanceCount ? Theme.amber : Theme.radarGreen},
+                        {label: cockpit.rtl ? "جاهزية التدريب" : "TRAINING READY", value: cockpit.forceCrewReadinessPercent + "%", note: cockpit.rtl ? "الأطقم والجداول" : "CREWS / SCHEDULE", color: page.readinessColor(cockpit.forceCrewReadinessPercent)},
+                        {label: cockpit.rtl ? "مصادر البيانات" : "DATA SOURCES", value: cockpit.dataSourceRows.length, note: cockpit.publicFlightFeedStatus, color: Theme.signalCyan}
+                    ]
+                    delegate: Rectangle {
+                        required property var modelData
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: Theme.panel2
+                        border.color: modelData.color
+                        border.width: 1
+                        radius: Theme.radius
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 8
+                            Rectangle { width: 9; height: 9; radius: 5; color: modelData.color }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 1
+                                Text { text: modelData.label; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: String(modelData.value); color: modelData.color; font.family: Theme.mono; font.pixelSize: 18; font.bold: true }
+                                Text { text: modelData.note; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
                             }
                         }
                     }
@@ -501,8 +554,11 @@ Item {
         }
 
         RowLayout {
+            visible: false
             Layout.fillWidth: true
-            Layout.preferredHeight: 224
+            Layout.preferredHeight: 0
+            Layout.minimumHeight: 0
+            Layout.maximumHeight: 0
             spacing: 8
 
             AircraftCommandCard {
@@ -515,8 +571,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 radius: 8
-                color: "#111111"
-                border.color: "#665820"
+                color: Theme.panel
+                border.color: Theme.border
                 border.width: 1
 
                 ColumnLayout {
@@ -526,12 +582,12 @@ Item {
 
                     Text {
                         text: cockpit.rtl ? "تكامل البيانات والمصادر" : "DATA & INTEGRATION"
-                        color: "#F2F2F2"
+                        color: Theme.platinum
                         font.family: Theme.uiFont(cockpit.rtl)
-                        font.pixelSize: 15
+                        font.pixelSize: Theme.sectionPx
                         font.bold: true
                     }
-                    Rectangle { Layout.fillWidth: true; height: 1; color: "#2A2A2A" }
+                    Rectangle { Layout.fillWidth: true; height: 1; color: Theme.panel3 }
 
                     GridLayout {
                         Layout.fillWidth: true
@@ -547,14 +603,14 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 radius: 7
-                                color: "#151515"
+                                color: Theme.panel2
                                 border.color: Theme.border
                                 border.width: 1
                                 Column {
                                     anchors.centerIn: parent
                                     spacing: 4
-                                    Text { text: modelData.name; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter; width: Math.max(80, parent.parent.width - 12); horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
-                                    Text { text: modelData.freshness; color: page.sourceColor(modelData.health); font.family: Theme.mono; font.pixelSize: 10; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
+                                    Text { text: modelData.name; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter; width: Math.max(80, parent.parent.width - 12); horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+                                    Text { text: modelData.freshness; color: page.sourceColor(modelData.health); font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
                                 }
                             }
                         }
@@ -566,7 +622,7 @@ Item {
                 Layout.preferredWidth: page.width * 0.25
                 Layout.fillHeight: true
                 radius: 8
-                color: "#111111"
+                color: Theme.panel
                 border.color: Theme.border
                 border.width: 1
 
@@ -579,16 +635,16 @@ Item {
                         Layout.fillWidth: true
                         Text {
                             text: cockpit.rtl ? "مراجعة الحوادث" : "INCIDENT REVIEW"
-                            color: "#F2F2F2"
+                            color: Theme.platinum
                             font.family: Theme.uiFont(cockpit.rtl)
-                            font.pixelSize: 15
+                            font.pixelSize: Theme.sectionPx
                             font.bold: true
                             Layout.fillWidth: true
                         }
-                        Text { text: String(cockpit.airOperationsIncidentCount); color: cockpit.airOperationsIncidentCount > 0 ? "#FF8A67" : "#63E2A6"; font.family: Theme.mono; font.pixelSize: 11; font.bold: true }
+                        Text { text: String(cockpit.airOperationsIncidentCount); color: cockpit.airOperationsIncidentCount > 0 ? "#FF8A67" : "#63E2A6"; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                     }
 
-                    Rectangle { Layout.fillWidth: true; height: 1; color: "#2A2A2A" }
+                    Rectangle { Layout.fillWidth: true; height: 1; color: Theme.panel3 }
 
                     ListView {
                         Layout.fillWidth: true
@@ -601,7 +657,7 @@ Item {
                             width: ListView.view.width
                             height: 72
                             radius: 7
-                            color: "#151515"
+                            color: Theme.panel2
                             border.color: Theme.border
                             border.width: 1
 
@@ -611,10 +667,10 @@ Item {
                                 spacing: 3
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: "#F2F2F2"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: String(modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: "#FF8A67"; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
+                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: String(modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: Theme.warmOrange; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                                 }
-                                Text { text: modelData.summary || modelData.status || "Review record"; color: "#9E9B98"; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
                             }
                         }
                     }
@@ -623,15 +679,15 @@ Item {
                         Layout.fillWidth: true
                         height: 34
                         radius: 5
-                        color: "#151515"
+                        color: Theme.panel2
                         border.color: Theme.borderSoft
                         border.width: 1
                         Text {
                             anchors.centerIn: parent
                             text: cockpit.rtl ? "وعي وتوثيق فقط — لا توجد وظائف اشتباك" : "AWARENESS / DOCUMENTATION ONLY — NO ENGAGEMENT FUNCTIONS"
-                            color: "#9E9B98"
+                            color: Theme.silver
                             font.family: Theme.uiFont(cockpit.rtl)
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                         }
                     }

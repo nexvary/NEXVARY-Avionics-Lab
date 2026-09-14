@@ -7,7 +7,7 @@ Button {
     property color accent: Theme.accent
     implicitHeight: 38
     implicitWidth: 118
-    font.pixelSize: 10
+    font.pixelSize: Theme.smallPx
     font.bold: true
 
     contentItem: Text {

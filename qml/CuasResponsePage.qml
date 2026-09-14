@@ -427,6 +427,7 @@ Item {
                             height: 148
                             bins: cockpit.rfSpectrumBins
                             peakFrequencyMhz: cockpit.rfPeakFrequencyMhz
+                            peakLevelDbm: cockpit.rfPeakLevelDbm
                             rtl: cockpit.rtl
                         }
                     }

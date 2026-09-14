@@ -55,7 +55,7 @@ Rectangle {
         anchors.fill: parent
         antialiasing: true
 
-        function region(c, points, fill, stroke, w, h) {
+        function drawLandRegion(c, points, fill, stroke, w, h) {
             c.beginPath()
             c.moveTo(points[0][0] * w, points[0][1] * h)
             for (var i = 1; i < points.length; ++i)
@@ -94,11 +94,11 @@ Rectangle {
             c.globalAlpha = 1
 
             c.lineWidth = 1.25
-            region(c, [
+            drawLandRegion(c, [
                 [0,.34],[.10,.31],[.18,.33],[.25,.37],[.31,.42],[.38,.45],
                 [.44,.41],[.48,.46],[.505,.61],[.545,.94],[0,.94]
             ], "#0B202A", "#527383", w, h)
-            region(c, [
+            drawLandRegion(c, [
                 [.48,.46],[.55,.42],[.62,.38],[.69,.34],[.77,.32],[.84,.37],
                 [.90,.42],[.99,.47],[.99,.94],[.545,.94],[.505,.61]
             ], "#0D2430", "#527383", w, h)

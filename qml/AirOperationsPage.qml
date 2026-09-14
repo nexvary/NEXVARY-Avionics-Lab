@@ -7,6 +7,8 @@ import "AirspaceLocale.js" as AirspaceLocale
 Item {
     id: root
     property string releaseStage: "1850"
+    property int selectedWorkspace: Math.max(0, Math.min(5, airOpsWorkspace))
+    property int cuasSection: 0
 
     ColumnLayout {
         anchors.fill: parent
@@ -38,16 +40,17 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Layout.minimumWidth: 132
-                        color: workspace.currentIndex === modelData.index ? Theme.panel3 : Theme.panel2
-                        border.color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.borderSoft
-                        border.width: workspace.currentIndex === modelData.index ? 2 : 1
+                        color: root.selectedWorkspace === modelData.index ? Theme.panel3 : Theme.panel2
+                        border.color: root.selectedWorkspace === modelData.index ? Theme.royalGold : Theme.borderSoft
+                        border.width: root.selectedWorkspace === modelData.index ? Theme.activeFrameWidth : Theme.frameWidth
                         radius: Theme.radius
 
                         Text {
                             anchors.centerIn: parent
                             text: modelData.label
-                            color: workspace.currentIndex === modelData.index ? modelData.accent : Theme.muted
-                            font.pixelSize: modelData.label.length > 18 ? 7 : 8
+                            color: root.selectedWorkspace === modelData.index ? Theme.platinum : Theme.muted
+                            font.family: Theme.uiFont(cockpit.rtl)
+                            font.pixelSize: modelData.label.length > 22 ? 10 : 11
                             font.bold: true
                             elide: Text.ElideRight
                             width: parent.width - 12
@@ -57,7 +60,7 @@ Item {
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: workspace.currentIndex = modelData.index
+                            onClicked: root.selectedWorkspace = modelData.index
                         }
                     }
                 }
@@ -68,14 +71,14 @@ Item {
             id: workspace
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: airOpsWorkspace
+            currentIndex: root.selectedWorkspace
 
             AirspaceClassificationPage {}
             AirPictureIntelligencePage {}
             AeronauticalDataHubPage {}
             TrainingRouteLabPage {}
             AircraftStoryboardPage {}
-            CuasResponsePage {}
+            CuasResponsePage { selectedSection: root.cuasSection }
         }
     }
 }

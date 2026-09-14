@@ -59,7 +59,7 @@ Rectangle {
                 text: "Qt 6 / Qt Quick  •  CMake  •  JSON  •  GitHub Actions  •  ASan / UBSan  •  Inno Setup"
                 color: Theme.silver
                 font.family: "Consolas"
-                font.pixelSize: 9
+                font.pixelSize: 10
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -76,7 +76,7 @@ Rectangle {
             ColumnLayout {
                 anchors.centerIn: parent
                 spacing: 1
-                Text { text: "DESKTOP / LARGE DISPLAY"; color: Theme.green; font.pixelSize: 8; font.bold: true; Layout.alignment: Qt.AlignHCenter }
+                Text { text: "DESKTOP / LARGE DISPLAY"; color: Theme.green; font.pixelSize: 10; font.bold: true; Layout.alignment: Qt.AlignHCenter }
                 Text { text: "1360 → 2560+"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.alignment: Qt.AlignHCenter }
             }
         }

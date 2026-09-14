@@ -6,7 +6,7 @@ Rectangle {
     id: root
     property bool rtl: false
     color: Theme.panel
-    border.color: Theme.skyBlue
+    border.color: Theme.border
     border.width: 1
     radius: 7
     clip: true
@@ -45,8 +45,8 @@ Rectangle {
             Rectangle {
                 Layout.preferredWidth: 170
                 Layout.fillHeight: true
-                color: "#0E1820"
-                border.color: Theme.deepBlue
+                color: "#111111"
+                border.color: Theme.border
                 border.width: 1
                 radius: 6
 
@@ -89,11 +89,11 @@ Rectangle {
                     columns: 2
                     rowSpacing: 5
                     columnSpacing: 8
-                    Text { text: root.rtl ? "الصحة التشخيصية" : "DX HEALTH"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 9 }
+                    Text { text: root.rtl ? "الصحة التشخيصية" : "DX HEALTH"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
                     Text { text: cockpit.diagnosticHealthScore + "%"; color: cockpit.diagnosticHealthScore >= 90 ? Theme.radarGreen : Theme.warmOrange; font.family: Theme.mono; font.pixelSize: 11; font.bold: true }
-                    Text { text: root.rtl ? "التوأم الرقمي" : "DIGITAL TWIN"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 9 }
+                    Text { text: root.rtl ? "التوأم الرقمي" : "DIGITAL TWIN"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
                     Text { text: cockpit.twinNominalCount + " NOM"; color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: 11 }
-                    Text { text: root.rtl ? "التنبيهات" : "ALERTS"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 9 }
+                    Text { text: root.rtl ? "التنبيهات" : "ALERTS"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: 10 }
                     Text { text: String(cockpit.activeAlertCount); color: cockpit.activeAlertCount ? Theme.warmOrange : Theme.radarGreen; font.family: Theme.mono; font.pixelSize: 11 }
                 }
             }
@@ -122,7 +122,7 @@ Rectangle {
                         text: modelData.t
                         color: cockpit.activePlatformId === modelData.id ? Theme.platinum : Theme.muted
                         font.family: Theme.mono
-                        font.pixelSize: 9
+                        font.pixelSize: 10
                         font.bold: true
                     }
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: cockpit.setActivePlatform(modelData.id) }

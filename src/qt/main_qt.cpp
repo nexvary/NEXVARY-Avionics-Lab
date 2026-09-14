@@ -21,15 +21,14 @@ QIcon makeAvionicsIcon() {
     QPainter p(&pixmap);
     p.setRenderHint(QPainter::Antialiasing, true);
 
-    const QColor navy("#0C1319");
-    const QColor gunmetal("#2E3945");
-    const QColor gold("#D6B15E");
-    const QColor blue("#6A88A0");
-    const QColor silver("#D9D7D4");
+    const QColor deepBlack("#000000");
+    const QColor gunmetal("#1A1A1A");
+    const QColor gold("#D4AF37");
+    const QColor silver("#F2F2F2");
     const QColor green("#6FA58D");
 
     p.setPen(QPen(gold, 4));
-    p.setBrush(navy);
+    p.setBrush(deepBlack);
     p.drawRoundedRect(QRectF(5, 5, 118, 118), 18, 18);
     p.setPen(QPen(gunmetal, 2));
     p.setBrush(Qt::NoBrush);
@@ -41,7 +40,7 @@ QIcon makeAvionicsIcon() {
              << QPointF(64, 96) << QPointF(46, 103) << QPointF(58, 91)
              << QPointF(55, 61) << QPointF(29, 64) << QPointF(57, 49);
     p.setPen(Qt::NoPen);
-    p.setBrush(blue);
+    p.setBrush(gold);
     p.drawPolygon(aircraft);
 
     p.setPen(QPen(silver, 2));
@@ -85,7 +84,31 @@ int main(int argc, char* argv[]) {
     if (airOpsWorkspaceIndex >= 0 && airOpsWorkspaceIndex + 1 < arguments.size()) {
         bool ok = false;
         const int value = arguments.at(airOpsWorkspaceIndex + 1).toInt(&ok);
-        if (ok && value >= 0 && value <= 4) airOpsWorkspace = value;
+        if (ok && value >= 0 && value <= 5) airOpsWorkspace = value;
+    }
+
+    int forceWorkspace = 0;
+    const int forceWorkspaceIndex = arguments.indexOf(QStringLiteral("--force-workspace"));
+    if (forceWorkspaceIndex >= 0 && forceWorkspaceIndex + 1 < arguments.size()) {
+        bool ok = false;
+        const int value = arguments.at(forceWorkspaceIndex + 1).toInt(&ok);
+        if (ok && value >= 0 && value <= 5) forceWorkspace = value;
+    }
+
+    int cuasSection = 0;
+    const int cuasSectionIndex = arguments.indexOf(QStringLiteral("--cuas-section"));
+    if (cuasSectionIndex >= 0 && cuasSectionIndex + 1 < arguments.size()) {
+        bool ok = false;
+        const int value = arguments.at(cuasSectionIndex + 1).toInt(&ok);
+        if (ok && value >= 0 && value <= 3) cuasSection = value;
+    }
+
+    int systemWorkspace = 0;
+    const int systemWorkspaceIndex = arguments.indexOf(QStringLiteral("--system-workspace"));
+    if (systemWorkspaceIndex >= 0 && systemWorkspaceIndex + 1 < arguments.size()) {
+        bool ok = false;
+        const int value = arguments.at(systemWorkspaceIndex + 1).toInt(&ok);
+        if (ok && value >= 0 && value <= 2) systemWorkspace = value;
     }
 
     const int screenshotIndex = arguments.indexOf(QStringLiteral("--screenshot"));
@@ -107,7 +130,17 @@ int main(int argc, char* argv[]) {
     if (pageIndex >= 0 && pageIndex + 1 < arguments.size()) {
         bool ok = false;
         const int page = arguments.at(pageIndex + 1).toInt(&ok);
-        if (ok && page >= 0 && page <= 14) root->setProperty("selectedPage", page);
+        if (ok && page >= 0 && page <= 16) {
+            auto* qmlContext = QQmlEngine::contextForObject(root);
+            if (!qmlContext) return 8;
+            QQmlExpression initialView(
+                qmlContext,
+                root,
+                QStringLiteral("initializeView(%1, %2, %3, %4, %5)").arg(page).arg(airOpsWorkspace).arg(forceWorkspace).arg(cuasSection).arg(systemWorkspace)
+            );
+            initialView.evaluate();
+            if (initialView.hasError()) return 10;
+        }
     }
 
     int requestedWidth = window->width();
@@ -132,11 +165,16 @@ int main(int argc, char* argv[]) {
         QQmlExpression navigationTest(
             qmlContext,
             root,
-            QStringLiteral("navigationHistory=[]; selectedPage=0; navigateTo(11); var opened=(selectedPage===11 && navigationHistory.length===1); goBack(); opened && selectedPage===0 && navigationHistory.length===0")
+            QStringLiteral("navigationHistory=[]; initializeView(0,0,0,0,0); navigateRoute('maintenance',12,5,'force-management'); var forceOpened=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5 && navigationHistory.length===1); navigateRoute('cuas-incidents',11,52,'cuas'); var cuasOpened=(selectedPage===11 && selectedRoute==='cuas-incidents' && currentWorkspace()===52 && navigationHistory.length===2); goBack(); var forceRestored=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5); goBack(); forceOpened && cuasOpened && forceRestored && selectedPage===0 && selectedRoute==='overview' && currentWorkspace()===0 && navigationHistory.length===0")
         );
         const QVariant result = navigationTest.evaluate();
         if (navigationTest.hasError() || !result.toBool()) return 9;
         return 0;
+    }
+
+    if (arguments.contains(QStringLiteral("--rtl-smoke"))) {
+        QCoreApplication::processEvents();
+        return root->property("rtlLayoutVerified").toBool() ? 0 : 11;
     }
 
     if (screenshotIndex >= 0) {

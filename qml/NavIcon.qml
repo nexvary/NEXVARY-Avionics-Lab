@@ -142,6 +142,63 @@ Canvas {
             c.fill()
             line(.5,.43,.5,.72)
             line(.43,.72,.57,.72)
+        } else if (kind === "map") {
+            c.beginPath()
+            c.moveTo(.12*w,.25*h); c.lineTo(.34*w,.14*h); c.lineTo(.66*w,.27*h); c.lineTo(.88*w,.16*h)
+            c.lineTo(.88*w,.75*h); c.lineTo(.66*w,.86*h); c.lineTo(.34*w,.73*h); c.lineTo(.12*w,.84*h)
+            c.closePath(); c.stroke()
+            line(.34,.14,.34,.73); line(.66,.27,.66,.86)
+        } else if (kind === "airspace") {
+            c.beginPath(); c.arc(.5*w,.5*h,.37*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.5*w,.5*h,.22*w,0,Math.PI*2); c.stroke()
+            line(.5,.08,.5,.92); line(.08,.5,.92,.5)
+        } else if (kind === "route") {
+            c.beginPath(); c.arc(.18*w,.72*h,.08*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.82*w,.24*h,.08*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.moveTo(.25*w,.67*h); c.bezierCurveTo(.38*w,.25*h,.62*w,.75*h,.75*w,.29*h); c.stroke()
+        } else if (kind === "data" || kind === "source") {
+            c.strokeRect(.16*w,.14*h,.68*w,.19*h)
+            c.strokeRect(.16*w,.41*h,.68*w,.19*h)
+            c.strokeRect(.16*w,.68*h,.68*w,.19*h)
+        } else if (kind === "fleet") {
+            line(.5,.09,.5,.88); line(.16,.48,.84,.48); line(.31,.68,.69,.68)
+            c.beginPath(); c.moveTo(.5*w,.09*h); c.lineTo(.42*w,.31*h); c.lineTo(.58*w,.31*h); c.closePath(); c.stroke()
+        } else if (kind === "base") {
+            c.beginPath(); c.moveTo(.5*w,.10*h); c.lineTo(.89*w,.38*h); c.lineTo(.76*w,.38*h); c.lineTo(.76*w,.86*h); c.lineTo(.24*w,.86*h); c.lineTo(.24*w,.38*h); c.lineTo(.11*w,.38*h); c.closePath(); c.stroke()
+            line(.39,.86,.39,.59); line(.61,.86,.61,.59); line(.39,.59,.61,.59)
+        } else if (kind === "crew") {
+            c.beginPath(); c.arc(.5*w,.30*h,.16*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.25*w,.43*h,.10*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.75*w,.43*h,.10*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.5*w,.91*h,.32*w,1.04*Math.PI,1.96*Math.PI); c.stroke()
+        } else if (kind === "training") {
+            c.beginPath(); c.moveTo(.10*w,.34*h); c.lineTo(.50*w,.14*h); c.lineTo(.90*w,.34*h); c.lineTo(.50*w,.54*h); c.closePath(); c.stroke()
+            line(.23,.42,.23,.67); c.beginPath(); c.arc(.50*w,.56*h,.25*w,.08*Math.PI,.92*Math.PI); c.stroke()
+        } else if (kind === "maintenance") {
+            c.beginPath(); c.arc(.38*w,.38*h,.24*w,.2*Math.PI,1.75*Math.PI); c.stroke()
+            line(.54,.56,.86,.86); line(.76,.86,.86,.76)
+        } else if (kind === "radar") {
+            c.beginPath(); c.arc(.5*w,.5*h,.38*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.arc(.5*w,.5*h,.23*w,0,Math.PI*2); c.stroke()
+            line(.5,.5,.81,.23)
+            c.beginPath(); c.arc(.68*w,.36*h,.04*w,0,Math.PI*2); c.fill()
+        } else if (kind === "classify") {
+            c.strokeRect(.14*w,.14*h,.30*w,.30*h); c.strokeRect(.56*w,.14*h,.30*w,.30*h)
+            c.strokeRect(.14*w,.56*h,.30*w,.30*h); c.beginPath(); c.arc(.71*w,.71*h,.15*w,0,Math.PI*2); c.stroke()
+        } else if (kind === "incident") {
+            c.beginPath(); c.moveTo(.5*w,.08*h); c.lineTo(.91*w,.85*h); c.lineTo(.09*w,.85*h); c.closePath(); c.stroke()
+            line(.5,.33,.5,.60); c.beginPath(); c.arc(.5*w,.72*h,.03*w,0,Math.PI*2); c.fill()
+        } else if (kind === "response") {
+            c.beginPath(); c.moveTo(.5*w,.08*h); c.lineTo(.82*w,.20*h); c.lineTo(.78*w,.60*h); c.quadraticCurveTo(.70*w,.81*h,.5*w,.91*h); c.quadraticCurveTo(.30*w,.81*h,.22*w,.60*h); c.lineTo(.18*w,.20*h); c.closePath(); c.stroke()
+            line(.35,.50,.46,.61); line(.46,.61,.68,.36)
+        } else if (kind === "report") {
+            c.strokeRect(.20*w,.10*h,.60*w,.80*h); line(.31,.31,.69,.31); line(.31,.48,.69,.48); line(.31,.65,.60,.65)
+        } else if (kind === "settings") {
+            c.beginPath(); c.arc(.5*w,.5*h,.17*w,0,Math.PI*2); c.stroke()
+            for (let a = 0; a < 8; ++a) {
+                const angle = a*Math.PI/4
+                line(.5+.25*Math.cos(angle),.5+.25*Math.sin(angle),.5+.38*Math.cos(angle),.5+.38*Math.sin(angle))
+            }
         }
     }
 }

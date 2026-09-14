@@ -137,7 +137,7 @@ Canvas {
         var w = width
         var h = height
         drawGrid(c, w, h)
-        c.fillStyle = "#17232C"
+        c.fillStyle = "#151515"
         c.strokeStyle = Theme.accent
         c.lineWidth = 1.6
         if (platformId === "generic-turboprop" || platformId === "turboprop") drawTurboprop(c, w, h)
@@ -158,10 +158,10 @@ Canvas {
         c.strokeRect(bx, by, bw, bh)
         c.fillStyle = Theme.platinum
         c.textAlign = "center"
-        c.font = "bold 9px Consolas"
+        c.font = "700 10px monospace"
         c.fillText(Theme.platformCode(platformId) + "  AVIONICS CORE", w * .5, by + 15)
         c.fillStyle = Theme.accent
-        c.font = "7px Consolas"
+        c.font = "10px monospace"
         c.fillText("BUS A/B  •  " + (subsystemRows ? subsystemRows.length : 0) + " NODES  •  SYNTHETIC", w * .5, by + 30)
 
         c.strokeStyle = Theme.silver

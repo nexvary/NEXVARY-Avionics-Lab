@@ -39,14 +39,14 @@ Item {
             // Muted sky/ground treatment to avoid a game-like presentation.
             c.fillStyle = "#2F4655"
             c.fillRect(-size,-size*1.4,size*2,size*1.4)
-            c.fillStyle = "#3A3530"
+            c.fillStyle = "#252525"
             c.fillRect(-size,0,size*2,size*1.4)
             c.strokeStyle = Theme.platinum
             c.globalAlpha = .9
             c.lineWidth = 2
             c.beginPath(); c.moveTo(-size,0); c.lineTo(size,0); c.stroke()
 
-            c.font = "9px Consolas"
+            c.font = "10px monospace"
             c.textBaseline = "middle"
             c.fillStyle = Theme.platinum
             var ladder = [-30,-20,-10,10,20,30]
@@ -115,7 +115,7 @@ Item {
             text: "P " + Number(root.pitch).toFixed(1) + "°   R " + Number(root.roll).toFixed(1) + "°"
             color: Theme.silver
             font.family: "Consolas"
-            font.pixelSize: 9
+            font.pixelSize: 10
             font.bold: true
         }
     }

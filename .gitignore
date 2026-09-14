@@ -1,8 +1,10 @@
 /build/
+/build-*/
 /out/
 /.idea/
 /.vscode/
 *.user
 *.suo
 *.log
+__pycache__/
 .DS_Store

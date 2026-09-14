@@ -1,8 +1,8 @@
 # NEXVARY Avionics Lab
 
-**NEXVARY Avionics Lab v3.0.0 / Stage 1700** is a Windows-first avionics training and simulation platform built around deterministic synthetic telemetry, system health, replay, trend analysis, bounded fault workflows, digital-twin views and verification evidence.
+**NEXVARY Avionics Lab v3.3.0 / Stage 1950** is a Qt 6/C++20 air-force management, readiness, air-awareness and avionics engineering platform for training, simulation, diagnostics and analysis.
 
-Stage 1700 adds a Simulation Provider API, typed Telemetry Dictionary, bounded Plugin Registry, Scenario Campaign Runner, Unified Timeline, advanced Session Verifier, presentation-neutral Instrument Catalog and machine-readable Release Manifest/SBOM-style dependency inventory.
+Stage 1950 introduces a map-first command overview, grouped operational workspaces, dedicated fleet/base/crew/training/maintenance views, independent C-UAS awareness workflows, a seven-provider data-source registry, larger production typography, and complete right-to-left navigation for Arabic. Existing Digital Twin, Diagnostics, Fault Lab, Verification, Replay, Trends, public ADS-B and AEGIS awareness capabilities remain available.
 
 The Windows workflow produces a self-contained portable package and a one-click installer. End users are not expected to use CMake or developer commands.
 

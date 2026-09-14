@@ -16,7 +16,7 @@ Rectangle {
         Text { text: root.tileLabel; color: Theme.silver; font.pixelSize: 13; font.bold: true; Layout.fillWidth: true; wrapMode: Text.Wrap }
         Item { Layout.fillHeight: true }
         Text { text: root.tileValue; color: Theme.text; font.pixelSize: 25; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 5; color: "#0b1b22"; border.color: Theme.stateColor(root.tileState)
+        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 28; radius: 5; color: "#0A0A0A"; border.color: Theme.stateColor(root.tileState)
             Text { anchors.centerIn: parent; text: root.tileState; color: Theme.stateColor(root.tileState); font.pixelSize: 10; font.bold: true }
         }
     }

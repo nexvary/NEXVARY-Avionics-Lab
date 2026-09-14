@@ -24,7 +24,7 @@ Rectangle {
         width: parent.width - 14
         text: root.title
         color: Theme.silver
-        font.pixelSize: 8
+        font.pixelSize: 10
         font.bold: true
         font.letterSpacing: .5
         horizontalAlignment: Text.AlignHCenter
@@ -54,7 +54,7 @@ Rectangle {
             var c = getContext("2d")
             c.clearRect(0,0,width,height)
             if (height <= 5 || width <= 20) return
-            c.font = "8px Consolas"
+            c.font = "10px monospace"
             c.textBaseline = "middle"
             for (var i=0; i<7; ++i) {
                 var y = 7 + i * (height - 14) / 6

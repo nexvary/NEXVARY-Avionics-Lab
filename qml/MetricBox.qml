@@ -32,7 +32,7 @@ Rectangle {
         Text {
             text: root.label.toUpperCase()
             color: Theme.muted
-            font.pixelSize: 8
+            font.pixelSize: 10
             font.bold: true
             font.letterSpacing: .5
             Layout.fillWidth: true

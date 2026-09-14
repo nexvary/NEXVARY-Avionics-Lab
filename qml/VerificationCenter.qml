@@ -41,9 +41,9 @@ Item {
                         Layout.fillWidth: true
                         spacing: 1
                         Text { text: cockpit.rtl ? "مركز التحقق" : "VERIFICATION CENTER"; color: Theme.platinum; font.pixelSize: 18; font.bold: true }
-                        Text { text: cockpit.rtl ? "أدلة ضمان تشغيل للمحاكاة والتدريب — ليست شهادة اعتماد" : "RUNTIME ASSURANCE / TRAINING & SIMULATION EVIDENCE / NOT CERTIFICATION"; color: Theme.muted; font.pixelSize: 8 }
+                        Text { text: cockpit.rtl ? "أدلة ضمان تشغيل للمحاكاة والتدريب — ليست شهادة اعتماد" : "RUNTIME ASSURANCE / TRAINING & SIMULATION EVIDENCE / NOT CERTIFICATION"; color: Theme.muted; font.pixelSize: 10 }
                     }
-                    Text { text: "TRACEABLE / LIVE"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                    Text { text: "TRACEABLE / LIVE"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                 }
             }
 
@@ -59,7 +59,7 @@ Item {
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
-                        Text { text: "GATES PASSED"; color: Theme.muted; font.pixelSize: 7 }
+                        Text { text: "GATES PASSED"; color: Theme.muted; font.pixelSize: 10 }
                         Text { text: page.passCount()+" / 6"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 20; font.bold: true }
                     }
                     Text { text: page.ratio()+"%"; color: page.ratio()===100?Theme.green:Theme.amber; font.family: "Consolas"; font.pixelSize: 17; font.bold: true }
@@ -76,9 +76,9 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 9
                     spacing: 0
-                    Text { text: "ASSURANCE LEVEL"; color: Theme.muted; font.pixelSize: 7 }
+                    Text { text: "ASSURANCE LEVEL"; color: Theme.muted; font.pixelSize: 10 }
                     Text { text: page.passCount()===6?"ASSURED":"ATTENTION"; color: page.passCount()===6?Theme.accent:Theme.amber; font.pixelSize: 16; font.bold: true }
-                    Text { text: page.passCount()===6?"EVIDENCE COMPLETE":"REVIEW REQUIRED"; color: Theme.silver; font.pixelSize: 7 }
+                    Text { text: page.passCount()===6?"EVIDENCE COMPLETE":"REVIEW REQUIRED"; color: Theme.silver; font.pixelSize: 10 }
                 }
             }
         }
@@ -109,7 +109,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 7
                         spacing: 0
-                        Text { text: modelData.k; color: Theme.muted; font.pixelSize: 7; font.bold: true }
+                        Text { text: modelData.k; color: Theme.muted; font.pixelSize: 10; font.bold: true }
                         Text { text: modelData.v; color: modelData.c; font.family: "Consolas"; font.pixelSize: 12; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
                     }
                 }
@@ -134,7 +134,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "شبكة فحوص ضمان التشغيل" : "RUNTIME ASSURANCE CHECK GRID"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: "6 GATES / LIVE"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: "6 GATES / LIVE"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
                     GridLayout {
@@ -162,13 +162,13 @@ Item {
                                         color: Theme.panel3
                                         border.color: modelData.pass?Theme.accent:Theme.amber
                                         radius: Theme.radius
-                                        Text { anchors.centerIn: parent; text: modelData.code; color: modelData.pass?Theme.platinum:Theme.amber; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                        Text { anchors.centerIn: parent; text: modelData.code; color: modelData.pass?Theme.platinum:Theme.amber; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                     }
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 1
-                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.evidence; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.evidence; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                                         Rectangle {
                                             Layout.fillWidth: true
                                             height: 3
@@ -176,7 +176,7 @@ Item {
                                             Rectangle { width: modelData.pass?parent.width:parent.width*.35; height: parent.height; color: modelData.pass?Theme.accent:Theme.amber }
                                         }
                                     }
-                                    Text { text: modelData.pass?"PASS":"CHECK"; color: modelData.pass?Theme.green:Theme.amber; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                                    Text { text: modelData.pass?"PASS":"CHECK"; color: modelData.pass?Theme.green:Theme.amber; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -197,7 +197,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "مصفوفة الأدلة" : "EVIDENCE MATRIX"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: page.validSensors()+" / "+cockpit.sensorCount+" VALID"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: page.validSensors()+" / "+cockpit.sensorCount+" VALID"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
                     Rectangle {
@@ -211,9 +211,9 @@ Item {
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 7
-                            Text { text: "EVIDENCE CHAIN"; color: Theme.silver; font.pixelSize: 8; font.bold: true }
+                            Text { text: "EVIDENCE CHAIN"; color: Theme.silver; font.pixelSize: 10; font.bold: true }
                             Item { Layout.fillWidth: true }
-                            Text { text: "SCENARIO → TELEMETRY → HEALTH → REPORT"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                            Text { text: "SCENARIO → TELEMETRY → HEALTH → REPORT"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                     }
                     GridLayout {
@@ -239,15 +239,15 @@ Item {
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 0
-                                        Text { text: modelData.id; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: Number(modelData.value).toFixed(1)+" "+modelData.unit; color: modelData.valid?Theme.platinum:Theme.red; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                        Text { text: modelData.id; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: Number(modelData.value).toFixed(1)+" "+modelData.unit; color: modelData.valid?Theme.platinum:Theme.red; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                     }
-                                    Text { text: modelData.valid?"PASS":"FAIL"; color: modelData.valid?Theme.silver:Theme.red; font.family: "Consolas"; font.pixelSize: 7 }
+                                    Text { text: modelData.valid?"PASS":"FAIL"; color: modelData.valid?Theme.silver:Theme.red; font.family: "Consolas"; font.pixelSize: 10 }
                                 }
                             }
                         }
                     }
-                    Text { text: cockpit.rtl ? "أحداث الأدلة الأخيرة" : "RECENT EVIDENCE EVENTS"; color: Theme.silver; font.pixelSize: 8; font.bold: true }
+                    Text { text: cockpit.rtl ? "أحداث الأدلة الأخيرة" : "RECENT EVIDENCE EVENTS"; color: Theme.silver; font.pixelSize: 10; font.bold: true }
                     ListView {
                         Layout.fillWidth: true
                         Layout.minimumHeight: 88
@@ -265,9 +265,9 @@ Item {
                             RowLayout {
                                 anchors.fill: parent
                                 anchors.margins: 5
-                                Text { text: modelData.time; color: Theme.muted; Layout.preferredWidth: 72; font.family: "Consolas"; font.pixelSize: 7 }
-                                Text { text: modelData.source; color: Theme.accent; Layout.preferredWidth: 58; font.family: "Consolas"; font.pixelSize: 7 }
-                                Text { text: modelData.message; color: Theme.silver; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 7 }
+                                Text { text: modelData.time; color: Theme.muted; Layout.preferredWidth: 72; font.family: "Consolas"; font.pixelSize: 10 }
+                                Text { text: modelData.source; color: Theme.accent; Layout.preferredWidth: 58; font.family: "Consolas"; font.pixelSize: 10 }
+                                Text { text: modelData.message; color: Theme.silver; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 10 }
                             }
                         }
                     }
@@ -304,12 +304,12 @@ Item {
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 7
-                            Text { text: modelData.k; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
+                            Text { text: modelData.k; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true }
                             Text { text: modelData.v; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 13; font.bold: true }
                         }
                     }
                 }
-                Text { text: page.passCount()===6?"ALL GATES SATISFIED":"REVIEW REQUIRED"; color: page.passCount()===6?Theme.platinum:Theme.amber; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                Text { text: page.passCount()===6?"ALL GATES SATISFIED":"REVIEW REQUIRED"; color: page.passCount()===6?Theme.platinum:Theme.amber; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
             }
         }
     }

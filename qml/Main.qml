@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "Theme.js" as Theme
-import "AirOperationsLocale.js" as AirOpsLocale
-import "AirReadinessLocale.js" as ReadyLocale
+import "NavigationLocale.js" as NavLocale
 
 ApplicationWindow {
     id: root
@@ -16,9 +15,12 @@ ApplicationWindow {
     color: Theme.bg
 
     property int selectedPage: 0
-    property string workMode: "EXECUTIVE"
+    property string selectedRoute: "overview"
+    property string activeGroup: "command"
+    property string workMode: "COMMAND"
     property var navigationHistory: []
-    property real uiScale: Math.max(0.92, Math.min(1.35, width / 1720.0))
+    property real uiScale: Math.max(0.94, Math.min(1.30, width / 1920.0))
+    property bool rtlLayoutVerified: cockpit.rtl && shellLayout.layoutDirection === Qt.RightToLeft && navigationRail.x > width / 2
     property var languageOptions: [
         {"code":"ar", "name":"العربية"},
         {"code":"en", "name":"English"},
@@ -32,136 +34,336 @@ ApplicationWindow {
         {"code":"ru", "name":"Русский"}
     ]
 
+    function tr(key) { return NavLocale.t(cockpit.language, key) }
+
+    function navigationGroups() {
+        return [
+            {
+                id: "command", label: tr("command"), accent: Theme.royalGold, open: true,
+                entries: [
+                    {route:"overview", label:tr("overview"), icon:"dashboard", page:0, workspace:0},
+                    {route:"common-picture", label:tr("commonPicture"), icon:"map", page:11, workspace:1}
+                ]
+            },
+            {
+                id: "air-operations", label: tr("airOps"), accent: Theme.royalGold, open: true,
+                entries: [
+                    {route:"airspace", label:tr("airspace"), icon:"airspace", page:11, workspace:0},
+                    {route:"flight-tracking", label:tr("flightTracking"), icon:"radar", page:11, workspace:1},
+                    {route:"route-lab", label:tr("routeLab"), icon:"route", page:11, workspace:3},
+                    {route:"aeronautical-data", label:tr("aeroData"), icon:"data", page:11, workspace:2}
+                ]
+            },
+            {
+                id: "force-management", label: tr("force"), accent: Theme.royalGold, open: true,
+                entries: [
+                    {route:"fleet", label:tr("fleet"), icon:"fleet", page:12, workspace:0},
+                    {route:"squadrons", label:tr("squadrons"), icon:"fleet", page:12, workspace:1},
+                    {route:"bases", label:tr("bases"), icon:"base", page:12, workspace:2},
+                    {route:"crews", label:tr("crews"), icon:"crew", page:12, workspace:3},
+                    {route:"training", label:tr("training"), icon:"training", page:12, workspace:4},
+                    {route:"maintenance", label:tr("maintenance"), icon:"maintenance", page:12, workspace:5}
+                ]
+            },
+            {
+                id: "engineering", label: tr("engineering"), accent: Theme.royalGold, open: false,
+                entries: [
+                    {route:"system-health", label:tr("health"), icon:"health", page:1, workspace:0},
+                    {route:"sensors", label:tr("sensors"), icon:"sensors", page:2, workspace:0},
+                    {route:"digital-twin", label:tr("twin"), icon:"twin", page:6, workspace:0},
+                    {route:"diagnostics", label:tr("diagnostics"), icon:"diagnostic", page:9, workspace:0},
+                    {route:"fault-lab", label:tr("faultLab"), icon:"fault", page:8, workspace:0},
+                    {route:"verification", label:tr("verification"), icon:"verify", page:10, workspace:0},
+                    {route:"replay", label:tr("replay"), icon:"replay", page:4, workspace:0},
+                    {route:"trends", label:tr("trends"), icon:"trends", page:5, workspace:0},
+                    {route:"aircraft-visuals", label:tr("aircraft"), icon:"platform", page:11, workspace:4}
+                ]
+            },
+            {
+                id: "cuas", label: tr("cuas"), accent: Theme.royalGold, open: false,
+                entries: [
+                    {route:"cuas-detection", label:tr("detection"), icon:"radar", page:11, workspace:50},
+                    {route:"cuas-classification", label:tr("classification"), icon:"classify", page:11, workspace:51},
+                    {route:"cuas-incidents", label:tr("incidents"), icon:"incident", page:11, workspace:52},
+                    {route:"cuas-coordination", label:tr("coordination"), icon:"response", page:11, workspace:53}
+                ]
+            },
+            {
+                id: "system", label: tr("system"), accent: Theme.royalGold, open: false,
+                entries: [
+                    {route:"data-sources", label:tr("sources"), icon:"source", page:15, workspace:0},
+                    {route:"audit", label:tr("audit"), icon:"verify", page:16, workspace:0},
+                    {route:"reports", label:tr("reports"), icon:"report", page:16, workspace:1},
+                    {route:"settings", label:tr("settings"), icon:"settings", page:16, workspace:2},
+                    {route:"platform-library", label:tr("platformLibrary"), icon:"platform", page:7, workspace:0},
+                    {route:"about-system", label:tr("aboutSystem"), icon:"about", page:13, workspace:0},
+                    {route:"about-nexvary", label:tr("aboutNexvary"), icon:"about", page:14, workspace:0}
+                ]
+            }
+        ]
+    }
+
     function languageIndex(code) {
         for (let i = 0; i < languageOptions.length; ++i)
             if (languageOptions[i].code === code) return i
         return 1
     }
 
+    function routeForPage(index) {
+        const defaults = {
+            0:["overview","command",0], 1:["system-health","engineering",0], 2:["sensors","engineering",0],
+            3:["audit","system",0], 4:["replay","engineering",0], 5:["trends","engineering",0],
+            6:["digital-twin","engineering",0], 7:["platform-library","system",0], 8:["fault-lab","engineering",0],
+            9:["diagnostics","engineering",0], 10:["verification","engineering",0], 11:["airspace","air-operations",0],
+            12:["fleet","force-management",0], 13:["about-system","system",0], 14:["about-nexvary","system",0],
+            15:["data-sources","system",0], 16:["audit","system",0]
+        }
+        return defaults[index] || defaults[0]
+    }
+
+    function applyWorkspace(page, workspace) {
+        if (page === 11) {
+            if (workspace >= 50) {
+                airOperationsPage.selectedWorkspace = 5
+                airOperationsPage.cuasSection = Math.max(0, Math.min(3, workspace - 50))
+            } else {
+                airOperationsPage.selectedWorkspace = workspace
+            }
+        }
+        if (page === 12) forceManagementPage.selectedWorkspace = workspace
+        if (page === 16) governancePage.selectedWorkspace = workspace
+    }
+
+    function activateRoute(routeId, page, workspace, groupId, remember) {
+        if (remember && (routeId !== selectedRoute || page !== selectedPage)) {
+            let next = navigationHistory.slice(0)
+            next.push({route:selectedRoute, page:selectedPage, workspace:currentWorkspace(), group:activeGroup})
+            if (next.length > 32) next.shift()
+            navigationHistory = next
+        }
+        selectedRoute = routeId
+        activeGroup = groupId
+        selectedPage = page
+        applyWorkspace(page, workspace)
+        if (groupId === "command") workMode = "COMMAND"
+        else if (groupId === "engineering") workMode = "ENGINEERING"
+        else if (groupId === "system") workMode = "SYSTEM"
+        else workMode = "OPERATIONS"
+    }
+
+    function currentWorkspace() {
+        if (selectedPage === 11) return airOperationsPage.selectedWorkspace === 5 ? 50 + airOperationsPage.cuasSection : airOperationsPage.selectedWorkspace
+        if (selectedPage === 12) return forceManagementPage.selectedWorkspace
+        if (selectedPage === 16) return governancePage.selectedWorkspace
+        return 0
+    }
+
+    function navigateRoute(routeId, page, workspace, groupId) {
+        activateRoute(routeId, page, workspace, groupId, true)
+    }
+
     function navigateTo(index) {
-        if (index === selectedPage) return
-        let next = navigationHistory.slice(0)
-        next.push(selectedPage)
-        if (next.length > 24) next.shift()
-        navigationHistory = next
-        selectedPage = index
+        const target = routeForPage(index)
+        activateRoute(target[0], index, target[2], target[1], true)
+    }
+
+    function initializeView(index, airWorkspace, forceWorkspace, cuasSection, systemWorkspace) {
+        if (index === 11) {
+            const routes = ["airspace", "common-picture", "aeronautical-data", "route-lab", "aircraft-visuals", "cuas-detection"]
+            const groups = ["air-operations", "command", "air-operations", "air-operations", "engineering", "cuas"]
+            const workspace = Math.max(0, Math.min(5, airWorkspace))
+            if (workspace === 5) {
+                const section = Math.max(0, Math.min(3, Number(cuasSection || 0)))
+                const cuasRoutes = ["cuas-detection", "cuas-classification", "cuas-incidents", "cuas-coordination"]
+                activateRoute(cuasRoutes[section], 11, 50 + section, "cuas", false)
+            } else {
+                activateRoute(routes[workspace], 11, workspace, groups[workspace], false)
+            }
+            return
+        }
+        if (index === 12) {
+            const routes = ["fleet", "squadrons", "bases", "crews", "training", "maintenance"]
+            const workspace = Math.max(0, Math.min(5, forceWorkspace))
+            activateRoute(routes[workspace], 12, workspace, "force-management", false)
+            return
+        }
+        if (index === 16) {
+            const routes = ["audit", "reports", "settings"]
+            const workspace = Math.max(0, Math.min(2, Number(systemWorkspace || 0)))
+            activateRoute(routes[workspace], 16, workspace, "system", false)
+            return
+        }
+        const target = routeForPage(index)
+        activateRoute(target[0], index, target[2], target[1], false)
     }
 
     function goBack() {
         if (navigationHistory.length === 0) {
-            selectedPage = 0
+            activateRoute("overview", 0, 0, "command", false)
             return
         }
         let next = navigationHistory.slice(0)
-        selectedPage = next.pop()
+        const previous = next.pop()
         navigationHistory = next
-    }
-
-    onSelectedPageChanged: {
-        if (selectedPage === 0) workMode = "EXECUTIVE"
-        else if (selectedPage === 5) workMode = "ENGINEERING"
-        else if (selectedPage === 9) workMode = "DIAGNOSTIC"
-        else if (selectedPage === 13) workMode = "BRIEF"
+        activateRoute(previous.route, previous.page, previous.workspace, previous.group, false)
     }
 
     function setWorkMode(mode) {
-        workMode = mode
-        if (mode === "EXECUTIVE") navigateTo(0)
-        else if (mode === "ENGINEERING") navigateTo(5)
-        else if (mode === "DIAGNOSTIC") navigateTo(9)
-        else navigateTo(13)
+        if (mode === "COMMAND") activateRoute("overview", 0, 0, "command", true)
+        else if (mode === "ENGINEERING") activateRoute("system-health", 1, 0, "engineering", true)
+        else if (mode === "SYSTEM") activateRoute("data-sources", 15, 0, "system", true)
+        else activateRoute("common-picture", 11, 1, "air-operations", true)
+    }
+
+    function routeLabel() {
+        const groups = navigationGroups()
+        for (let g = 0; g < groups.length; ++g)
+            for (let i = 0; i < groups[g].entries.length; ++i)
+                if (groups[g].entries[i].route === selectedRoute) return groups[g].entries[i].label
+        return tr("overview")
+    }
+
+    function groupLabel() {
+        const groups = navigationGroups()
+        for (let g = 0; g < groups.length; ++g)
+            if (groups[g].id === activeGroup) return groups[g].label
+        return tr("command")
     }
 
     Timer { interval: 250; running: true; repeat: true; onTriggered: cockpit.step() }
 
     RowLayout {
+        id: shellLayout
         anchors.fill: parent
         spacing: 0
+        layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
         Rectangle {
-            Layout.preferredWidth: Math.round(206 * root.uiScale)
+            id: navigationRail
+            Layout.preferredWidth: Math.round(278 * root.uiScale)
+            Layout.minimumWidth: 258
+            Layout.maximumWidth: 316
             Layout.fillHeight: true
             color: Theme.shell
             border.color: Theme.border
             border.width: Theme.frameWidth
-            LayoutMirroring.enabled: false
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: Math.round(12 * root.uiScale)
-                spacing: 4
+                anchors.margins: 12
+                spacing: 8
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.round(64 * root.uiScale)
-                    spacing: 9
-                    NexvaryMark { Layout.preferredWidth: 42; Layout.preferredHeight: 42 }
+                    Layout.preferredHeight: 68
+                    spacing: 11
+                    layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+
+                    NexvaryMark { Layout.preferredWidth: 48; Layout.preferredHeight: 48 }
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 0
-                        Text { text: "NEXVARY"; color: Theme.platinum; font.pixelSize: Math.round(17 * root.uiScale); font.bold: true; font.letterSpacing: 2.4 }
-                        Text { text: "AVIONICS LAB"; color: Theme.silver; font.pixelSize: Math.round(8 * root.uiScale); font.letterSpacing: 1.5 }
-                        Text { text: "COMMAND INTERFACE"; color: Theme.accent; font.pixelSize: Math.round(6 * root.uiScale); font.letterSpacing: 1.0 }
+                        spacing: 1
+                        Text {
+                            text: "NEXVARY"
+                            color: Theme.platinum
+                            font.family: Theme.latinUi
+                            font.pixelSize: 19
+                            font.bold: true
+                            font.letterSpacing: 2.5
+                            Layout.fillWidth: true
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                        }
+                        Text {
+                            text: "AVIONICS LAB"
+                            color: Theme.silver
+                            font.family: Theme.latinUi
+                            font.pixelSize: 11
+                            font.bold: true
+                            font.letterSpacing: 1.3
+                            Layout.fillWidth: true
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                        }
+                        Text {
+                            text: cockpit.rtl ? "منصة إدارة ووعي هندسية" : "COMMAND & ENGINEERING PLATFORM"
+                            color: Theme.accent
+                            font.family: Theme.uiFont(cockpit.rtl)
+                            font.pixelSize: 10
+                            Layout.fillWidth: true
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                            elide: Text.ElideRight
+                        }
                     }
                 }
 
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                Text { text: "MISSION WORKSPACES"; color: Theme.muted; font.pixelSize: 7; font.bold: true; font.letterSpacing: 1.1; leftPadding: 4; topPadding: 4; bottomPadding: 2 }
 
-                Repeater {
-                    model: [
-                        {"text": cockpit.text("mfd"), "icon": "dashboard"},
-                        {"text": cockpit.text("systems"), "icon": "health"},
-                        {"text": cockpit.text("sensors"), "icon": "sensors"},
-                        {"text": cockpit.text("events"), "icon": "events"},
-                        {"text": cockpit.text("replay"), "icon": "replay"},
-                        {"text": cockpit.text("trends"), "icon": "trends"},
-                        {"text": cockpit.text("digital_twin"), "icon": "twin"},
-                        {"text": cockpit.text("platform_library"), "icon": "platform"},
-                        {"text": cockpit.text("fault_lab"), "icon": "fault"},
-                        {"text": cockpit.text("diagnostic_center"), "icon": "diagnostic"},
-                        {"text": cockpit.text("verification_center"), "icon": "verify"},
-                        {"text": AirOpsLocale.label(cockpit.language), "icon": "sensors"},
-                        {"text": ReadyLocale.label(cockpit.language), "icon": "health"},
-                        {"text": cockpit.text("about_system"), "icon": "about"},
-                        {"text": cockpit.text("about_us"), "icon": "about"}
-                    ]
-                    delegate: SideNavButton {
-                        required property int index
-                        required property var modelData
-                        text: modelData.text
-                        iconKind: modelData.icon
-                        checked: root.selectedPage === index
-                        Layout.fillWidth: true
-                        onClicked: root.navigateTo(index)
+                ScrollView {
+                    id: navigationScroll
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+                    contentWidth: availableWidth
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
+                    ColumnLayout {
+                        width: navigationScroll.availableWidth
+                        spacing: 7
+
+                        Repeater {
+                            model: root.navigationGroups()
+                            delegate: WorkspaceNavGroup {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                groupId: modelData.id
+                                title: modelData.label
+                                accent: modelData.accent
+                                entries: modelData.entries
+                                selectedRoute: root.selectedRoute
+                                rtl: cockpit.rtl
+                                initiallyExpanded: modelData.open
+                                onRouteRequested: function(routeId, page, workspace, groupId) {
+                                    root.navigateRoute(routeId, page, workspace, groupId)
+                                }
+                            }
+                        }
                     }
                 }
 
-                Item { Layout.fillHeight: true }
-
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.round(102 * root.uiScale)
+                    Layout.preferredHeight: 112
                     color: Theme.panel
                     border.color: Theme.border
-                    border.width: Theme.frameWidth
+                    border.width: 1
                     radius: Theme.radius
+
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        spacing: 2
+                        anchors.margins: 10
+                        spacing: 4
                         RowLayout {
                             Layout.fillWidth: true
-                            Rectangle { width: 7; height: 7; radius: 3; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber }
-                            Text { text: "LAB STATUS"; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true }
-                            Text { text: cockpit.activeAlertCount === 0 ? "READY" : "CHECK"; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                            Rectangle { width: 9; height: 9; radius: 5; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber }
+                            Text {
+                                Layout.fillWidth: true
+                                text: cockpit.rtl ? "حالة المنصة" : "PLATFORM STATUS"
+                                color: Theme.platinum
+                                font.family: Theme.uiFont(cockpit.rtl)
+                                font.pixelSize: 11
+                                font.bold: true
+                                horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                            }
+                            Text { text: cockpit.activeAlertCount === 0 ? "READY" : "CHECK"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
                         }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
-                        Text { text: "NO LIVE AIRCRAFT I/O"; color: Theme.muted; font.pixelSize: 7 }
-                        Text { text: "TRAINING / VERIFICATION"; color: Theme.accent; font.pixelSize: 7; font.bold: true }
+                        Text { text: "OFFLINE / SYNTHETIC"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10 }
+                        Text { text: cockpit.rtl ? "لا يوجد مسار تحكم حي" : "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10 }
+                        Text { text: cockpit.rtl ? "تدريب • تحقق • تحليل" : "TRAINING • VERIFICATION • ANALYSIS"; color: Theme.accent; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true }
                         Item { Layout.fillHeight: true }
-                        Text { text: "v3.2.0  •  UI RELEASE GATE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                        Text { text: "v3.3.0  •  VISUAL GATE 1950"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
                     }
                 }
             }
@@ -171,94 +373,106 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 0
-            LayoutMirroring.enabled: cockpit.rtl
-            LayoutMirroring.childrenInherit: true
+            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: Math.round(80 * root.uiScale)
+                Layout.preferredHeight: Math.round(88 * root.uiScale)
+                Layout.minimumHeight: 82
                 color: Theme.panel
                 border.color: Theme.border
                 border.width: Theme.frameWidth
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 14
-                    anchors.rightMargin: 14
+                    anchors.leftMargin: 15
+                    anchors.rightMargin: 15
                     anchors.topMargin: 9
                     anchors.bottomMargin: 9
-                    spacing: 8
+                    spacing: 10
+                    layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
                     MinisterialButton {
-                        text: cockpit.rtl ? "◀  " + cockpit.text("back") : "◀  " + cockpit.text("back")
-                        implicitWidth: 88
+                        text: (cockpit.rtl ? "▶  " : "◀  ") + cockpit.text("back")
+                        implicitWidth: 94
                         visible: root.selectedPage !== 0 || root.navigationHistory.length > 0
                         enabled: visible
-                        accent: Theme.gold
+                        accent: Theme.royalGold
                         onClicked: root.goBack()
                     }
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 1
+                        spacing: 2
                         Text {
                             text: cockpit.text("app_title")
                             color: Theme.platinum
-                            font.pixelSize: Math.round(20 * root.uiScale)
+                            font.family: Theme.uiFont(cockpit.rtl)
+                            font.pixelSize: Math.round(Theme.pageTitlePx * root.uiScale)
                             font.bold: true
-                            font.letterSpacing: 0.35
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             Layout.fillWidth: true
+                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             elide: Text.ElideRight
                         }
-                        Text {
-                            text: (cockpit.rtl ? "منصة هندسية متعددة الأنظمة" : "MULTI-PLATFORM AVIONICS ENGINEERING ENVIRONMENT") + "  /  " + cockpit.activePlatformName.toUpperCase()
-                            color: Theme.accent
-                            font.pixelSize: 8
-                            font.bold: true
-                            font.letterSpacing: 0.7
-                            horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                        RowLayout {
                             Layout.fillWidth: true
-                            elide: Text.ElideRight
+                            spacing: 7
+                            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                            Text {
+                                text: root.groupLabel()
+                                color: Theme.accent
+                                font.family: Theme.uiFont(cockpit.rtl)
+                                font.pixelSize: 11
+                                font.bold: true
+                            }
+                            Text { text: "/"; color: Theme.border; font.pixelSize: 11 }
+                            Text {
+                                Layout.fillWidth: true
+                                text: root.routeLabel()
+                                color: Theme.silver
+                                font.family: Theme.uiFont(cockpit.rtl)
+                                font.pixelSize: 11
+                                horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                                elide: Text.ElideRight
+                            }
                         }
                     }
 
                     RowLayout {
-                        visible: root.width >= 1540
-                        spacing: 4
-                        MinisterialButton { text: "EXEC"; checkable: true; checked: root.workMode === "EXECUTIVE"; implicitWidth: 58; accent: Theme.accent; onClicked: root.setWorkMode("EXECUTIVE") }
-                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 58; accent: Theme.accent; onClicked: root.setWorkMode("ENGINEERING") }
-                        MinisterialButton { text: "DIAG"; checkable: true; checked: root.workMode === "DIAGNOSTIC"; implicitWidth: 58; accent: Theme.accent; onClicked: root.setWorkMode("DIAGNOSTIC") }
-                        MinisterialButton { text: "BRIEF"; checkable: true; checked: root.workMode === "BRIEF"; implicitWidth: 62; accent: Theme.platinum; onClicked: root.setWorkMode("BRIEF") }
+                        visible: root.width >= 2100 || (root.selectedPage === 0 && root.width >= 1740)
+                        spacing: 5
+                        layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                        MinisterialButton { text: "CMD"; checkable: true; checked: root.workMode === "COMMAND"; implicitWidth: 62; accent: Theme.royalGold; onClicked: root.setWorkMode("COMMAND") }
+                        MinisterialButton { text: "OPS"; checkable: true; checked: root.workMode === "OPERATIONS"; implicitWidth: 62; accent: Theme.royalGold; onClicked: root.setWorkMode("OPERATIONS") }
+                        MinisterialButton { text: "ENG"; checkable: true; checked: root.workMode === "ENGINEERING"; implicitWidth: 62; accent: Theme.royalGold; onClicked: root.setWorkMode("ENGINEERING") }
+                        MinisterialButton { text: "SYS"; checkable: true; checked: root.workMode === "SYSTEM"; implicitWidth: 62; accent: Theme.royalGold; onClicked: root.setWorkMode("SYSTEM") }
                     }
 
-                    Rectangle { width: 1; Layout.fillHeight: true; color: Theme.borderSoft; visible: root.width >= 1540 }
-
                     Rectangle {
-                        Layout.preferredWidth: root.width >= 1800 ? 188 : 166
-                        Layout.preferredHeight: 48
+                        Layout.preferredWidth: 178
+                        Layout.preferredHeight: 54
+                        visible: root.width >= 1540
                         color: Theme.panel2
                         border.color: Theme.border
-                        border.width: Theme.frameWidth
+                        border.width: 1
                         radius: Theme.radius
                         RowLayout {
                             anchors.fill: parent
-                            anchors.margins: 7
+                            anchors.margins: 8
+                            spacing: 8
+                            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
                             Rectangle {
-                                width: 34
-                                height: 34
+                                width: 38; height: 38; radius: 6
                                 color: Theme.panel3
                                 border.color: Theme.accent
-                                border.width: Theme.frameWidth
-                                radius: Theme.radius
-                                Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                border.width: 1
+                                Text { anchors.centerIn: parent; text: Theme.platformCode(cockpit.activePlatformId); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: 11; font.bold: true }
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: cockpit.activePlatformCategory; color: Theme.muted; font.pixelSize: 6; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: cockpit.activePlatformName; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: cockpit.activePlatformPropulsion; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: cockpit.activePlatformCategory; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
+                                Text { text: cockpit.activePlatformName; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
                             }
                         }
                     }
@@ -266,35 +480,30 @@ ApplicationWindow {
                     ComboBox {
                         id: scenarioBox
                         model: cockpit.scenarios
-                        Layout.preferredWidth: root.width >= 1700 ? 132 : 112
-                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; font.family: "Consolas"; elide: Text.ElideRight }
-                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border; border.width: Theme.frameWidth }
+                        Layout.preferredWidth: 132
+                        contentItem: Text { text: scenarioBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 10; font.family: Theme.mono; elide: Text.ElideRight }
+                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border; border.width: 1 }
                         onActivated: cockpit.setScenario(currentText)
                     }
 
-                    ColumnLayout {
-                        visible: root.width >= 1460
-                        spacing: 0
-                        Text { text: "TICK " + cockpit.tick; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
-                        Text { text: "BUILD 3.2.0 / UI-M3"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
-                    }
-
                     Rectangle {
-                        Layout.preferredWidth: root.width >= 1640 ? 150 : 122
-                        Layout.preferredHeight: 44
+                        Layout.preferredWidth: 132
+                        Layout.preferredHeight: 48
                         color: Theme.panel2
-                        border.color: cockpit.activeAlertCount === 0 ? Theme.border : Theme.amber
-                        border.width: Theme.frameWidth
+                        border.color: Theme.border
+                        border.width: 1
                         radius: Theme.radius
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 8
-                            Rectangle { width: 8; height: 8; radius: 4; color: cockpit.activeAlertCount === 0 ? Theme.green : Theme.amber }
+                            spacing: 7
+                            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                            Rectangle { width: 9; height: 9; radius: 5; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber }
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: cockpit.activeAlertCount === 0 ? "NOMINAL" : "ATTENTION"; color: cockpit.activeAlertCount === 0 ? Theme.platinum : Theme.amber; font.family: "Consolas"; font.pixelSize: 9; font.bold: true; elide: Text.ElideRight }
-                                Text { text: "ALERTS " + cockpit.activeAlertCount + " / DX " + cockpit.diagnosticFindingCount; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; elide: Text.ElideRight }
+                                Text { text: cockpit.activeAlertCount === 0 ? "NOMINAL" : "ATTENTION"; color: cockpit.activeAlertCount === 0 ? Theme.radarGreen : Theme.amber; font.family: Theme.mono; font.pixelSize: 10; font.bold: true }
+                                Text { text: "ALERTS " + cockpit.activeAlertCount + " • DX " + cockpit.diagnosticFindingCount; color: Theme.silver; font.family: Theme.mono; font.pixelSize: 10 }
                             }
                         }
                     }
@@ -303,29 +512,31 @@ ApplicationWindow {
                         id: languageBox
                         model: root.languageOptions
                         textRole: "name"
-                        Layout.preferredWidth: 118
+                        Layout.preferredWidth: 116
                         currentIndex: root.languageIndex(cockpit.language)
                         contentItem: Text {
                             text: languageBox.displayText
                             color: Theme.platinum
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
-                            font.pixelSize: 9
+                            font.family: Theme.uiFont(cockpit.rtl)
+                            font.pixelSize: 11
                             font.bold: true
                             elide: Text.ElideRight
                         }
-                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.gold; border.width: 1 }
+                        background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.royalGold; border.width: 1 }
                         onActivated: cockpit.setLanguage(root.languageOptions[currentIndex].code)
                     }
                 }
 
-                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 1; color: Theme.accent; opacity: 0.75 }
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: 2; color: Theme.accent; opacity: 0.78 }
             }
 
             StackLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 currentIndex: root.selectedPage
+
                 ExecutiveDashboard {}
                 SystemHealthPage {}
                 SensorsPage {}
@@ -337,37 +548,40 @@ ApplicationWindow {
                 FaultLabPage {}
                 DiagnosticCenter {}
                 VerificationCenter {}
-                AirOperationsPage {}
-                AirReadinessPage {}
+                AirOperationsPage { id: airOperationsPage }
+                ForceManagementWorkspacePage { id: forceManagementPage }
                 Item {
-                    AboutSystem { anchors.fill: parent; anchors.bottomMargin: 86 }
+                    AboutSystem { anchors.fill: parent; anchors.bottomMargin: 92 }
                     TechnologyStackBanner {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
                         anchors.margins: 10
-                        height: 74
+                        height: 78
                     }
                 }
                 AboutNexvary {}
+                DataSourcesPage {}
+                SystemGovernancePage { id: governancePage }
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 25
+                Layout.preferredHeight: 32
                 color: Theme.shell
                 border.color: Theme.border
-                border.width: Theme.frameWidth
+                border.width: 1
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    spacing: 8
-                    Text { text: "NEXVARY AVIONICS LAB  /  COMMAND ENGINEERING INTERFACE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 12
+                    spacing: 10
+                    layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                    Text { text: "NEXVARY AVIONICS LAB  /  v3.3.0"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: 10 }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.pixelSize: 6; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.42 }
+                    Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: 10; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.44 }
                     Item { Layout.fillWidth: true }
-                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC DATA  •  NO LIVE CONTROL"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 6; elide: Text.ElideRight }
+                    Text { text: cockpit.activePlatformName.toUpperCase() + "  •  OFFLINE  •  SYNTHETIC  •  NO LIVE CONTROL"; color: Theme.accent; font.family: Theme.mono; font.pixelSize: 10; elide: Text.ElideRight }
                 }
             }
         }

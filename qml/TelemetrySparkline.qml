@@ -16,7 +16,7 @@ Canvas {
         var c = getContext("2d")
         c.clearRect(0,0,width,height)
 
-        c.strokeStyle = "#17313c"
+        c.strokeStyle = "#342E16"
         c.lineWidth = 1
         for (var gx=1; gx<4; ++gx) {
             var xg = gx*width/4

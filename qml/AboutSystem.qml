@@ -139,11 +139,11 @@ Item {
                             spacing: 2
                             Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                             Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "v3.2.0 / STAGE 1720"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
-                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: 8; font.bold: true }
+                            Text { text: "v3.2.0 / STAGE 1720"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
+                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: 10; font.bold: true }
                             Item { Layout.fillHeight: true }
-                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: 7 }
+                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: 10 }
                         }
                     }
                 }
@@ -172,7 +172,7 @@ Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             color: Theme.panel2
-                            border.color: cardAccent
+                            border.color: Theme.border
                             border.width: Theme.frameWidth
                             radius: Theme.radius
 
@@ -229,7 +229,7 @@ Item {
                                         anchors.margins: 7
                                         text: cockpit.rtl ? modelData.noteAr : modelData.noteEn
                                         color: cardAccent
-                                        font.pixelSize: 9
+                                        font.pixelSize: 10
                                         font.bold: true
                                         wrapMode: Text.WordWrap
                                         verticalAlignment: Text.AlignVCenter
@@ -282,12 +282,12 @@ Item {
                                     border.color: Theme.accent
                                     border.width: Theme.frameWidth
                                     radius: Theme.radius
-                                    Text { anchors.centerIn: parent; text: modelData.code; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                                    Text { anchors.centerIn: parent; text: modelData.code; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                                 Text {
                                     text: cockpit.rtl ? modelData.ar : modelData.en
                                     color: Theme.platinum
-                                    font.pixelSize: 9
+                                    font.pixelSize: 10
                                     font.bold: true
                                     Layout.fillWidth: true
                                     horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -298,7 +298,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.descAr : modelData.descEn
                                 color: Theme.silver
-                                font.pixelSize: 8
+                                font.pixelSize: 10
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
@@ -333,7 +333,7 @@ Item {
                         required property var modelData
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        color: index === 3 ? "#15242D" : Theme.panel
+                        color: index === 3 ? "#151515" : Theme.panel
                         border.color: index === 3 ? Theme.accent : Theme.border
                         border.width: Theme.frameWidth
                         radius: Theme.radius
@@ -345,7 +345,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.titleAr : modelData.titleEn
                                 color: index === 3 ? Theme.accent : Theme.platinum
-                                font.pixelSize: 9
+                                font.pixelSize: 10
                                 font.bold: true
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
@@ -355,7 +355,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.bodyAr : modelData.bodyEn
                                 color: Theme.silver
-                                font.pixelSize: 8
+                                font.pixelSize: 10
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
@@ -404,7 +404,7 @@ Item {
                                     anchors.centerIn: parent
                                     spacing: 3
                                     Text { text: String(index + 1); color: Theme.accent; font.family: "Consolas"; font.pixelSize: 13; font.bold: true; Layout.alignment: Qt.AlignHCenter }
-                                    Text { text: cockpit.rtl ? modelData.ar : modelData.en; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.alignment: Qt.AlignHCenter; horizontalAlignment: Text.AlignHCenter }
+                                    Text { text: cockpit.rtl ? modelData.ar : modelData.en; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.alignment: Qt.AlignHCenter; horizontalAlignment: Text.AlignHCenter }
                                 }
                             }
                         }
@@ -444,9 +444,9 @@ Item {
                                 delegate: RowLayout {
                                     required property var modelData
                                     Layout.fillWidth: true
-                                    Rectangle { width: 32; height: 22; color: Theme.panel3; border.color: Theme.accent; border.width: Theme.frameWidth; Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 7; font.bold: true } }
-                                    Text { text: modelData.name; color: Theme.silver; font.pixelSize: 8; Layout.fillWidth: true }
-                                    Text { text: modelData.systemCount + " SYS / " + modelData.channelCount + " CH"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                                    Rectangle { width: 32; height: 22; color: Theme.panel3; border.color: Theme.accent; border.width: Theme.frameWidth; Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true } }
+                                    Text { text: modelData.name; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
+                                    Text { text: modelData.systemCount + " SYS / " + modelData.channelCount + " CH"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                                 }
                             }
                         }
@@ -469,14 +469,14 @@ Item {
                             Text {
                                 text: cockpit.rtl ? "النظام مخصص للتدريب والمحاكاة والتحليل والتحقق الهندسي باستخدام بيانات صناعية. أكواد التشخيص NEXVARY تدريبية وليست أكواد مصنع أو اعتماد صلاحية طيران. لا توجد واجهة تحكم بطائرة حقيقية أو مسار أسلحة أو تشغيل حي." : "The system is intended for training, simulation, analysis and engineering verification using synthetic data. NEXVARY diagnostic codes are training codes, not OEM or airworthiness codes. There is no live-aircraft control interface, weapons path or operational control channel."
                                 color: Theme.silver
-                                font.pixelSize: 8
+                                font.pixelSize: 10
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
                                 verticalAlignment: Text.AlignTop
                                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             }
-                            Text { text: cockpit.rtl ? "هذا الفصل الواضح بين التدريب والتشغيل الحقيقي جزء من تصميم السلامة للمنصة." : "This explicit separation between training and real operation is part of the platform safety design."; color: Theme.accent; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                            Text { text: cockpit.rtl ? "هذا الفصل الواضح بين التدريب والتشغيل الحقيقي جزء من تصميم السلامة للمنصة." : "This explicit separation between training and real operation is part of the platform safety design."; color: Theme.accent; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         }
                     }
                 }

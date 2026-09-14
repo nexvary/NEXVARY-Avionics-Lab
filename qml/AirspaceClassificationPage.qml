@@ -52,6 +52,8 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 72
+            Layout.minimumHeight: 72
+            Layout.maximumHeight: 72
             color: Theme.panel
             border.color: Theme.border
             border.width: Theme.frameWidth
@@ -61,6 +63,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 10
                 spacing: 12
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
                 ColumnLayout {
                     Layout.fillWidth: true
@@ -76,7 +79,7 @@ Item {
                     Text {
                         text: AirspaceLocale.subtitle(cockpit.language)
                         color: Theme.signalCyan
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -88,7 +91,7 @@ Item {
                     Layout.preferredWidth: 250
                     Layout.preferredHeight: 46
                     color: Theme.panel2
-                    border.color: Theme.warmOrange
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
@@ -98,7 +101,7 @@ Item {
                         Text {
                             text: AirspaceLocale.notForNavigation(cockpit.language)
                             color: Theme.warmOrange
-                            font.pixelSize: 8
+                            font.pixelSize: 10
                             font.bold: true
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
@@ -107,7 +110,7 @@ Item {
                             text: "SYNTHETIC CLASSIFICATION DATASET"
                             color: Theme.muted
                             font.family: "Consolas"
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                             Layout.fillWidth: true
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -119,6 +122,8 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 44
+            Layout.minimumHeight: 44
+            Layout.maximumHeight: 44
             color: Theme.panel
             border.color: Theme.borderSoft
             border.width: 1
@@ -128,11 +133,12 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 6
                 spacing: 6
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
                 Text {
                     text: AirspaceLocale.layers(cockpit.language)
                     color: Theme.platinum
-                    font.pixelSize: 8
+                    font.pixelSize: 10
                     font.bold: true
                 }
 
@@ -151,7 +157,7 @@ Item {
                             text: modelData === "ALL" ? AirspaceLocale.all(cockpit.language) : modelData
                             color: page.selectedClass === modelData ? Theme.darkNavy : Theme.platinum
                             font.family: "Consolas"
-                            font.pixelSize: 8
+                            font.pixelSize: 10
                             font.bold: true
                         }
                         MouseArea {
@@ -192,7 +198,7 @@ Item {
                             Text {
                                 text: modelData.label
                                 color: modelData.active ? Theme.platinum : Theme.muted
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                                 font.bold: true
                                 Layout.fillWidth: true
                                 elide: Text.ElideRight
@@ -216,7 +222,7 @@ Item {
                     text: cockpit.publicFlightFeedSource + "  •  " + cockpit.publicFlightTrackCount + " TRACKS"
                     color: Theme.signalCyan
                     font.family: "Consolas"
-                    font.pixelSize: 7
+                    font.pixelSize: 10
                     font.bold: true
                 }
             }
@@ -226,12 +232,13 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 7
+            layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
             Rectangle {
                 id: chartFrame
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                color: "#10222A"
+                color: "#111111"
                 border.color: Theme.border
                 border.width: Theme.frameWidth
                 radius: Theme.radius
@@ -243,10 +250,10 @@ Item {
                     onPaint: {
                         var ctx = getContext("2d")
                         ctx.reset()
-                        ctx.fillStyle = "#102A37"
+                        ctx.fillStyle = "#151515"
                         ctx.fillRect(0, 0, width, height)
 
-                        ctx.strokeStyle = "#2A4B57"
+                        ctx.strokeStyle = "#665820"
                         ctx.lineWidth = 1
                         for (var gx = 0; gx <= 10; ++gx) {
                             var px = width * gx / 10
@@ -263,7 +270,7 @@ Item {
                             ctx.stroke()
                         }
 
-                        ctx.fillStyle = "#253B35"
+                        ctx.fillStyle = "#1A1A1A"
                         ctx.strokeStyle = "#6A8179"
                         ctx.lineWidth = 1.5
                         ctx.beginPath()
@@ -287,7 +294,7 @@ Item {
                         ctx.fill()
                         ctx.stroke()
 
-                        ctx.fillStyle = "#143846"
+                        ctx.fillStyle = "#151515"
                         ctx.beginPath()
                         ctx.moveTo(width * 0.62, height * 0.54)
                         ctx.lineTo(width * 0.70, height * 0.98)
@@ -342,7 +349,7 @@ Item {
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 text: modelData.name
                                 color: Theme.platinum
-                                font.pixelSize: 7
+                                font.pixelSize: 10
                                 font.bold: true
                             }
                             Text {
@@ -350,7 +357,7 @@ Item {
                                 text: modelData.floor + " — " + modelData.ceiling
                                 color: Theme.platinum
                                 font.family: "Consolas"
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                             }
                         }
 
@@ -376,7 +383,7 @@ Item {
                             height: 11
                             radius: 5
                             color: Theme.royalGold
-                            border.color: Theme.platinum
+                            border.color: Theme.border
                             border.width: 1
                         }
                         Text {
@@ -385,7 +392,7 @@ Item {
                             text: modelData.code
                             color: Theme.royalGold
                             font.family: "Consolas"
-                            font.pixelSize: 7
+                            font.pixelSize: 10
                             font.bold: true
                         }
                         Text {
@@ -393,7 +400,7 @@ Item {
                             y: 9
                             text: modelData.name
                             color: Theme.silver
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                         }
                     }
                 }
@@ -412,7 +419,7 @@ Item {
                             height: 9
                             rotation: 45
                             color: Theme.rfViolet
-                            border.color: Theme.platinum
+                            border.color: Theme.border
                             border.width: 1
                         }
                         Text {
@@ -421,7 +428,7 @@ Item {
                             text: modelData.code
                             color: Theme.rfViolet
                             font.family: "Consolas"
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                             font.bold: true
                         }
                         Text {
@@ -429,7 +436,7 @@ Item {
                             y: 8
                             text: modelData.type
                             color: Theme.muted
-                            font.pixelSize: 5
+                            font.pixelSize: 10
                         }
                     }
                 }
@@ -448,7 +455,7 @@ Item {
                             height: 13
                             radius: 6
                             color: Theme.signalCyan
-                            border.color: Theme.platinum
+                            border.color: Theme.border
                             border.width: 1
                             Rectangle {
                                 anchors.centerIn: parent
@@ -467,14 +474,14 @@ Item {
                                 text: modelData.callsign || modelData.icao24
                                 color: Theme.signalCyan
                                 font.family: "Consolas"
-                                font.pixelSize: 7
+                                font.pixelSize: 10
                                 font.bold: true
                             }
                             Text {
                                 text: Math.round(Number(modelData.altitudeMeters)) + "m  " + Math.round(Number(modelData.velocityMetersPerSecond)) + "m/s"
                                 color: Theme.platinum
                                 font.family: "Consolas"
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                             }
                         }
                     }
@@ -488,14 +495,14 @@ Item {
                     height: 36
                     color: Theme.panel
                     opacity: 0.94
-                    border.color: Theme.warmOrange
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     Text {
                         anchors.centerIn: parent
                         text: AirspaceLocale.notForNavigation(cockpit.language)
                         color: Theme.warmOrange
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                         font.bold: true
                     }
                 }
@@ -503,6 +510,8 @@ Item {
 
             ColumnLayout {
                 Layout.preferredWidth: 350
+                Layout.minimumWidth: 350
+                Layout.maximumWidth: 350
                 Layout.fillHeight: true
                 spacing: 7
 
@@ -556,12 +565,12 @@ Item {
                                     text: page.selectedZone ? page.selectedZone.id : "—"
                                     color: Theme.muted
                                     font.family: "Consolas"
-                                    font.pixelSize: 7
+                                    font.pixelSize: 10
                                 }
                                 Text {
                                     text: page.selectedZone && page.selectedZone.controlled ? AirspaceLocale.controlled(cockpit.language) : AirspaceLocale.uncontrolled(cockpit.language)
                                     color: page.selectedZone && page.selectedZone.controlled ? Theme.signalCyan : Theme.radarGreen
-                                    font.pixelSize: 7
+                                    font.pixelSize: 10
                                     font.bold: true
                                 }
                             }
@@ -571,15 +580,15 @@ Item {
                             columns: 2
                             columnSpacing: 6
                             rowSpacing: 4
-                            Text { text: cockpit.rtl ? "الحد السفلي" : "FLOOR"; color: Theme.muted; font.pixelSize: 6 }
-                            Text { text: page.selectedZone ? page.selectedZone.floor : "—"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: cockpit.rtl ? "الحد العلوي" : "CEILING"; color: Theme.muted; font.pixelSize: 6 }
-                            Text { text: page.selectedZone ? page.selectedZone.ceiling : "—"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                            Text { text: cockpit.rtl ? "الحد السفلي" : "FLOOR"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: page.selectedZone ? page.selectedZone.floor : "—"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.rtl ? "الحد العلوي" : "CEILING"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: page.selectedZone ? page.selectedZone.ceiling : "—"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                         }
                         Text {
                             text: page.selectedZone ? page.selectedZone.note : ""
                             color: Theme.silver
-                            font.pixelSize: 7
+                            font.pixelSize: 10
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
@@ -621,14 +630,14 @@ Item {
                                         text: modelData.code
                                         color: Theme.darkNavy
                                         font.family: "Consolas"
-                                        font.pixelSize: 8
+                                        font.pixelSize: 10
                                         font.bold: true
                                     }
                                 }
                                 Text {
                                     text: modelData.description
                                     color: Theme.silver
-                                    font.pixelSize: 6
+                                    font.pixelSize: 10
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }
@@ -661,13 +670,13 @@ Item {
                             columns: 2
                             columnSpacing: 8
                             rowSpacing: 7
-                            Text { text: cockpit.rtl ? "القطاعات" : "SECTORS"; color: Theme.muted; font.pixelSize: 6 }
+                            Text { text: cockpit.rtl ? "القطاعات" : "SECTORS"; color: Theme.muted; font.pixelSize: 10 }
                             Text { text: String(AirspaceData.zones.length); color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 13; font.bold: true }
-                            Text { text: AirspaceLocale.airports(cockpit.language); color: Theme.muted; font.pixelSize: 6 }
+                            Text { text: AirspaceLocale.airports(cockpit.language); color: Theme.muted; font.pixelSize: 10 }
                             Text { text: String(AirspaceData.airports.length); color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 13; font.bold: true }
-                            Text { text: AirspaceLocale.navaids(cockpit.language); color: Theme.muted; font.pixelSize: 6 }
+                            Text { text: AirspaceLocale.navaids(cockpit.language); color: Theme.muted; font.pixelSize: 10 }
                             Text { text: String(AirspaceData.navaids.length); color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 13; font.bold: true }
-                            Text { text: AirspaceLocale.traffic(cockpit.language); color: Theme.muted; font.pixelSize: 6 }
+                            Text { text: AirspaceLocale.traffic(cockpit.language); color: Theme.muted; font.pixelSize: 10 }
                             Text { text: String(cockpit.publicFlightTrackCount); color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 13; font.bold: true }
                         }
                         Item { Layout.fillHeight: true }
@@ -686,7 +695,7 @@ Item {
                                     text: cockpit.publicFlightFeedStatus
                                     color: Theme.signalCyan
                                     font.family: "Consolas"
-                                    font.pixelSize: 7
+                                    font.pixelSize: 10
                                     font.bold: true
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
@@ -694,7 +703,7 @@ Item {
                                 Text {
                                     text: cockpit.rtl ? "يمكن تبديل مصدر الحركة العامة من شاشة الصورة الجوية / RF." : "Public traffic source can be changed from the Air Picture / RF tab."
                                     color: Theme.muted
-                                    font.pixelSize: 6
+                                    font.pixelSize: 10
                                     wrapMode: Text.WordWrap
                                     Layout.fillWidth: true
                                 }

@@ -59,7 +59,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "صورة جوية • ADS-B • AEGIS • C-UAS • RF سلبي • جاهزية • صيانة • توأم رقمي" : "AIR PICTURE • ADS-B • AEGIS • C-UAS • PASSIVE RF • READINESS • MAINTENANCE • DIGITAL TWIN"
                         color: Theme.signalCyan
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -70,7 +70,7 @@ Item {
                     Layout.preferredWidth: 288
                     Layout.fillHeight: true
                     color: Theme.panel2
-                    border.color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     RowLayout {
@@ -80,16 +80,16 @@ Item {
                         Rectangle {
                             width: 34; height: 34; radius: 17
                             color: "transparent"
-                            border.color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen
+                            border.color: Theme.border
                             border.width: 2
                             Text { anchors.centerIn: parent; text: cockpit.airOperationsHighCount > 0 ? "!" : "✓"; color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.pixelSize: 16; font.bold: true }
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 0
-                            Text { text: cockpit.rtl ? "الحالة التنفيذية" : "EXECUTIVE STATE"; color: Theme.muted; font.pixelSize: 6; font.bold: true }
+                            Text { text: cockpit.rtl ? "الحالة التنفيذية" : "EXECUTIVE STATE"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
                             Text { text: page.overallState(); color: cockpit.airOperationsHighCount > 0 ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
-                            Text { text: "AWARENESS • TRAINING • REVIEW"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 6 }
+                            Text { text: "AWARENESS • TRAINING • REVIEW"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                     }
                 }
@@ -131,7 +131,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "الصورة الجوية الموحدة" : "UNIFIED AIR PICTURE"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: cockpit.airOperationsSource + " • " + cockpit.airOperationsMode; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; elide: Text.ElideRight }
+                        Text { text: cockpit.airOperationsSource + " • " + cockpit.airOperationsMode; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; elide: Text.ElideRight }
                     }
                     CommandAirMap {
                         Layout.fillWidth: true
@@ -159,21 +159,21 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 7
                         spacing: 4
-                        Text { text: cockpit.rtl ? "سياق الصورة الجوية" : "AIR PICTURE CONTEXT"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
+                        Text { text: cockpit.rtl ? "سياق الصورة الجوية" : "AIR PICTURE CONTEXT"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         GridLayout {
                             Layout.fillWidth: true
                             columns: 2
                             rowSpacing: 3
                             columnSpacing: 6
-                            Text { text: cockpit.rtl ? "المصدر" : "SOURCE"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: cockpit.airOperationsSource; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Text { text: cockpit.rtl ? "المسارات" : "TRACKS"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: cockpit.rtl ? "الأولوية" : "HIGH"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsHighCount); color: cockpit.airOperationsHighCount ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                            Text { text: cockpit.rtl ? "المشاهدات" : "OBSERVATIONS"; color: Theme.muted; font.pixelSize: 5 }
-                            Text { text: String(cockpit.airOperationsObservationCount); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8 }
+                            Text { text: cockpit.rtl ? "المصدر" : "SOURCE"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: cockpit.airOperationsSource; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: cockpit.rtl ? "المسارات" : "TRACKS"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: String(cockpit.airOperationsTrackCount + cockpit.publicFlightTrackCount); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.rtl ? "الأولوية" : "HIGH"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: String(cockpit.airOperationsHighCount); color: cockpit.airOperationsHighCount ? Theme.warmOrange : Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: cockpit.rtl ? "المشاهدات" : "OBSERVATIONS"; color: Theme.muted; font.pixelSize: 10 }
+                            Text { text: String(cockpit.airOperationsObservationCount); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                         Item { Layout.fillHeight: true }
                         Repeater {
@@ -187,8 +187,8 @@ Item {
                                 required property var modelData
                                 Layout.fillWidth: true
                                 Rectangle { width: 7; height: 7; radius: 4; color: modelData.c }
-                                Text { text: modelData.t; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true }
-                                Text { text: "ONLINE"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
+                                Text { text: modelData.t; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
+                                Text { text: "ONLINE"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                             }
                         }
                     }
@@ -198,7 +198,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: Theme.panel
-                    border.color: Theme.warmOrange
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
@@ -207,8 +207,8 @@ Item {
                         spacing: 4
                         RowLayout {
                             Layout.fillWidth: true
-                            Text { text: cockpit.rtl ? "الحوادث ذات الأولوية" : "PRIORITY INCIDENTS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-                            Text { text: String(cockpit.airOperationsIncidentCount); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                            Text { text: cockpit.rtl ? "الحوادث ذات الأولوية" : "PRIORITY INCIDENTS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
+                            Text { text: String(cockpit.airOperationsIncidentCount); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                         }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
@@ -222,16 +222,16 @@ Item {
                                 width: ListView.view.width
                                 height: 47
                                 color: Theme.panel2
-                                border.color: Theme.warmOrange
+                                border.color: Theme.border
                                 border.width: 1
                                 radius: Theme.radius
                                 ColumnLayout {
                                     anchors.fill: parent
                                     anchors.margins: 5
                                     spacing: 0
-                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: String(modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
+                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: String(modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: Theme.warmOrange; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -283,8 +283,8 @@ Item {
                 spacing: 4
                 RowLayout {
                     Layout.fillWidth: true
-                    Text { text: cockpit.rtl ? "مصفوفة جاهزية المنصات" : "PLATFORM READINESS MATRIX"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-                    Text { text: cockpit.readinessReadyCount + "/" + cockpit.readinessAssets.length + " READY"; color: page.readinessColor(cockpit.readinessFleetPercent); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                    Text { text: cockpit.rtl ? "مصفوفة جاهزية المنصات" : "PLATFORM READINESS MATRIX"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
+                    Text { text: cockpit.readinessReadyCount + "/" + cockpit.readinessAssets.length + " READY"; color: page.readinessColor(cockpit.readinessFleetPercent); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                 }
                 RowLayout {
                     Layout.fillWidth: true
@@ -297,7 +297,7 @@ Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             color: Theme.panel2
-                            border.color: page.stateColor(modelData.state)
+                            border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
                             RowLayout {
@@ -307,21 +307,21 @@ Item {
                                 Rectangle {
                                     Layout.preferredWidth: 50
                                     Layout.fillHeight: true
-                                    color: "#0E1820"
-                                    border.color: Theme.deepBlue
+                                    color: "#111111"
+                                    border.color: Theme.border
                                     border.width: 1
                                     radius: Theme.radius
-                                    Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                                    Text { anchors.centerIn: parent; text: Theme.platformCode(modelData.id); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                                 ColumnLayout {
                                     Layout.fillWidth: true
                                     spacing: 1
-                                    Text { text: modelData.name || modelData.id; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.name || modelData.id; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        Text { text: String(modelData.readiness) + "%"; color: page.readinessColor(Number(modelData.readiness)); font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                                        Text { text: String(modelData.readiness) + "%"; color: page.readinessColor(Number(modelData.readiness)); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                         Item { Layout.fillWidth: true }
-                                        Text { text: String(modelData.state); color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                        Text { text: String(modelData.state); color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                     }
                                     Rectangle {
                                         Layout.fillWidth: true
@@ -330,7 +330,7 @@ Item {
                                         radius: 2
                                         Rectangle { width: parent.width * Math.max(0, Math.min(1, Number(modelData.readiness)/100)); height: parent.height; radius: 2; color: page.readinessColor(Number(modelData.readiness)) }
                                     }
-                                    Text { text: (cockpit.rtl ? "طاقم " : "CREW ") + modelData.crewReady + "/" + modelData.crewRequired + "  •  " + modelData.hoursToInspection + "h"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: (cockpit.rtl ? "طاقم " : "CREW ") + modelData.crewReady + "/" + modelData.crewRequired + "  •  " + modelData.hoursToInspection + "h"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                                 }
                             }
                         }
@@ -350,15 +350,15 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 5
                 spacing: 6
-                Text { text: "AEGIS C-UAS"; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "AIR OPS EXCHANGE"; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "AVIONICS LAB"; color: Theme.skyBlue; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
-                Text { text: "→"; color: Theme.muted; font.pixelSize: 6 }
-                Text { text: "READINESS OPS"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 5; font.bold: true }
+                Text { text: "AEGIS C-UAS"; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.muted; font.pixelSize: 10 }
+                Text { text: "AIR OPS EXCHANGE"; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.muted; font.pixelSize: 10 }
+                Text { text: "AVIONICS LAB"; color: Theme.skyBlue; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.muted; font.pixelSize: 10 }
+                Text { text: "READINESS OPS"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                 Item { Layout.fillWidth: true }
-                Text { text: cockpit.rtl ? "تدريب • محاكاة • تحليل • لا تحكم حي" : "TRAINING • SIMULATION • ANALYSIS • NO LIVE CONTROL"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 5 }
+                Text { text: cockpit.rtl ? "تدريب • محاكاة • تحليل • لا تحكم حي" : "TRAINING • SIMULATION • ANALYSIS • NO LIVE CONTROL"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
             }
         }
     }

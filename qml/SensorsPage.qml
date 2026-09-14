@@ -18,7 +18,7 @@ Item {
             Rectangle { Layout.fillWidth:true; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:10; spacing:1
                     Text { text:cockpit.rtl?"وحدة هندسة الحساسات":"SENSOR ENGINEERING CONSOLE"; color:Theme.platinum; font.pixelSize:18; font.bold:true }
-                    Text { text:cockpit.rtl?"جودة القنوات، النطاق، الاتجاه، وأدلة القياس":"CHANNEL QUALITY / RANGE / TREND / EVIDENCE"; color:Theme.muted; font.pixelSize:8 }
+                    Text { text:cockpit.rtl?"جودة القنوات، النطاق، الاتجاه، وأدلة القياس":"CHANNEL QUALITY / RANGE / TREND / EVIDENCE"; color:Theme.muted; font.pixelSize: 10 }
                 }
             }
             StatusCard { Layout.preferredWidth:190; Layout.fillHeight:true; title:"VALID CHANNELS"; value:page.validCount()+" / "+cockpit.sensorCount; subtitle:"DATA QUALITY"; iconText:"CH"; accent:Theme.accent }
@@ -31,7 +31,7 @@ Item {
                 ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:4
                     RowLayout { Layout.fillWidth:true
                         Text { text:cockpit.rtl?"فهرس القنوات":"CHANNEL INDEX"; color:Theme.platinum; font.pixelSize:10; font.bold:true; Layout.fillWidth:true }
-                        Text { text:String(cockpit.sensorCount); color:Theme.accent; font.family:"Consolas"; font.pixelSize:8 }
+                        Text { text:String(cockpit.sensorCount); color:Theme.accent; font.family:"Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth:true; height:1; color:Theme.border }
                     ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.sensorRows; clip:true; spacing:1; currentIndex:page.selectedIndex
@@ -40,12 +40,12 @@ Item {
                             RowLayout { anchors.fill:parent; anchors.margins:7
                                 Rectangle { width:3; height:30; color:modelData.valid?Theme.accent:Theme.red }
                                 ColumnLayout { Layout.fillWidth:true; spacing:1
-                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize:9; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
-                                    Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
+                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize: 10; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
+                                    Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
                                 }
                                 ColumnLayout { Layout.preferredWidth:110; spacing:0
                                     Text { text:Number(modelData.value).toFixed(2)+" "+modelData.unit; color:modelData.valid?Theme.platinum:Theme.red; font.family:"Consolas"; font.pixelSize:10; font.bold:true; Layout.alignment:Qt.AlignRight }
-                                    Text { text:modelData.valid?"VALID":"INVALID"; color:modelData.valid?Theme.silver:Theme.red; font.family:"Consolas"; font.pixelSize:7; Layout.alignment:Qt.AlignRight }
+                                    Text { text:modelData.valid?"VALID":"INVALID"; color:modelData.valid?Theme.silver:Theme.red; font.family:"Consolas"; font.pixelSize: 10; Layout.alignment:Qt.AlignRight }
                                 }
                             }
                         }
@@ -58,11 +58,11 @@ Item {
                     RowLayout { anchors.fill:parent; anchors.margins:10
                         ColumnLayout { Layout.fillWidth:true; spacing:1
                             Text { text:page.selectedSensor().label; color:Theme.platinum; font.pixelSize:12; font.bold:true }
-                            Text { text:page.selectedSensor().id.toUpperCase(); color:Theme.muted; font.family:"Consolas"; font.pixelSize:8 }
+                            Text { text:page.selectedSensor().id.toUpperCase(); color:Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
                         }
                         Text { text:Number(page.selectedSensor().value).toFixed(3)+" "+page.selectedSensor().unit; color:page.selectedSensor().valid?Theme.accent:Theme.red; font.family:"Consolas"; font.pixelSize:27; font.bold:true }
                         ColumnLayout { Layout.preferredWidth:120; spacing:1
-                            Text { text:"QUALITY"; color:Theme.muted; font.pixelSize:7 }
+                            Text { text:"QUALITY"; color:Theme.muted; font.pixelSize: 10 }
                             Text { text:Number(page.trendFor(page.selectedSensor().id).quality).toFixed(1)+"%"; color:page.qColor(page.trendFor(page.selectedSensor().id).quality); font.family:"Consolas"; font.pixelSize:17; font.bold:true }
                         }
                     }
@@ -70,8 +70,8 @@ Item {
                 Rectangle { Layout.fillWidth:true; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                     ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:4
                         RowLayout { Layout.fillWidth:true
-                            Text { text:cockpit.rtl?"النطاق المسجل للقناة":"RECORDED CHANNEL SCOPE"; color:Theme.platinum; font.pixelSize:9; font.bold:true; Layout.fillWidth:true }
-                            Text { text:"SAMPLES "+page.trendFor(page.selectedSensor().id).valid; color:Theme.accent; font.family:"Consolas"; font.pixelSize:8 }
+                            Text { text:cockpit.rtl?"النطاق المسجل للقناة":"RECORDED CHANNEL SCOPE"; color:Theme.platinum; font.pixelSize: 10; font.bold:true; Layout.fillWidth:true }
+                            Text { text:"SAMPLES "+page.trendFor(page.selectedSensor().id).valid; color:Theme.accent; font.family:"Consolas"; font.pixelSize: 10 }
                         }
                         TelemetryPlot { Layout.fillWidth:true; Layout.fillHeight:true; series:[page.seriesFor(page.selectedSensor().id)] }
                     }
@@ -93,15 +93,15 @@ Item {
                     Text { text:cockpit.rtl?"مصفوفة جودة البيانات":"DATA QUALITY MATRIX"; color:Theme.platinum; font.pixelSize:10; font.bold:true }
                     Rectangle { Layout.fillWidth:true; height:1; color:Theme.border }
                     RowLayout { Layout.fillWidth:true; Layout.preferredHeight:22
-                        Text { text:"CHANNEL"; color:Theme.muted; font.pixelSize:7; Layout.fillWidth:true }
-                        Text { text:"QUALITY"; color:Theme.muted; font.pixelSize:7; Layout.preferredWidth:65; horizontalAlignment:Text.AlignRight }
+                        Text { text:"CHANNEL"; color:Theme.muted; font.pixelSize: 10; Layout.fillWidth:true }
+                        Text { text:"QUALITY"; color:Theme.muted; font.pixelSize: 10; Layout.preferredWidth:65; horizontalAlignment:Text.AlignRight }
                     }
                     ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.trendRows; clip:true; spacing:1
                         delegate: Rectangle { required property int index; required property var modelData; width:ListView.view.width; height:46; color:index%2?Theme.panel2:Theme.panel
                             RowLayout { anchors.fill:parent; anchors.margins:6
                                 Rectangle { width:3; height:25; color:page.qColor(modelData.quality) }
-                                Text { text:modelData.label; color:Theme.platinum; font.pixelSize:8; Layout.fillWidth:true; elide:Text.ElideRight }
-                                Text { text:Number(modelData.quality).toFixed(1)+"%"; color:page.qColor(modelData.quality); font.family:"Consolas"; font.pixelSize:9; font.bold:true; Layout.preferredWidth:65; horizontalAlignment:Text.AlignRight }
+                                Text { text:modelData.label; color:Theme.platinum; font.pixelSize: 10; Layout.fillWidth:true; elide:Text.ElideRight }
+                                Text { text:Number(modelData.quality).toFixed(1)+"%"; color:page.qColor(modelData.quality); font.family:"Consolas"; font.pixelSize: 10; font.bold:true; Layout.preferredWidth:65; horizontalAlignment:Text.AlignRight }
                             }
                         }
                     }

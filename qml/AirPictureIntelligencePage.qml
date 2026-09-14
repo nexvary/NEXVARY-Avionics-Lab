@@ -71,7 +71,7 @@ Item {
                               ? "تتبّع عام للطائرات + AEGIS + رادار بصري + قياس RF سلبي + استعراض هندسي للطائرة"
                               : "PUBLIC FLIGHT FEED + AEGIS + VISUAL RADAR + PASSIVE RF + AIRCRAFT ENGINEERING EXPLORER"
                         color: Theme.signalCyan
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -90,7 +90,7 @@ Item {
                         Layout.preferredWidth: 128
                         Layout.fillHeight: true
                         color: Theme.panel2
-                        border.color: modelData.color
+                        border.color: Theme.border
                         border.width: 1
                         radius: Theme.radius
                         ColumnLayout {
@@ -100,7 +100,7 @@ Item {
                             Text {
                                 text: modelData.label
                                 color: Theme.muted
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                                 font.bold: true
                             }
                             Text {
@@ -148,7 +148,7 @@ Item {
                             text: "PUBLIC/CIVIL + AEGIS REPLAY"
                             color: Theme.signalCyan
                             font.family: "Consolas"
-                            font.pixelSize: 7
+                            font.pixelSize: 10
                             font.bold: true
                         }
                     }
@@ -156,8 +156,8 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        color: "#0A171B"
-                        border.color: Theme.deepBlue
+                        color: "#0A0A0A"
+                        border.color: Theme.border
                         border.width: 1
                         radius: Theme.radius
                         clip: true
@@ -170,7 +170,7 @@ Item {
                             onPaint: {
                                 var ctx = getContext("2d")
                                 ctx.clearRect(0, 0, width, height)
-                                ctx.strokeStyle = "#244A63"
+                                ctx.strokeStyle = "#665820"
                                 ctx.lineWidth = 1
                                 ctx.globalAlpha = 0.75
 
@@ -190,7 +190,8 @@ Item {
                                 var cx = width / 2
                                 var cy = height / 2
                                 var radius = Math.min(width, height) * 0.43
-                                ctx.strokeStyle = "#3B6C70"
+                                if (radius <= 0) return
+                                ctx.strokeStyle = "#665820"
                                 for (var ring = 1; ring <= 4; ++ring) {
                                     ctx.beginPath()
                                     ctx.arc(cx, cy, radius * ring / 4, 0, Math.PI * 2)
@@ -268,7 +269,7 @@ Item {
                                 x: page.worldX(modelData.longitude, parent.width) - width / 2
                                 y: page.worldY(modelData.latitude, parent.height) - height / 2
                                 color: modelData.threatLevel === "High" || modelData.threatLevel === "Critical" ? Theme.warmOrange : Theme.royalGold
-                                border.color: Theme.platinum
+                                border.color: Theme.border
                                 border.width: 1
                                 MouseArea {
                                     id: aegisArea
@@ -286,8 +287,8 @@ Item {
                             anchors.margins: 9
                             width: 238
                             height: 72
-                            color: "#B00C1319"
-                            border.color: Theme.deepBlue
+                            color: "#B0000000"
+                            border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
                             ColumnLayout {
@@ -297,7 +298,7 @@ Item {
                                 Text {
                                     text: cockpit.publicFlightFeedSource
                                     color: Theme.platinum
-                                    font.pixelSize: 8
+                                    font.pixelSize: 10
                                     font.bold: true
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
@@ -306,14 +307,14 @@ Item {
                                     text: cockpit.publicFlightFeedStatus
                                     color: Theme.signalCyan
                                     font.family: "Consolas"
-                                    font.pixelSize: 7
+                                    font.pixelSize: 10
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }
                                 Text {
                                     text: "AWARENESS / TRAINING — NO TARGETING"
                                     color: Theme.radarGreen
-                                    font.pixelSize: 6
+                                    font.pixelSize: 10
                                     font.bold: true
                                 }
                             }
@@ -326,11 +327,11 @@ Item {
                             anchors.margins: 8
                             spacing: 10
                             Rectangle { width: 8; height: 8; color: Theme.signalCyan }
-                            Text { text: "PUBLIC ADS-B"; color: Theme.silver; font.pixelSize: 6 }
+                            Text { text: "PUBLIC ADS-B"; color: Theme.silver; font.pixelSize: 10 }
                             Rectangle { width: 8; height: 8; radius: 4; color: Theme.royalGold }
-                            Text { text: "AEGIS REPLAY"; color: Theme.silver; font.pixelSize: 6 }
+                            Text { text: "AEGIS REPLAY"; color: Theme.silver; font.pixelSize: 10 }
                             Item { Layout.fillWidth: true }
-                            Text { text: "GLOBAL PROJECTION / VISUAL AWARENESS"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                            Text { text: "GLOBAL PROJECTION / VISUAL AWARENESS"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                     }
 
@@ -363,11 +364,11 @@ Item {
                                     anchors.margins: 7
                                     spacing: 1
                                     Text { text: modelData.callsign || modelData.icao24; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.icao24.toUpperCase() + "  /  " + modelData.country; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.icao24.toUpperCase() + "  /  " + modelData.country; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                                    Text { text: "ALT  " + Number(modelData.altitudeMeters).toFixed(0) + " m"; color: Theme.skyBlue; font.family: "Consolas"; font.pixelSize: 7 }
-                                    Text { text: "SPD  " + Number(modelData.velocityMetersPerSecond).toFixed(0) + " m/s"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 7 }
-                                    Text { text: "HDG  " + Number(modelData.headingDegrees).toFixed(0) + "°"; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 7 }
+                                    Text { text: "ALT  " + Number(modelData.altitudeMeters).toFixed(0) + " m"; color: Theme.skyBlue; font.family: "Consolas"; font.pixelSize: 10 }
+                                    Text { text: "SPD  " + Number(modelData.velocityMetersPerSecond).toFixed(0) + " m/s"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10 }
+                                    Text { text: "HDG  " + Number(modelData.headingDegrees).toFixed(0) + "°"; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 10 }
                                 }
                             }
                         }
@@ -384,7 +385,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 338
                     color: Theme.panel
-                    border.color: page.aircraftAccent(cockpit.activePlatformId)
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     clip: true
@@ -431,7 +432,7 @@ Item {
                                     contentItem: Text {
                                         text: parent.text
                                         color: cockpit.activePlatformId === modelData.id ? Theme.platinum : Theme.muted
-                                        font.pixelSize: 7
+                                        font.pixelSize: 10
                                         font.bold: true
                                         horizontalAlignment: Text.AlignHCenter
                                         verticalAlignment: Text.AlignVCenter
@@ -449,8 +450,8 @@ Item {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            color: "#101C24"
-                            border.color: Theme.deepBlue
+                            color: "#111111"
+                            border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
 
@@ -534,7 +535,7 @@ Item {
                                     }
 
                                     ctx.fillStyle = Theme.platinum
-                                    ctx.font = "bold 10px Consolas"
+                                    ctx.font = "700 10px monospace"
                                     ctx.fillText(cockpit.activePlatformName.toUpperCase(), 10, 18)
                                 }
 
@@ -550,17 +551,17 @@ Item {
                                 anchors.margins: 8
                                 width: 170
                                 height: 54
-                                color: "#B00C1319"
-                                border.color: page.aircraftAccent(cockpit.activePlatformId)
+                                color: "#B0000000"
+                                border.color: Theme.border
                                 border.width: 1
                                 radius: Theme.radius
                                 ColumnLayout {
                                     anchors.fill: parent
                                     anchors.margins: 6
                                     spacing: 0
-                                    Text { text: cockpit.activePlatformCategory; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: cockpit.activePlatformPropulsion; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: "DX " + cockpit.diagnosticHealthScore + "%  •  TWIN " + cockpit.twinNominalCount; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    Text { text: cockpit.activePlatformCategory; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: cockpit.activePlatformPropulsion; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: "DX " + cockpit.diagnosticHealthScore + "%  •  TWIN " + cockpit.twinNominalCount; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -570,7 +571,7 @@ Item {
                                   ? "الرسم الهندسي مدمج الآن؛ صور الطائرات المرخّصة ونماذج 3D ستستخدم نفس مساحة العرض."
                                   : "ENGINEERING RENDER ACTIVE — LICENSED AIRCRAFT PHOTOS / 3D ASSETS USE THE SAME VIEWPORT."
                             color: Theme.muted
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                         }
@@ -581,7 +582,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: Theme.panel
-                    border.color: Theme.rfViolet
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     clip: true
@@ -604,7 +605,7 @@ Item {
                                 text: Number(cockpit.rfPeakFrequencyMhz).toFixed(1) + " MHz"
                                 color: Theme.rfViolet
                                 font.family: "Consolas"
-                                font.pixelSize: 9
+                                font.pixelSize: 10
                                 font.bold: true
                             }
                         }
@@ -612,7 +613,7 @@ Item {
                         Rectangle {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            color: "#111724"
+                            color: "#151515"
                             border.color: Theme.borderSoft
                             border.width: 1
                             radius: Theme.radius
@@ -645,7 +646,7 @@ Item {
                                 text: "-30 dBm"
                                 color: Theme.muted
                                 font.family: "Consolas"
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                             }
                             Text {
                                 anchors.left: parent.left
@@ -654,20 +655,20 @@ Item {
                                 text: "-110 dBm"
                                 color: Theme.muted
                                 font.family: "Consolas"
-                                font.pixelSize: 6
+                                font.pixelSize: 10
                             }
                         }
 
                         RowLayout {
                             Layout.fillWidth: true
-                            Text { text: cockpit.rfSpectrumMode; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                            Text { text: cockpit.rfSpectrumMode; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                             Item { Layout.fillWidth: true }
-                            Text { text: Number(cockpit.rfPeakLevelDbm).toFixed(1) + " dBm PEAK"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 6 }
+                            Text { text: Number(cockpit.rfPeakLevelDbm).toFixed(1) + " dBm PEAK"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                         Text {
                             text: cockpit.rtl ? "استقبال/عرض سلبي فقط — لا إرسال، لا تشويش، لا تحكم." : "RECEIVE / VISUALIZE ONLY — NO TRANSMIT, JAMMING OR CONTROL."
                             color: Theme.radarGreen
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                             font.bold: true
                             Layout.fillWidth: true
                         }
@@ -692,8 +693,8 @@ Item {
                 ColumnLayout {
                     Layout.preferredWidth: 205
                     spacing: 0
-                    Text { text: "PUBLIC FLIGHT API"; color: Theme.platinum; font.pixelSize: 8; font.bold: true }
-                    Text { text: "HTTPS / OPEN DATA / CIVIL AWARENESS"; color: Theme.signalCyan; font.pixelSize: 6; font.bold: true }
+                    Text { text: "PUBLIC FLIGHT API"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                    Text { text: "HTTPS / OPEN DATA / CIVIL AWARENESS"; color: Theme.signalCyan; font.pixelSize: 10; font.bold: true }
                 }
 
                 TextField {
@@ -704,7 +705,7 @@ Item {
                     text: "https://opensky-network.org/api/states/all"
                     color: Theme.platinum
                     font.family: "Consolas"
-                    font.pixelSize: 8
+                    font.pixelSize: 10
                     selectByMouse: true
                     background: Rectangle {
                         color: Theme.panel2
@@ -722,7 +723,7 @@ Item {
                     contentItem: Text {
                         text: parent.text
                         color: Theme.platinum
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -743,7 +744,7 @@ Item {
                     contentItem: Text {
                         text: parent.text
                         color: Theme.platinum
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -760,7 +761,7 @@ Item {
                     Layout.preferredWidth: 230
                     Layout.preferredHeight: 34
                     color: Theme.panel2
-                    border.color: Theme.radarGreen
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     Text {
@@ -769,7 +770,7 @@ Item {
                         text: cockpit.publicFlightFeedStatus
                         color: Theme.radarGreen
                         font.family: "Consolas"
-                        font.pixelSize: 6
+                        font.pixelSize: 10
                         font.bold: true
                         horizontalAlignment: Text.AlignHCenter
                         elide: Text.ElideRight

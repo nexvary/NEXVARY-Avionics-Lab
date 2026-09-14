@@ -5,7 +5,7 @@ import "Theme.js" as Theme
 
 Item {
     id: page
-    function colorFor(i) { return ["#6A88A0", "#8FA5B5", "#9E9B98", "#738A9A"][i % 4] }
+    function colorFor(i) { return ["#D4AF37", "#9E9B98", "#9E9B98", "#9E9B98"][i % 4] }
 
     ColumnLayout {
         anchors.fill: parent
@@ -32,9 +32,9 @@ Item {
                         Layout.fillWidth: true
                         spacing: 1
                         Text { text: cockpit.rtl ? "منضدة التحليل الهندسي" : "ENGINEERING WORKBENCH"; color: Theme.platinum; font.pixelSize: 17; font.bold: true }
-                        Text { text: cockpit.rtl ? "تحليل القياسات والاتجاهات متعددة القنوات" : "TELEMETRY ANALYSIS / MULTI-CHANNEL TRENDS"; color: Theme.muted; font.pixelSize: 8 }
+                        Text { text: cockpit.rtl ? "تحليل القياسات والاتجاهات متعددة القنوات" : "TELEMETRY ANALYSIS / MULTI-CHANNEL TRENDS"; color: Theme.muted; font.pixelSize: 10 }
                     }
-                    Text { text: "LIVE / SYNTHETIC"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                    Text { text: "LIVE / SYNTHETIC"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                 }
             }
 
@@ -48,7 +48,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 8
                     spacing: 3
-                    Text { text: "TIME WINDOW"; color: Theme.muted; font.pixelSize: 7 }
+                    Text { text: "TIME WINDOW"; color: Theme.muted; font.pixelSize: 10 }
                     ComboBox {
                         id: w
                         model: [20, 60, 120, 0]
@@ -56,7 +56,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30
                         onActivated: cockpit.setTrendWindow(Number(currentText))
-                        contentItem: Text { text: w.displayText; color: Theme.platinum; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; font.family: "Consolas"; font.pixelSize: 9 }
+                        contentItem: Text { text: w.displayText; color: Theme.platinum; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; font.family: "Consolas"; font.pixelSize: 10 }
                         background: Rectangle { color: Theme.panel2; radius: Theme.radius; border.color: Theme.border }
                     }
                 }
@@ -85,7 +85,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: "MULTI-CHANNEL TREND"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: cockpit.performanceSeries.length + " SERIES"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: cockpit.performanceSeries.length + " SERIES"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
                     TelemetryPlot { Layout.fillWidth: true; Layout.fillHeight: true; series: cockpit.performanceSeries }
@@ -94,7 +94,7 @@ Item {
                         Layout.minimumHeight: 22
                         Layout.preferredHeight: 22
                         Layout.maximumHeight: 22
-                        Text { text: "T-" + cockpit.trendWindow; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: "T-" + cockpit.trendWindow; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                         Item { Layout.fillWidth: true }
                         Repeater {
                             model: cockpit.performanceSeries
@@ -103,11 +103,11 @@ Item {
                                 required property var modelData
                                 spacing: 3
                                 Rectangle { width: 12; height: 2; color: page.colorFor(index) }
-                                Text { text: modelData.label; color: Theme.silver; font.pixelSize: 7 }
+                                Text { text: modelData.label; color: Theme.silver; font.pixelSize: 10 }
                             }
                         }
                         Item { Layout.fillWidth: true }
-                        Text { text: "T0"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: "T0"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                 }
             }
@@ -125,7 +125,7 @@ Item {
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: cockpit.rtl ? "مصفوفة القنوات" : "CHANNEL MATRIX"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                        Text { text: cockpit.trendRows.length + " CHANNELS"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8 }
+                        Text { text: cockpit.trendRows.length + " CHANNELS"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
                     RowLayout {
@@ -133,9 +133,9 @@ Item {
                         Layout.minimumHeight: 22
                         Layout.preferredHeight: 22
                         Layout.maximumHeight: 22
-                        Text { text: "CHANNEL"; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true }
-                        Text { text: "LATEST"; color: Theme.muted; font.pixelSize: 7; Layout.preferredWidth: 74; horizontalAlignment: Text.AlignRight }
-                        Text { text: "QUALITY"; color: Theme.muted; font.pixelSize: 7; Layout.preferredWidth: 62; horizontalAlignment: Text.AlignRight }
+                        Text { text: "CHANNEL"; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true }
+                        Text { text: "LATEST"; color: Theme.muted; font.pixelSize: 10; Layout.preferredWidth: 74; horizontalAlignment: Text.AlignRight }
+                        Text { text: "QUALITY"; color: Theme.muted; font.pixelSize: 10; Layout.preferredWidth: 62; horizontalAlignment: Text.AlignRight }
                     }
                     ListView {
                         Layout.fillWidth: true
@@ -157,11 +157,11 @@ Item {
                                 ColumnLayout {
                                     Layout.fillWidth: true
                                     spacing: 0
-                                    Text { text: modelData.label; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: "MIN " + Number(modelData.minimum).toFixed(2) + "  MEAN " + Number(modelData.mean).toFixed(2) + "  MAX " + Number(modelData.maximum).toFixed(2); color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7 }
+                                    Text { text: modelData.label; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: "MIN " + Number(modelData.minimum).toFixed(2) + "  MEAN " + Number(modelData.mean).toFixed(2) + "  MAX " + Number(modelData.maximum).toFixed(2); color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                                 }
                                 Text { text: Number(modelData.latest).toFixed(2); color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 74; horizontalAlignment: Text.AlignRight }
-                                Text { text: Number(modelData.quality).toFixed(1) + "%"; color: modelData.quality >= 99 ? Theme.green : Theme.amber; font.family: "Consolas"; font.pixelSize: 8; Layout.preferredWidth: 62; horizontalAlignment: Text.AlignRight }
+                                Text { text: Number(modelData.quality).toFixed(1) + "%"; color: modelData.quality >= 99 ? Theme.green : Theme.amber; font.family: "Consolas"; font.pixelSize: 10; Layout.preferredWidth: 62; horizontalAlignment: Text.AlignRight }
                             }
                         }
                     }
@@ -186,7 +186,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 8
                     spacing: 4
-                    Text { text: "PRIMARY CHANNEL STATISTICS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
+                    Text { text: "PRIMARY CHANNEL STATISTICS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                     GridLayout {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -223,12 +223,12 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 8
                     spacing: 4
-                    Text { text: "RUN CONTEXT"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
-                    Text { text: "SCENARIO   " + cockpit.scenario.toUpperCase(); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
-                    Text { text: "TICK       " + cockpit.tick + "     FRAMES  " + cockpit.recordedFrames; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
-                    Text { text: "WINDOW     " + cockpit.trendWindow + "     ALERTS  " + cockpit.activeAlertCount; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
+                    Text { text: "RUN CONTEXT"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                    Text { text: "SCENARIO   " + cockpit.scenario.toUpperCase(); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
+                    Text { text: "TICK       " + cockpit.tick + "     FRAMES  " + cockpit.recordedFrames; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
+                    Text { text: "WINDOW     " + cockpit.trendWindow + "     ALERTS  " + cockpit.activeAlertCount; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                     Item { Layout.fillHeight: true }
-                    Text { text: cockpit.rtl ? "بيانات تدريب ومحاكاة فقط" : "TRAINING / SIMULATION DATA ONLY"; color: Theme.muted; font.pixelSize: 7 }
+                    Text { text: cockpit.rtl ? "بيانات تدريب ومحاكاة فقط" : "TRAINING / SIMULATION DATA ONLY"; color: Theme.muted; font.pixelSize: 10 }
                 }
             }
         }

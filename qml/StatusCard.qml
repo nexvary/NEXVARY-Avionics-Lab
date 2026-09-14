@@ -43,7 +43,7 @@ Rectangle {
             Text {
                 text: card.title.toUpperCase()
                 color: Theme.silver
-                font.pixelSize: 8
+                font.pixelSize: 10
                 font.bold: true
                 font.letterSpacing: 0.9
                 Layout.fillWidth: true
@@ -62,7 +62,7 @@ Rectangle {
         Text {
             text: card.subtitle
             color: Theme.muted
-            font.pixelSize: 8
+            font.pixelSize: 10
             Layout.fillWidth: true
             elide: Text.ElideRight
         }

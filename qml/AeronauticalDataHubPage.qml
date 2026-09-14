@@ -53,7 +53,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "فهرسة طبقات المجال الجوي والمطارات والمساعدات الملاحية ومصادر الحركة العامة" : "CATALOG, PROVENANCE AND LAYER HEALTH FOR AIRSPACE, AERODROMES, NAVAIDS AND PUBLIC TRAFFIC"
                         color: Theme.signalCyan
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -64,15 +64,15 @@ Item {
                     Layout.preferredWidth: 250
                     Layout.preferredHeight: 46
                     color: Theme.panel2
-                    border.color: Theme.radarGreen
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 7
                         spacing: 1
-                        Text { text: "DATASET HEALTH  •  READY"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-                        Text { text: "SYNTHETIC / TRAINING PROVENANCE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text { text: "DATASET HEALTH  •  READY"; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text { text: "SYNTHETIC / TRAINING PROVENANCE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
                     }
                 }
             }
@@ -94,16 +94,16 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: Theme.panel
-                    border.color: modelData.color
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 2
-                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true }
+                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
                         Text { text: String(modelData.value); color: modelData.color; font.family: "Consolas"; font.pixelSize: 22; font.bold: true }
-                        Text { text: "INDEXED / AVAILABLE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                        Text { text: "INDEXED / AVAILABLE"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                     }
                 }
             }
@@ -134,7 +134,7 @@ Item {
                             Layout.preferredWidth: 220
                             placeholderText: cockpit.rtl ? "بحث" : "FILTER"
                             color: Theme.platinum
-                            font.pixelSize: 8
+                            font.pixelSize: 10
                             background: Rectangle { color: Theme.panel2; border.color: Theme.borderSoft; border.width: 1; radius: Theme.radius }
                             onTextChanged: page.filterText = text
                         }
@@ -159,7 +159,7 @@ Item {
                                     anchors.centerIn: parent
                                     spacing: 1
                                     Text { text: modelData; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 13; font.bold: true; Layout.alignment: Qt.AlignHCenter }
-                                    Text { text: String(page.classCount(modelData)); color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7; Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: String(page.classCount(modelData)); color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.alignment: Qt.AlignHCenter }
                                 }
                             }
                         }
@@ -177,7 +177,7 @@ Item {
                             height: page.matches(modelData.name) || page.matches(modelData.id) || page.matches(modelData.classCode) ? 58 : 0
                             visible: height > 0
                             color: Theme.panel2
-                            border.color: modelData.controlled ? Theme.signalCyan : Theme.radarGreen
+                            border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
                             RowLayout {
@@ -187,17 +187,17 @@ Item {
                                 Rectangle {
                                     width: 34; height: 34; radius: 17
                                     color: Theme.panel3
-                                    border.color: modelData.controlled ? Theme.signalCyan : Theme.radarGreen
+                                    border.color: Theme.border
                                     border.width: 1
                                     Text { anchors.centerIn: parent; text: modelData.classCode; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 12; font.bold: true }
                                 }
                                 ColumnLayout {
                                     Layout.fillWidth: true
                                     spacing: 1
-                                    Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.floor + " → " + modelData.ceiling + "  •  " + (modelData.controlled ? AirspaceLocale.controlled(cockpit.language) : AirspaceLocale.uncontrolled(cockpit.language)); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
+                                    Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.floor + " → " + modelData.ceiling + "  •  " + (modelData.controlled ? AirspaceLocale.controlled(cockpit.language) : AirspaceLocale.uncontrolled(cockpit.language)); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                                 }
-                                Text { text: modelData.id; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                                Text { text: modelData.id; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                             }
                         }
                     }
@@ -234,8 +234,8 @@ Item {
                                 RowLayout {
                                     anchors.fill: parent
                                     anchors.margins: 5
-                                    Text { text: modelData.code; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 7; font.bold: true; Layout.preferredWidth: 46 }
-                                    Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 7; Layout.fillWidth: true }
+                                    Text { text: modelData.code; color: Theme.royalGold; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 46 }
+                                    Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; Layout.fillWidth: true }
                                 }
                             }
                         }
@@ -246,7 +246,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 170
                     color: Theme.panel
-                    border.color: Theme.rfViolet
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
@@ -260,8 +260,8 @@ Item {
                             delegate: RowLayout {
                                 required property var modelData
                                 Layout.fillWidth: true
-                                Text { text: modelData.code; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 7; font.bold: true; Layout.preferredWidth: 74 }
-                                Text { text: modelData.type; color: Theme.silver; font.pixelSize: 7; Layout.fillWidth: true }
+                                Text { text: modelData.code; color: Theme.rfViolet; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 74 }
+                                Text { text: modelData.type; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true }
                             }
                         }
                     }
@@ -280,11 +280,11 @@ Item {
                         spacing: 5
                         Text { text: cockpit.rtl ? "المصدر والتدقيق" : "PROVENANCE & AUDIT"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                        Text { text: "AIRSPACE: SYNTHETIC TRAINING DATASET"; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 7 }
-                        Text { text: "TRAFFIC: " + cockpit.publicFlightFeedSource; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 7 }
-                        Text { text: cockpit.publicFlightFeedStatus; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                        Text { text: "AIRSPACE: SYNTHETIC TRAINING DATASET"; color: Theme.signalCyan; font.family: "Consolas"; font.pixelSize: 10 }
+                        Text { text: "TRAFFIC: " + cockpit.publicFlightFeedSource; color: Theme.radarGreen; font.family: "Consolas"; font.pixelSize: 10 }
+                        Text { text: cockpit.publicFlightFeedStatus; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         Item { Layout.fillHeight: true }
-                        Text { text: AirspaceLocale.notForNavigation(cockpit.language); color: Theme.warmOrange; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text { text: AirspaceLocale.notForNavigation(cockpit.language); color: Theme.warmOrange; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
                     }
                 }
             }

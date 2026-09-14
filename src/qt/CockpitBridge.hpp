@@ -5,6 +5,7 @@
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
 #include "diagnostics/DiagnosticTypes.hpp"
+#include "data/DataSourceRegistry.hpp"
 #include "force/ForceManagement.hpp"
 #include "hmi/CockpitViewModel.hpp"
 #include "hmi/UiLocale.hpp"
@@ -61,6 +62,8 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList forceTrainingRows READ forceTrainingRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList forceMaintenancePlanRows READ forceMaintenancePlanRows NOTIFY dataChanged)
     Q_PROPERTY(QVariantList forceExecutiveReports READ forceExecutiveReports NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList forceCrewRows READ forceCrewRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList dataSourceRows READ dataSourceRows NOTIFY dataChanged)
     Q_PROPERTY(int forceAvailableBaseCount READ forceAvailableBaseCount NOTIFY dataChanged)
     Q_PROPERTY(int forceAssignedPlatformCount READ forceAssignedPlatformCount NOTIFY dataChanged)
     Q_PROPERTY(int forceReadyPlatformCount READ forceReadyPlatformCount NOTIFY dataChanged)
@@ -146,6 +149,8 @@ public:
     QVariantList forceTrainingRows() const;
     QVariantList forceMaintenancePlanRows() const;
     QVariantList forceExecutiveReports() const;
+    QVariantList forceCrewRows() const;
+    QVariantList dataSourceRows() const;
     int forceAvailableBaseCount() const noexcept;
     int forceAssignedPlatformCount() const noexcept;
     int forceReadyPlatformCount() const noexcept;
@@ -237,6 +242,7 @@ private:
     AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
     PublicFlightFeed publicFlightFeed_{PublicFlightFeed::demo()};
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
+    DataSourceRegistry dataSources_{DataSourceRegistry::operationalDefaults()};
     QNetworkAccessManager* publicFlightNetwork_{nullptr};
     QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
     QString publicFlightFeedStatus_{QStringLiteral("DEMO / PUBLIC-FEED READY")};

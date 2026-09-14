@@ -70,37 +70,30 @@ jobs:
         run: cmake --build build-qt --config Release
       - name: Run tests with Qt configuration
         run: ctest --test-dir build-qt --output-on-failure
-      - name: Back navigation functional smoke test
-        env:
-          QT_QPA_PLATFORM: offscreen
-          QT_QUICK_BACKEND: software
-        run: ./build-qt/nexvary_avionics_hmi --navigation-smoke --language ar
-      - name: Headless QML smoke test - all locales
-        env:
-          QT_QPA_PLATFORM: offscreen
-          QT_QUICK_BACKEND: software
-        run: |
-          for lang in ar en tr es de it fr ur fa ru; do
-            ./build-qt/nexvary_avionics_hmi --smoke --language "$lang"
-          done
-      - name: Capture Stage 1920 readability and Kufi UI release gate
+      - name: QML runtime, route, back-stack, RTL and ten-locale gate
+        run: python scripts/qml_runtime_gate.py ./build-qt/nexvary_avionics_hmi
+      - name: Capture Stage 1950 command UI release gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-operations-center-en-1920x1080.png --page 0 --language en --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-operations-center-ar-1920x1080.png --page 0 --language ar --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-operations-center-ar-2560x1440.png --page 0 --language ar --aircraft-profile generic-uav --width 2560 --height 1440
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-air-force-management-ar.png --page 12 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1920-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-command-overview-en-1920x1080.png --page 0 --language en --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-command-overview-ar-1920x1080.png --page 0 --language ar --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-command-overview-ar-2560x1440.png --page 0 --language ar --aircraft-profile generic-uav --width 2560 --height 1440
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-aircraft-visual-en.png --page 11 --air-ops-workspace 4 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-force-fleet-ar.png --page 12 --force-workspace 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-bases-airfields-en.png --page 12 --force-workspace 2 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-cuas-detection-en.png --page 11 --air-ops-workspace 5 --cuas-section 0 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-data-sources-en.png --page 15 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1950-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
           for lang in ar en tr es de it fr ur fa ru; do
-            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1920-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
+            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1950-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
           done
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1920-readable-kufi-ui-release-gate
-          path: build-qt/stage1920-*.png
+          name: nexvary-avionics-stage1950-command-ui-release-gate
+          path: build-qt/stage1950-*.png
           if-no-files-found: error

@@ -12,7 +12,7 @@ Button {
 
     contentItem: Text {
         text: control.text
-        color: control.enabled ? (control.checked ? Theme.platinum : Theme.silver) : "#58636B"
+        color: control.enabled ? (control.checked ? Theme.platinum : Theme.silver) : "#8E8E8E"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
@@ -22,8 +22,17 @@ Button {
     background: Rectangle {
         radius: Theme.radius
         color: control.down ? Theme.elevated : (control.hovered ? Theme.panel3 : Theme.panel)
-        border.width: control.checked ? 1 : 1
+        border.width: control.checked ? Theme.activeFrameWidth : Theme.frameWidth
         border.color: control.checked ? control.accent : Theme.border
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: -2
+            radius: parent.radius + 2
+            color: "transparent"
+            border.color: Theme.goldGlow
+            border.width: 1
+            visible: control.checked
+        }
         Rectangle {
             visible: control.checked
             height: 2

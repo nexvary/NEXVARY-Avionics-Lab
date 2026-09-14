@@ -7,6 +7,7 @@ import "AirForceManagementLocale.js" as ForceLocale
 Item {
     id: page
     clip: true
+    property int selectedWorkspace: 0
 
     function stateColor(state) {
         var s = String(state || "").toUpperCase()
@@ -55,7 +56,7 @@ Item {
                     Text {
                         text: ForceLocale.subtitle(cockpit.language)
                         color: Theme.accent
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -67,7 +68,7 @@ Item {
                     Layout.preferredWidth: 310
                     Layout.fillHeight: true
                     color: Theme.panel2
-                    border.color: page.scoreColor(cockpit.forceFleetReadinessPercent)
+                    border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
@@ -77,7 +78,7 @@ Item {
                         Text {
                             text: cockpit.rtl ? "حالة القوة التدريبية" : "TRAINING FORCE STATE"
                             color: Theme.silver
-                            font.pixelSize: 7
+                            font.pixelSize: 10
                             font.bold: true
                         }
                         Text {
@@ -91,7 +92,7 @@ Item {
                             text: "OFFLINE • SYNTHETIC • TRAINING"
                             color: Theme.muted
                             font.family: "Consolas"
-                            font.pixelSize: 6
+                            font.pixelSize: 10
                         }
                     }
                 }
@@ -203,19 +204,19 @@ Item {
                                     Layout.fillWidth: true
                                     Layout.fillHeight: true
                                     color: Theme.panel2
-                                    border.color: page.stateColor(modelData.state)
+                                    border.color: Theme.border
                                     border.width: 1
                                     radius: Theme.radius
                                     ColumnLayout {
                                         anchors.fill: parent
                                         anchors.margins: 7
                                         spacing: 2
-                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.code + " • " + modelData.region; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.code + " • " + modelData.region; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                                        Text { text: modelData.state; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
-                                        Text { text: modelData.weather; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.runway; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.state; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                                        Text { text: modelData.weather; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.runway; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                                     }
                                 }
                             }
@@ -250,7 +251,7 @@ Item {
                                 width: ListView.view.width
                                 height: 58
                                 color: index % 2 ? Theme.panel2 : Theme.panel3
-                                border.color: page.stateColor(modelData.state)
+                                border.color: Theme.border
                                 border.width: 1
                                 radius: Theme.radius
                                 RowLayout {
@@ -261,16 +262,16 @@ Item {
                                     ColumnLayout {
                                         Layout.preferredWidth: 180
                                         spacing: 0
-                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 7; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.platform; color: Theme.muted; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.name; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.platform; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                                     }
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 2
                                         RowLayout {
                                             Layout.fillWidth: true
-                                            Text { text: cockpit.rtl ? "الجاهزية" : "READINESS"; color: Theme.muted; font.pixelSize: 6; Layout.fillWidth: true }
-                                            Text { text: modelData.ready + " / " + modelData.assigned; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                                            Text { text: cockpit.rtl ? "الجاهزية" : "READINESS"; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true }
+                                            Text { text: modelData.ready + " / " + modelData.assigned; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                         }
                                         Rectangle {
                                             Layout.fillWidth: true
@@ -285,7 +286,7 @@ Item {
                                             }
                                         }
                                     }
-                                    Text { text: modelData.state; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    Text { text: modelData.state; color: page.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -328,10 +329,10 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: 5
                                     spacing: 6
-                                    Text { text: modelData.time; color: Theme.gold; font.family: "Consolas"; font.pixelSize: 7; font.bold: true; Layout.preferredWidth: 48 }
-                                    Text { text: modelData.group; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.preferredWidth: 82 }
-                                    Text { text: modelData.item; color: Theme.silver; font.pixelSize: 7; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    Text { text: modelData.time; color: Theme.gold; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 48 }
+                                    Text { text: modelData.group; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 82 }
+                                    Text { text: modelData.item; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -371,12 +372,12 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: 5
                                     spacing: 6
-                                    Text { text: modelData.priority; color: modelData.priority === "P2" ? Theme.amber : Theme.accent; font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    Text { text: modelData.priority; color: modelData.priority === "P2" ? Theme.amber : Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 0
-                                        Text { text: modelData.platform + " / " + modelData.item; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.due; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                                        Text { text: modelData.platform + " / " + modelData.item; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.due; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                                     }
                                 }
                             }
@@ -409,7 +410,7 @@ Item {
                                 required property var modelData
                                 Layout.fillWidth: true
                                 spacing: 5
-                                Text { text: modelData.role; color: Theme.silver; font.pixelSize: 6; Layout.preferredWidth: 120; elide: Text.ElideRight }
+                                Text { text: modelData.role; color: Theme.silver; font.pixelSize: 10; Layout.preferredWidth: 120; elide: Text.ElideRight }
                                 Rectangle {
                                     Layout.fillWidth: true
                                     height: 7
@@ -417,7 +418,7 @@ Item {
                                     radius: 3
                                     Rectangle { width: parent.width * modelData.score / 100; height: parent.height; color: page.scoreColor(modelData.score); radius: 3 }
                                 }
-                                Text { text: modelData.ready; color: page.scoreColor(modelData.score); font.family: "Consolas"; font.pixelSize: 6; font.bold: true; Layout.preferredWidth: 48 }
+                                Text { text: modelData.ready; color: page.scoreColor(modelData.score); font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.preferredWidth: 48 }
                             }
                         }
                     }
@@ -449,7 +450,7 @@ Item {
                                 width: ListView.view.width
                                 height: 52
                                 color: index % 2 ? Theme.panel2 : Theme.panel3
-                                border.color: page.stateColor(modelData.status)
+                                border.color: Theme.border
                                 border.width: 1
                                 radius: Theme.radius
                                 RowLayout {
@@ -459,10 +460,10 @@ Item {
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 0
-                                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 6; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Text { text: modelData.stamp; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 6 }
+                                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Text { text: modelData.stamp; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10 }
                                     }
-                                    Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: "Consolas"; font.pixelSize: 6; font.bold: true }
+                                    Text { text: modelData.status; color: page.stateColor(modelData.status); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                                 }
                             }
                         }
@@ -475,25 +476,25 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: 32
             color: Theme.panel2
-            border.color: Theme.green
+            border.color: Theme.border
             border.width: 1
             radius: Theme.radius
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 6
                 spacing: 7
-                Text { text: "AIRSPACE"; color: Theme.accent; font.pixelSize: 6; font.bold: true }
-                Text { text: "→"; color: Theme.silver; font.pixelSize: 8 }
-                Text { text: "AVIONICS"; color: Theme.platinum; font.pixelSize: 6; font.bold: true }
-                Text { text: "→"; color: Theme.silver; font.pixelSize: 8 }
-                Text { text: "READINESS"; color: Theme.gold; font.pixelSize: 6; font.bold: true }
-                Text { text: "→"; color: Theme.silver; font.pixelSize: 8 }
-                Text { text: "FORCE MANAGEMENT"; color: Theme.green; font.pixelSize: 6; font.bold: true }
+                Text { text: "AIRSPACE"; color: Theme.accent; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.silver; font.pixelSize: 10 }
+                Text { text: "AVIONICS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.silver; font.pixelSize: 10 }
+                Text { text: "READINESS"; color: Theme.gold; font.pixelSize: 10; font.bold: true }
+                Text { text: "→"; color: Theme.silver; font.pixelSize: 10 }
+                Text { text: "FORCE MANAGEMENT"; color: Theme.green; font.pixelSize: 10; font.bold: true }
                 Item { Layout.fillWidth: true }
                 Text {
                     text: cockpit.rtl ? "إدارة تدريبية وتحليلية فقط — لا تحكم حي ولا توجيه أسلحة" : "TRAINING / ANALYSIS ONLY • NO LIVE CONTROL • NO WEAPONS TASKING"
                     color: Theme.green
-                    font.pixelSize: 6
+                    font.pixelSize: 10
                     font.bold: true
                     elide: Text.ElideRight
                 }

@@ -152,7 +152,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "الروابط الرسمية — اضغط على أي رابط لفتحه" : "Official links — select any row to open it"
                         color: Theme.muted
-                        font.pixelSize: 9
+                        font.pixelSize: 10
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                     }
@@ -175,7 +175,7 @@ Item {
                                 spacing: 12
                                 Text { text: modelData.label; color: Theme.accent; font.pixelSize: 11; font.bold: true; Layout.preferredWidth: 105 }
                                 Text { text: modelData.value; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
-                                Text { text: cockpit.rtl ? "فتح ◀" : "OPEN ▶"; color: Theme.gold; font.pixelSize: 9; font.bold: true }
+                                Text { text: cockpit.rtl ? "فتح ◀" : "OPEN ▶"; color: Theme.gold; font.pixelSize: 10; font.bold: true }
                             }
                             MouseArea {
                                 id: linkMouse
@@ -201,7 +201,7 @@ Item {
                     anchors.margins: 14
                     Text { text: "NEXVARY AVIONICS LAB"; color: Theme.platinum; font.pixelSize: 12; font.bold: true }
                     Item { Layout.fillWidth: true }
-                    Text { text: "OFFLINE • SYNTHETIC • TRAINING • VERIFICATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 9; font.bold: true }
+                    Text { text: "OFFLINE • SYNTHETIC • TRAINING • VERIFICATION"; color: Theme.green; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                 }
             }
         }

@@ -12,7 +12,7 @@ Item {
             Rectangle { Layout.fillWidth:true; Layout.fillHeight:true; color:Theme.panel; border.color:Theme.border; radius:Theme.radius
                 ColumnLayout { anchors.fill:parent; anchors.margins:10; spacing:1
                     Text { text:cockpit.rtl?"مختبر الإعادة والارتباط الزمني":"REPLAY & TIME-CORRELATION LAB"; color:Theme.platinum; font.pixelSize:18; font.bold:true }
-                    Text { text:cockpit.rtl?"إعادة تشغيل القياسات والإطارات والأدلة على محور زمني واحد":"FRAME-SYNCHRONIZED TELEMETRY / VALUES / EVIDENCE"; color:Theme.muted; font.pixelSize:8 }
+                    Text { text:cockpit.rtl?"إعادة تشغيل القياسات والإطارات والأدلة على محور زمني واحد":"FRAME-SYNCHRONIZED TELEMETRY / VALUES / EVIDENCE"; color:Theme.muted; font.pixelSize: 10 }
                 }
             }
             StatusCard { Layout.preferredWidth:190; Layout.fillHeight:true; title:"REPLAY TIME"; value:cockpit.replayTime; subtitle:"SESSION CLOCK"; iconText:"TIM"; accent:Theme.accent }
@@ -27,7 +27,7 @@ Item {
                 MinisterialButton { text:cockpit.replayMode?(cockpit.replayPaused?(cockpit.rtl?"تشغيل":"PLAY"):(cockpit.rtl?"إيقاف مؤقت":"PAUSE")):(cockpit.rtl?"دخول الإعادة":"ENTER REPLAY"); accent:Theme.accent; onClicked:{ if(!cockpit.replayMode)cockpit.setReplayMode(true); else cockpit.setReplayPaused(!cockpit.replayPaused) } }
                 MinisterialButton { text:cockpit.rtl?"خروج":"EXIT"; enabled:cockpit.replayMode; onClicked:cockpit.setReplayMode(false) }
                 Rectangle { Layout.preferredWidth:170; Layout.preferredHeight:34; color:Theme.panel2; border.color:cockpit.replayMode?Theme.accent:Theme.border; radius:Theme.radius
-                    Text { anchors.centerIn:parent; text:cockpit.replayMode?(cockpit.replayPaused?"PAUSED / SCRUB":"PLAYING"):("LIVE BUFFER "+cockpit.recordedFrames); color:cockpit.replayMode?Theme.platinum:Theme.silver; font.family:"Consolas"; font.pixelSize:8; font.bold:true }
+                    Text { anchors.centerIn:parent; text:cockpit.replayMode?(cockpit.replayPaused?"PAUSED / SCRUB":"PLAYING"):("LIVE BUFFER "+cockpit.recordedFrames); color:cockpit.replayMode?Theme.platinum:Theme.silver; font.family:"Consolas"; font.pixelSize: 10; font.bold:true }
                 }
             }
         }
@@ -37,16 +37,16 @@ Item {
                 ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:4
                     RowLayout { Layout.fillWidth:true
                         Text { text:cockpit.rtl?"القياسات المتزامنة مع الإطار":"FRAME-SYNCHRONIZED TELEMETRY"; color:Theme.platinum; font.pixelSize:10; font.bold:true; Layout.fillWidth:true }
-                        Text { text:Math.round(page.progress()*100)+"%"; color:Theme.accent; font.family:"Consolas"; font.pixelSize:9 }
+                        Text { text:Math.round(page.progress()*100)+"%"; color:Theme.accent; font.family:"Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth:true; height:1; color:Theme.border }
                     TelemetryPlot { Layout.fillWidth:true; Layout.fillHeight:true; series:cockpit.performanceSeries; cursorRatio:page.progress(); cursorVisible:cockpit.replayMode }
                     RowLayout { Layout.fillWidth:true
-                        Text { text:"BUFFER START"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
+                        Text { text:"BUFFER START"; color:Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
                         Item { Layout.fillWidth:true }
-                        Text { text:cockpit.replayTime; color:Theme.platinum; font.family:"Consolas"; font.pixelSize:8 }
+                        Text { text:cockpit.replayTime; color:Theme.platinum; font.family:"Consolas"; font.pixelSize: 10 }
                         Item { Layout.fillWidth:true }
-                        Text { text:"BUFFER END"; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
+                        Text { text:"BUFFER END"; color:Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
                     }
                 }
             }
@@ -55,7 +55,7 @@ Item {
                 ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:4
                     RowLayout { Layout.fillWidth:true
                         Text { text:cockpit.rtl?"قيم الإطار الحالي":"CURRENT FRAME VALUES"; color:Theme.platinum; font.pixelSize:10; font.bold:true; Layout.fillWidth:true }
-                        Text { text:cockpit.tiles.length+" CHANNELS"; color:Theme.accent; font.family:"Consolas"; font.pixelSize:8 }
+                        Text { text:cockpit.tiles.length+" CHANNELS"; color:Theme.accent; font.family:"Consolas"; font.pixelSize: 10 }
                     }
                     Rectangle { Layout.fillWidth:true; height:1; color:Theme.border }
                     ListView { Layout.fillWidth:true; Layout.fillHeight:true; model:cockpit.tiles; clip:true; spacing:1
@@ -63,8 +63,8 @@ Item {
                             RowLayout { anchors.fill:parent; anchors.margins:6
                                 Rectangle { width:3; height:26; color:modelData.state==="NOMINAL"?Theme.accent:Theme.red }
                                 ColumnLayout { Layout.fillWidth:true; spacing:0
-                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize:8; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
-                                    Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize:7 }
+                                    Text { text:modelData.label; color:Theme.platinum; font.pixelSize: 10; font.bold:true; Layout.fillWidth:true; elide:Text.ElideRight }
+                                    Text { text:modelData.id; color:Theme.muted; font.family:"Consolas"; font.pixelSize: 10 }
                                 }
                                 Text { text:modelData.value; color:modelData.state==="NOMINAL"?Theme.platinum:Theme.red; font.family:"Consolas"; font.pixelSize:10; font.bold:true }
                             }
@@ -72,10 +72,10 @@ Item {
                     }
                     Rectangle { Layout.fillWidth:true; Layout.preferredHeight:84; color:Theme.panel2; border.color:Theme.border; radius:Theme.radius
                         ColumnLayout { anchors.fill:parent; anchors.margins:8; spacing:2
-                            Text { text:"REPLAY CONTEXT"; color:Theme.muted; font.pixelSize:7 }
-                            Text { text:"SCENARIO  "+cockpit.scenario.toUpperCase(); color:Theme.silver; font.family:"Consolas"; font.pixelSize:8 }
-                            Text { text:"RECORDED  "+cockpit.recordedFrames+" FRAMES"; color:Theme.silver; font.family:"Consolas"; font.pixelSize:8 }
-                            Text { text:cockpit.rtl?"محاكاة تدريبية فقط":"TRAINING / SIMULATION ONLY"; color:Theme.muted; font.pixelSize:7 }
+                            Text { text:"REPLAY CONTEXT"; color:Theme.muted; font.pixelSize: 10 }
+                            Text { text:"SCENARIO  "+cockpit.scenario.toUpperCase(); color:Theme.silver; font.family:"Consolas"; font.pixelSize: 10 }
+                            Text { text:"RECORDED  "+cockpit.recordedFrames+" FRAMES"; color:Theme.silver; font.family:"Consolas"; font.pixelSize: 10 }
+                            Text { text:cockpit.rtl?"محاكاة تدريبية فقط":"TRAINING / SIMULATION ONLY"; color:Theme.muted; font.pixelSize: 10 }
                         }
                     }
                 }

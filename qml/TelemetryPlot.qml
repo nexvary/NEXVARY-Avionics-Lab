@@ -10,13 +10,13 @@ Item {
     // Eight distinct engineering trace colors for the eight default telemetry series.
     // The broader UI remains navy/silver; these colors are reserved for data traces.
     property var colors: [
-        "#4EA7E0", // electric blue
-        "#55C7C2", // cyan / teal
-        "#D29A48", // amber
+        "#D4AF37", // electric blue
+        "#D4AF37", // cyan / teal
+        "#D4AF37", // amber
         "#6FB58A", // nominal green
-        "#9C7AD6", // diagnostic violet
-        "#B7C0C7", // metallic silver
-        "#C57C94", // restrained magenta
+        "#C9B458", // diagnostic violet
+        "#9E9B98", // metallic silver
+        "#C9B458", // restrained magenta
         "#8AAF68"  // olive green
     ]
 

@@ -12,6 +12,9 @@ QVariantList CockpitBridge::forceBases() const {
         row[QStringLiteral("name")] = QString::fromStdString(item.name);
         row[QStringLiteral("runway")] = QString::fromStdString(item.runwayState);
         row[QStringLiteral("weather")] = QString::fromStdString(item.weatherState);
+        row[QStringLiteral("state")] = QString::fromStdString(item.runwayState);
+        row[QStringLiteral("code")] = QString::fromStdString(item.id);
+        row[QStringLiteral("region")] = QStringLiteral("TRAINING REGION");
         row[QStringLiteral("supportPercent")] = item.supportPercent;
         rows.push_back(row);
     }
@@ -68,6 +71,76 @@ QVariantList CockpitBridge::forceExecutiveReports() const {
         row[QStringLiteral("title")] = QString::fromStdString(item.title);
         row[QStringLiteral("status")] = QString::fromStdString(item.status);
         row[QStringLiteral("stamp")] = QString::fromStdString(item.period);
+        rows.push_back(row);
+    }
+    return rows;
+}
+
+QVariantList CockpitBridge::forceCrewRows() const {
+    QVariantList rows;
+    for (const auto& item : forceManagement_.squadrons()) {
+        QVariantMap row;
+        row[QStringLiteral("id")] = QString::fromStdString(item.id);
+        row[QStringLiteral("role")] = QString::fromStdString(item.name);
+        row[QStringLiteral("ready")] = QStringLiteral("%1 / %2").arg(item.crewReady).arg(item.crewRequired);
+        row[QStringLiteral("readyCount")] = item.crewReady;
+        row[QStringLiteral("requiredCount")] = item.crewRequired;
+        row[QStringLiteral("score")] = item.crewRequired == 0 ? 0 : (item.crewReady * 100) / item.crewRequired;
+        rows.push_back(row);
+    }
+    return rows;
+}
+
+QVariantList CockpitBridge::dataSourceRows() const {
+    QVariantList rows;
+    for (const auto& source : dataSources_.sources()) {
+        QVariantMap row;
+        const QString id = QString::fromStdString(source.id);
+        row[QStringLiteral("id")] = id;
+        row[QStringLiteral("name")] = QString::fromStdString(source.displayName);
+        row[QStringLiteral("kind")] = QString::fromUtf8(toString(source.kind).data(), static_cast<qsizetype>(toString(source.kind).size()));
+        row[QStringLiteral("mode")] = QString::fromStdString(source.defaultMode);
+        row[QStringLiteral("boundary")] = QString::fromStdString(source.trustBoundary);
+        row[QStringLiteral("networkCapable")] = source.networkCapable;
+        row[QStringLiteral("readOnly")] = source.readOnly;
+        row[QStringLiteral("source")] = QStringLiteral("LOCAL / CONFIGURED");
+        row[QStringLiteral("health")] = QStringLiteral("NOMINAL");
+        row[QStringLiteral("freshness")] = QStringLiteral("FRESH");
+        row[QStringLiteral("lastUpdate")] = QStringLiteral("T+%1").arg(snapshot_.tick);
+        row[QStringLiteral("records")] = 0;
+
+        if (id == QStringLiteral("public-adsb")) {
+            row[QStringLiteral("source")] = publicFlightFeedSource();
+            row[QStringLiteral("mode")] = publicFlightFeedStatus();
+            row[QStringLiteral("records")] = publicFlightTrackCount();
+            if (publicFlightFeedStatus().contains(QStringLiteral("ERROR"), Qt::CaseInsensitive)
+                || publicFlightFeedStatus().contains(QStringLiteral("REJECTED"), Qt::CaseInsensitive)) {
+                row[QStringLiteral("health")] = QStringLiteral("DEGRADED");
+                row[QStringLiteral("freshness")] = QStringLiteral("STALE");
+            }
+        } else if (id == QStringLiteral("aegis-awareness")) {
+            row[QStringLiteral("source")] = airOperationsSource();
+            row[QStringLiteral("mode")] = airOperationsMode();
+            row[QStringLiteral("records")] = airOperationsTrackCount();
+        } else if (id == QStringLiteral("synthetic-training")) {
+            row[QStringLiteral("source")] = QStringLiteral("NATIVE SYNTHETIC PROVIDER");
+            row[QStringLiteral("records")] = sensorCount();
+        } else if (id == QStringLiteral("local-replay")) {
+            row[QStringLiteral("source")] = QStringLiteral("SESSION ARCHIVE");
+            row[QStringLiteral("records")] = recordedFrames();
+            row[QStringLiteral("freshness")] = replayMode_ ? QStringLiteral("ACTIVE") : QStringLiteral("CURRENT");
+        } else if (id == QStringLiteral("weather")) {
+            row[QStringLiteral("source")] = QStringLiteral("FORCE TRAINING SNAPSHOT");
+            row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+            row[QStringLiteral("health")] = forceWeatherConstraintCount() > 0 ? QStringLiteral("LIMITED") : QStringLiteral("NOMINAL");
+        } else if (id == QStringLiteral("airspace")) {
+            row[QStringLiteral("source")] = QStringLiteral("VERSIONED TRAINING SECTORS");
+            row[QStringLiteral("records")] = 4;
+            row[QStringLiteral("freshness")] = QStringLiteral("STATIC / VERIFIED");
+        } else if (id == QStringLiteral("airfields")) {
+            row[QStringLiteral("source")] = QStringLiteral("FORCE MANAGEMENT");
+            row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+        }
         rows.push_back(row);
     }
     return rows;

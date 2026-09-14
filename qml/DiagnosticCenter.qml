@@ -106,7 +106,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "فحص حتمي • ترتيب الأسباب • ربط الأدلة • التحقق من الاستعادة" : "DETERMINISTIC SCAN / ROOT-CAUSE RANKING / EVIDENCE CORRELATION / RECOVERY VERIFICATION"
                         color: Theme.accent
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         font.bold: true
                         Layout.fillWidth: true
                         elide: Text.ElideRight
@@ -114,7 +114,7 @@ Item {
                     Text {
                         text: cockpit.rtl ? "144 كودًا تدريبيًا • 12 منظومة • 36 تصنيفًا فرعيًا • بيانات صناعية فقط" : "144 TRAINING CODES • 12 SYSTEMS • 36 SUBCATEGORIES • SYNTHETIC DATA ONLY"
                         color: Theme.muted
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                     }
@@ -206,12 +206,12 @@ Item {
                         text: cockpit.diagnosticScanTick > 0 ? "TICK " + cockpit.diagnosticScanTick : "NOT RUN"
                         color: Theme.accent
                         font.family: "Consolas"
-                        font.pixelSize: 7
+                        font.pixelSize: 10
                     }
                 }
 
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
-                Text { text: cockpit.rtl ? "حالة الأنظمة" : "SYSTEM STATE"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
+                Text { text: cockpit.rtl ? "حالة الأنظمة" : "SYSTEM STATE"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
 
                 ListView {
                     Layout.fillWidth: true
@@ -232,9 +232,9 @@ Item {
                             anchors.margins: 6
                             spacing: 6
                             Rectangle { width: 3; height: 24; color: Theme.stateColor(modelData.state) }
-                            Text { text: modelData.label; color: Theme.platinum; font.pixelSize: 8; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Text { text: modelData.state; color: Theme.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
-                            Text { text: Number(modelData.health).toFixed(0) + "%"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 8 }
+                            Text { text: modelData.label; color: Theme.platinum; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: modelData.state; color: Theme.stateColor(modelData.state); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                            Text { text: Number(modelData.health).toFixed(0) + "%"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                         }
                     }
                 }
@@ -242,8 +242,8 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 22
-                    Text { text: cockpit.rtl ? "النتائج المرتبة" : "RANKED FINDINGS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true }
-                    Text { text: cockpit.diagnosticFindingCount + " ITEMS"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                    Text { text: cockpit.rtl ? "النتائج المرتبة" : "RANKED FINDINGS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
+                    Text { text: cockpit.diagnosticFindingCount + " ITEMS"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                 }
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
 
@@ -260,7 +260,7 @@ Item {
                         width: ListView.view.width
                         height: 62
                         color: Theme.panel2
-                        border.color: page.severityColor(modelData.severity)
+                        border.color: Theme.border
                         radius: Theme.radius
 
                         MouseArea { anchors.fill: parent; onClicked: page.selectFinding(modelData.code) }
@@ -273,14 +273,14 @@ Item {
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Text { text: modelData.code + "  /  " + modelData.system; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: modelData.title; color: Theme.silver; font.pixelSize: 8; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.code + "  /  " + modelData.system; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.title; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                             }
                             ColumnLayout {
                                 Layout.preferredWidth: 66
                                 spacing: 0
                                 Text { text: modelData.confidencePercent + "%"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.alignment: Qt.AlignRight }
-                                Text { text: "P" + modelData.priority; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 7; Layout.alignment: Qt.AlignRight }
+                                Text { text: "P" + modelData.priority; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.alignment: Qt.AlignRight }
                             }
                         }
                     }
@@ -291,7 +291,7 @@ Item {
                         width: parent.width - 24
                         text: cockpit.rtl ? "شغّل محرك التشخيص لالتقاط الأدلة" : "RUN THE DIAGNOSTIC ENGINE TO CAPTURE EVIDENCE"
                         color: Theme.muted
-                        font.pixelSize: 8
+                        font.pixelSize: 10
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WordWrap
                     }
@@ -316,7 +316,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 22
                     Text { text: cockpit.rtl ? "مكتبة الأكواد التدريبية" : "TRAINING FAULT-CODE LIBRARY"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true }
-                    Text { text: page.filteredCatalog().length + " / " + page.codeCatalog.length; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 7 }
+                    Text { text: page.filteredCatalog().length + " / " + page.codeCatalog.length; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10 }
                 }
 
                 TextField {
@@ -325,7 +325,7 @@ Item {
                     Layout.preferredHeight: 34
                     placeholderText: cockpit.rtl ? "بحث بالكود أو النظام أو الوصف أو السبب" : "Search code, system, category, description or cause"
                     color: Theme.platinum
-                    font.pixelSize: 8
+                    font.pixelSize: 10
                     onTextChanged: { page.codeQuery = text; page.selectedCode = 0 }
                     background: Rectangle { color: Theme.panel2; border.color: searchField.activeFocus ? Theme.accent : Theme.border; radius: Theme.radius }
                 }
@@ -345,7 +345,7 @@ Item {
                             categoryBox.currentIndex = 0
                             page.selectedCode = 0
                         }
-                        contentItem: Text { text: systemBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.family: "Consolas"; font.pixelSize: 7 }
+                        contentItem: Text { text: systemBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.family: "Consolas"; font.pixelSize: 10 }
                         background: Rectangle { color: Theme.panel2; border.color: Theme.border; radius: Theme.radius }
                     }
 
@@ -354,7 +354,7 @@ Item {
                         Layout.fillWidth: true
                         model: DxCodes.categories(page.systemFilter)
                         onActivated: { page.categoryFilter = currentText; page.selectedCode = 0 }
-                        contentItem: Text { text: categoryBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.family: "Consolas"; font.pixelSize: 7 }
+                        contentItem: Text { text: categoryBox.displayText; color: Theme.platinum; verticalAlignment: Text.AlignVCenter; horizontalAlignment: Text.AlignHCenter; font.family: "Consolas"; font.pixelSize: 10 }
                         background: Rectangle { color: Theme.panel2; border.color: Theme.border; radius: Theme.radius }
                     }
                 }
@@ -362,10 +362,10 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 22
-                    Text { text: "CODE"; color: Theme.muted; Layout.preferredWidth: 102; font.pixelSize: 7 }
-                    Text { text: "SYSTEM / CATEGORY"; color: Theme.muted; Layout.preferredWidth: 142; font.pixelSize: 7 }
-                    Text { text: "DESCRIPTION"; color: Theme.muted; Layout.fillWidth: true; font.pixelSize: 7 }
-                    Text { text: "LEVEL"; color: Theme.muted; Layout.preferredWidth: 58; horizontalAlignment: Text.AlignRight; font.pixelSize: 7 }
+                    Text { text: "CODE"; color: Theme.muted; Layout.preferredWidth: 102; font.pixelSize: 10 }
+                    Text { text: "SYSTEM / CATEGORY"; color: Theme.muted; Layout.preferredWidth: 142; font.pixelSize: 10 }
+                    Text { text: "DESCRIPTION"; color: Theme.muted; Layout.fillWidth: true; font.pixelSize: 10 }
+                    Text { text: "LEVEL"; color: Theme.muted; Layout.preferredWidth: 58; horizontalAlignment: Text.AlignRight; font.pixelSize: 10 }
                 }
                 Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
 
@@ -383,7 +383,7 @@ Item {
                         required property var modelData
                         width: ListView.view.width
                         height: 51
-                        color: index === page.selectedCode ? "#14232C" : (index % 2 ? Theme.panel2 : Theme.panel)
+                        color: index === page.selectedCode ? "#151515" : (index % 2 ? Theme.panel2 : Theme.panel)
                         border.color: index === page.selectedCode ? Theme.accent : Theme.borderSoft
 
                         MouseArea { anchors.fill: parent; onClicked: page.selectedCode = index }
@@ -392,15 +392,15 @@ Item {
                             anchors.fill: parent
                             anchors.margins: 5
                             spacing: 5
-                            Text { text: modelData.code; color: Theme.platinum; Layout.preferredWidth: 102; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
+                            Text { text: modelData.code; color: Theme.platinum; Layout.preferredWidth: 102; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                             ColumnLayout {
                                 Layout.preferredWidth: 142
                                 spacing: 0
-                                Text { text: modelData.system; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: modelData.category; color: Theme.muted; font.pixelSize: 7; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.system; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: modelData.category; color: Theme.muted; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
                             }
-                            Text { text: modelData.title; color: Theme.platinum; Layout.fillWidth: true; font.pixelSize: 8; elide: Text.ElideRight }
-                            Text { text: modelData.severity; color: page.severityColor(modelData.severity); Layout.preferredWidth: 58; horizontalAlignment: Text.AlignRight; font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                            Text { text: modelData.title; color: Theme.platinum; Layout.fillWidth: true; font.pixelSize: 10; elide: Text.ElideRight }
+                            Text { text: modelData.severity; color: page.severityColor(modelData.severity); Layout.preferredWidth: 58; horizontalAlignment: Text.AlignRight; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                         }
                     }
                 }
@@ -431,15 +431,15 @@ Item {
                             Layout.fillWidth: true
                             spacing: 1
                             Text { text: page.selected().code; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 18; font.bold: true }
-                            Text { text: page.selected().system + "  /  " + page.selected().category; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: page.selected().system + "  /  " + page.selected().category; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
                         }
                         Rectangle {
                             Layout.preferredWidth: 78
                             Layout.preferredHeight: 25
                             color: Theme.panel2
-                            border.color: page.severityColor(page.selected().severity)
+                            border.color: Theme.border
                             radius: Theme.radius
-                            Text { anchors.centerIn: parent; text: page.selected().severity; color: page.severityColor(page.selected().severity); font.family: "Consolas"; font.pixelSize: 7; font.bold: true }
+                            Text { anchors.centerIn: parent; text: page.selected().severity; color: page.severityColor(page.selected().severity); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
                         }
                     }
 
@@ -457,12 +457,12 @@ Item {
                             anchors.fill: parent
                             anchors.margins: 7
                             spacing: 1
-                            Text { text: "LIVE SCAN CORRELATION"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
+                            Text { text: "LIVE SCAN CORRELATION"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
                             Text {
                                 text: page.findingFor(page.selected().code) ? ("MATCHED  •  CONF " + page.findingFor(page.selected().code).confidencePercent + "%  •  PRIORITY " + page.findingFor(page.selected().code).priority) : "NO ACTIVE MATCH IN LAST SCAN"
                                 color: page.findingFor(page.selected().code) ? Theme.accent : Theme.silver
                                 font.family: "Consolas"
-                                font.pixelSize: 8
+                                font.pixelSize: 10
                                 font.bold: true
                                 Layout.fillWidth: true
                                 elide: Text.ElideRight
@@ -471,43 +471,43 @@ Item {
                                 visible: page.findingFor(page.selected().code) !== null
                                 text: page.findingFor(page.selected().code) ? (page.findingFor(page.selected().code).evidenceSource + "/" + page.findingFor(page.selected().code).evidenceKey + "  •  " + page.findingFor(page.selected().code).evidenceObservation) : ""
                                 color: Theme.silver
-                                font.pixelSize: 8
+                                font.pixelSize: 10
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
                             }
                         }
                     }
 
-                    Text { text: cockpit.rtl ? "المعنى" : "MEANING"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
-                    Text { text: page.selected().meaning; color: Theme.silver; font.pixelSize: 9; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                    Text { text: cockpit.rtl ? "المعنى" : "MEANING"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
+                    Text { text: page.selected().meaning; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
 
-                    Text { text: cockpit.rtl ? "الأسباب المحتملة" : "POSSIBLE CAUSES"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
-                    Text { text: page.selected().cause; color: Theme.silver; font.pixelSize: 9; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                    Text { text: cockpit.rtl ? "الأسباب المحتملة" : "POSSIBLE CAUSES"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
+                    Text { text: page.selected().cause; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; wrapMode: Text.WordWrap }
 
-                    Text { text: cockpit.rtl ? "مسار عزل العطل" : "FAULT ISOLATION PATH"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
+                    Text { text: cockpit.rtl ? "مسار عزل العطل" : "FAULT ISOLATION PATH"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 82
                         color: Theme.panel2
                         border.color: Theme.border
                         radius: Theme.radius
-                        Text { anchors.fill: parent; anchors.margins: 7; text: page.selected().isolation; color: Theme.platinum; font.pixelSize: 9; wrapMode: Text.WordWrap; verticalAlignment: Text.AlignVCenter }
+                        Text { anchors.fill: parent; anchors.margins: 7; text: page.selected().isolation; color: Theme.platinum; font.pixelSize: 10; wrapMode: Text.WordWrap; verticalAlignment: Text.AlignVCenter }
                     }
 
-                    Text { text: cockpit.rtl ? "معيار الاستعادة" : "RECOVERY CRITERIA"; color: Theme.muted; font.pixelSize: 7; font.bold: true }
+                    Text { text: cockpit.rtl ? "معيار الاستعادة" : "RECOVERY CRITERIA"; color: Theme.muted; font.pixelSize: 10; font.bold: true }
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 76
                         color: Theme.panel2
                         border.color: Theme.accent
                         radius: Theme.radius
-                        Text { anchors.fill: parent; anchors.margins: 7; text: page.selected().recovery; color: Theme.silver; font.pixelSize: 9; wrapMode: Text.WordWrap; verticalAlignment: Text.AlignVCenter }
+                        Text { anchors.fill: parent; anchors.margins: 7; text: page.selected().recovery; color: Theme.silver; font.pixelSize: 10; wrapMode: Text.WordWrap; verticalAlignment: Text.AlignVCenter }
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 74
-                        color: "#101A20"
+                        color: "#111111"
                         border.color: Theme.border
                         radius: Theme.radius
 
@@ -517,28 +517,28 @@ Item {
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 1
-                                Text { text: "REPORT FINGERPRINT"; color: Theme.muted; font.pixelSize: 7 }
-                                Text { text: cockpit.diagnosticFingerprint.length ? cockpit.diagnosticFingerprint : "NOT GENERATED"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 8; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                Text { text: "SCAN AGE  " + (cockpit.diagnosticScanTick > 0 ? Math.max(0, cockpit.tick - cockpit.diagnosticScanTick) + " TICKS" : "—"); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
+                                Text { text: "REPORT FINGERPRINT"; color: Theme.muted; font.pixelSize: 10 }
+                                Text { text: cockpit.diagnosticFingerprint.length ? cockpit.diagnosticFingerprint : "NOT GENERATED"; color: Theme.accent; font.family: "Consolas"; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Text { text: "SCAN AGE  " + (cockpit.diagnosticScanTick > 0 ? Math.max(0, cockpit.tick - cockpit.diagnosticScanTick) + " TICKS" : "—"); color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                             }
                             ColumnLayout {
                                 Layout.preferredWidth: 108
                                 spacing: 1
-                                Text { text: "HISTORY"; color: Theme.muted; font.pixelSize: 7 }
-                                Text { text: page.historyFor(page.selected().code) ? (page.historyFor(page.selected().code).scansSeen + " SCANS") : "NO HISTORY"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 8; font.bold: true }
-                                Text { text: "TRAINING ONLY"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 7 }
+                                Text { text: "HISTORY"; color: Theme.muted; font.pixelSize: 10 }
+                                Text { text: page.historyFor(page.selected().code) ? (page.historyFor(page.selected().code).scansSeen + " SCANS") : "NO HISTORY"; color: Theme.platinum; font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                                Text { text: "TRAINING ONLY"; color: Theme.silver; font.family: "Consolas"; font.pixelSize: 10 }
                             }
                         }
                     }
 
-                    Text { text: cockpit.rtl ? "توصيات التدريب" : "TRAINING RECOMMENDATIONS"; color: Theme.platinum; font.pixelSize: 9; font.bold: true }
+                    Text { text: cockpit.rtl ? "توصيات التدريب" : "TRAINING RECOMMENDATIONS"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                     Repeater {
                         model: cockpit.diagnosticRecommendations
                         delegate: Text {
                             required property var modelData
                             text: "• " + modelData
                             color: Theme.silver
-                            font.pixelSize: 8
+                            font.pixelSize: 10
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap
                         }

@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     if (airOpsWorkspaceIndex >= 0 && airOpsWorkspaceIndex + 1 < arguments.size()) {
         bool ok = false;
         const int value = arguments.at(airOpsWorkspaceIndex + 1).toInt(&ok);
-        if (ok && value >= 0 && value <= 5) airOpsWorkspace = value;
+        if (ok && value >= 0 && value <= 6) airOpsWorkspace = value;
     }
 
     int forceWorkspace = 0;
@@ -140,6 +140,27 @@ int main(int argc, char* argv[]) {
             );
             initialView.evaluate();
             if (initialView.hasError()) return 10;
+
+            if (arguments.contains(QStringLiteral("--smoke"))) {
+                QString expectedView = QStringLiteral("selectedPage === %1").arg(page);
+                if (page == 11) {
+                    const int expectedWorkspace = airOpsWorkspace == 6
+                        ? 60 + cuasSection
+                        : airOpsWorkspace;
+                    expectedView += QStringLiteral(" && currentWorkspace() === %1")
+                        .arg(expectedWorkspace);
+                } else if (page == 12) {
+                    expectedView += QStringLiteral(" && currentWorkspace() === %1")
+                        .arg(forceWorkspace);
+                } else if (page == 16) {
+                    expectedView += QStringLiteral(" && currentWorkspace() === %1")
+                        .arg(systemWorkspace);
+                }
+
+                QQmlExpression initialViewTest(qmlContext, root, expectedView);
+                const QVariant viewResult = initialViewTest.evaluate();
+                if (initialViewTest.hasError() || !viewResult.toBool()) return 12;
+            }
         }
     }
 

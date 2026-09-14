@@ -6,7 +6,7 @@ import "AirspaceLocale.js" as AirspaceLocale
 
 Item {
     id: root
-    property string releaseStage: "1960"
+    property string releaseStage: "1970"
     property int selectedWorkspace: Math.max(0, Math.min(6, airOpsWorkspace))
     property int cuasSection: 0
 

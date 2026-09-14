@@ -60,6 +60,7 @@ def main() -> None:
         ["--navigation-smoke", "--language", "en"],
         ["--navigation-smoke", "--language", "ar"],
         ["--rtl-smoke", "--language", "ar"],
+        ["--radar-motion-smoke", "--page", "11", "--air-ops-workspace", "6", "--cuas-section", "0", "--language", "en"],
     ])
 
     with tempfile.TemporaryDirectory(prefix="nexvary-qml-") as runtime_dir:

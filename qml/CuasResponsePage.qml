@@ -255,6 +255,7 @@ Item {
 
                         Canvas {
                             id: tacticalPlot
+                            objectName: "cuasTacticalPlot"
                             anchors.fill: parent
                             anchors.margins: 7
                             antialiasing: true

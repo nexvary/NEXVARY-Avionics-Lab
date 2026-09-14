@@ -13,6 +13,7 @@
 #include <QQmlExpression>
 #include <QQuickWindow>
 #include <QTimer>
+#include <cmath>
 
 namespace {
 QIcon makeAvionicsIcon() {
@@ -196,6 +197,17 @@ int main(int argc, char* argv[]) {
     if (arguments.contains(QStringLiteral("--rtl-smoke"))) {
         QCoreApplication::processEvents();
         return root->property("rtlLayoutVerified").toBool() ? 0 : 11;
+    }
+
+    if (arguments.contains(QStringLiteral("--radar-motion-smoke"))) {
+        QObject* tacticalPlot = root->findChild<QObject*>(QStringLiteral("cuasTacticalPlot"));
+        if (!tacticalPlot) return 13;
+        const double initialAngle = tacticalPlot->property("sweepAngle").toDouble();
+        QTimer::singleShot(450, &app, [tacticalPlot, initialAngle]() {
+            const double currentAngle = tacticalPlot->property("sweepAngle").toDouble();
+            QCoreApplication::exit(std::abs(currentAngle - initialAngle) > 0.02 ? 0 : 13);
+        });
+        return app.exec();
     }
 
     if (screenshotIndex >= 0) {

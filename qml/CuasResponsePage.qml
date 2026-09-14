@@ -137,8 +137,8 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 6
                         spacing: 1
-                        Text { text: cockpit.rtl ? "محاكاة استجابة فقط" : "RESPONSE SIMULATION ONLY"; color: Theme.warmOrange; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
-                        Text { text: "AEGIS C-UAS / AWARENESS + REVIEW"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text { text: cockpit.rtl ? "محاكاة استجابة فقط" : "RESPONSE SIMULATION ONLY"; color: Theme.warmOrange; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
+                        Text { text: "AEGIS C-UAS / AWARENESS + REVIEW"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter }
                     }
                 }
             }
@@ -169,9 +169,9 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 2
-                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: 10; font.bold: true }
-                        Text { text: String(modelData.value); color: modelData.color; font.family: "Consolas"; font.pixelSize: 20; font.bold: true }
-                        Text { text: cockpit.airOperationsMode; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: modelData.title; color: Theme.silver; font.pixelSize: Theme.smallPx; font.bold: true }
+                        Text { text: String(modelData.value); color: modelData.color; font.family: Theme.mono; font.pixelSize: 20; font.bold: true }
+                        Text { text: cockpit.airOperationsMode; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
                 }
             }
@@ -237,7 +237,7 @@ Item {
                                     Layout.preferredWidth: 130
                                     spacing: 1
                                     Text { text: page.selectedSection === 3 ? String(modelData.status) : String(modelData.threatLevel || modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: page.entrySeverity(modelData); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                                    Text { text: "AWARENESS"; color: Theme.muted; font.family: "Consolas"; font.pixelSize: 10; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                                    Text { text: "AWARENESS"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                                 }
                             }
                         }
@@ -259,9 +259,18 @@ Item {
                             anchors.margins: 7
                             antialiasing: true
                             property var tracks: cockpit.airOperationsTracks
+                            property real sweepAngle: -Math.PI / 2
                             onTracksChanged: requestPaint()
+                            onSweepAngleChanged: requestPaint()
                             onWidthChanged: requestPaint()
                             onHeightChanged: requestPaint()
+                            NumberAnimation on sweepAngle {
+                                from: -Math.PI / 2
+                                to: Math.PI * 1.5
+                                duration: 6200
+                                loops: Animation.Infinite
+                                running: tacticalPlot.visible
+                            }
                             onPaint: {
                                 var c = getContext("2d")
                                 c.reset()
@@ -290,6 +299,34 @@ Item {
                                     c.stroke()
                                 }
 
+                                for (var tick = 0; tick < 360; tick += 10) {
+                                    var tickAngle = (tick - 90) * Math.PI / 180
+                                    var tickInner = radius * (tick % 30 === 0 ? .94 : .975)
+                                    c.globalAlpha = tick % 30 === 0 ? .78 : .42
+                                    c.beginPath()
+                                    c.moveTo(cx + Math.cos(tickAngle) * tickInner,
+                                             cy + Math.sin(tickAngle) * tickInner)
+                                    c.lineTo(cx + Math.cos(tickAngle) * radius,
+                                             cy + Math.sin(tickAngle) * radius)
+                                    c.stroke()
+                                }
+
+                                c.globalAlpha = .08
+                                c.fillStyle = Theme.radarGreen
+                                c.beginPath()
+                                c.moveTo(cx, cy)
+                                c.arc(cx, cy, radius, tacticalPlot.sweepAngle - .34, tacticalPlot.sweepAngle)
+                                c.closePath()
+                                c.fill()
+                                c.globalAlpha = .88
+                                c.strokeStyle = Theme.radarGreen
+                                c.lineWidth = 1.5
+                                c.beginPath()
+                                c.moveTo(cx, cy)
+                                c.lineTo(cx + Math.cos(tacticalPlot.sweepAngle) * radius,
+                                         cy + Math.sin(tacticalPlot.sweepAngle) * radius)
+                                c.stroke()
+
                                 c.setLineDash([8, 5])
                                 c.strokeStyle = "#D4AF37"
                                 c.globalAlpha = .82
@@ -300,7 +337,7 @@ Item {
                                 c.globalAlpha = 1
 
                                 c.fillStyle = "#9E9B98"
-                                c.font = "700 10px 'Noto Sans Mono'"
+                                c.font = "700 " + Theme.smallPx + "px 'Noto Sans Mono'"
                                 c.textAlign = "center"
                                 c.fillText("000", cx, cy - radius - 8)
                                 c.fillText("090", cx + radius + 24, cy + 4)
@@ -354,10 +391,10 @@ Item {
                                     c.strokeRect(labelX, labelY, 140, 40)
                                     c.textAlign = "left"
                                     c.fillStyle = color
-                                    c.font = "700 10px 'Noto Sans Mono'"
+                                    c.font = "700 " + Theme.smallPx + "px 'Noto Sans Mono'"
                                     c.fillText(track.trackId || "TRACK", labelX + 6, labelY + 15)
                                     c.fillStyle = "#9E9B98"
-                                    c.font = "10px 'Noto Sans Mono'"
+                                    c.font = Theme.smallPx + "px 'Noto Sans Mono'"
                                     c.fillText((track.classification || "UNKNOWN") + " / " + Math.round(Number(track.confidence || 0) * 100) + "%", labelX + 6, labelY + 30)
                                 }
                             }
@@ -379,6 +416,17 @@ Item {
                                 Text { text: page.selectedSection === 0 ? (cockpit.rtl ? "رادار الوعي السلبي" : "PASSIVE AWARENESS PLOT") : (cockpit.rtl ? "طبقة التصنيف" : "CLASSIFICATION OVERLAY"); color: page.sectionColor(); font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.secondaryPx; font.bold: true }
                                 Text { text: "RANGE 25 KM  •  AEGIS  •  RECEIVE ONLY"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                             }
+                        }
+
+                        RfSpectrumMini {
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            anchors.margins: 12
+                            width: Math.min(320, parent.width * .27)
+                            height: 148
+                            bins: cockpit.rfSpectrumBins
+                            peakFrequencyMhz: cockpit.rfPeakFrequencyMhz
+                            rtl: cockpit.rtl
                         }
                     }
 
@@ -478,7 +526,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "سير الاستجابة التدريبية" : "TRAINING RESPONSE WORKFLOW"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "سير الاستجابة التدريبية" : "TRAINING RESPONSE WORKFLOW"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Repeater {
                             model: page.responseRows()
@@ -514,7 +562,7 @@ Item {
                         anchors.fill: parent
                         anchors.margins: 9
                         spacing: 5
-                        Text { text: cockpit.rtl ? "الحوادث والسجل" : "INCIDENT REVIEW"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
+                        Text { text: cockpit.rtl ? "الحوادث والسجل" : "INCIDENT REVIEW"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
                             Layout.fillWidth: true
@@ -534,16 +582,16 @@ Item {
                                     anchors.fill: parent
                                     anchors.margins: 6
                                     spacing: 1
-                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.pixelSize: 10; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: String(modelData.peakThreatLevel || modelData.level || "REVIEW").toUpperCase(); color: page.severityColor(modelData.peakThreatLevel || modelData.level); font.family: "Consolas"; font.pixelSize: 10; font.bold: true }
+                                    Text { text: modelData.trackId || modelData.incidentId || "INCIDENT"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: modelData.summary || modelData.status || "Review record"; color: Theme.silver; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: String(modelData.peakThreatLevel || modelData.level || "REVIEW").toUpperCase(); color: page.severityColor(modelData.peakThreatLevel || modelData.level); font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
                                 }
                             }
                         }
                         Text {
                             text: cockpit.rtl ? "لا يتضمن هذا القسم اعتراضًا فعليًا أو تشويشًا أو استحواذًا أو توجيه اشتباك." : "NO LIVE INTERCEPTION, JAMMING, TAKEOVER OR ENGAGEMENT CONTROL IS PROVIDED."
                             color: Theme.warmOrange
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.smallPx
                             font.bold: true
                             Layout.fillWidth: true
                             wrapMode: Text.WordWrap

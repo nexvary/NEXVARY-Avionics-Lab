@@ -9,6 +9,10 @@ Item {
     property string releaseStage: "1980"
     property int selectedWorkspace: Math.max(0, Math.min(7, airOpsWorkspace))
     property int cuasSection: 0
+    // Public web map reference only. This is intentionally separate from the
+    // authorized HTTPS data-feed field inside Flight Tracking so a website URL
+    // is never mistaken for an API endpoint.
+    property string trackingWebsiteUrl: "https://map.opensky-network.org/"
 
     ColumnLayout {
         anchors.fill: parent
@@ -62,6 +66,103 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.selectedWorkspace = modelData.index
                         }
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: trackingWebsiteBar
+            objectName: "aircraftTrackingWebsiteBar"
+            visible: root.selectedWorkspace === 5
+            Layout.fillWidth: true
+            Layout.preferredHeight: visible ? 48 : 0
+            color: Theme.deepBlue
+            border.color: Theme.royalGold
+            border.width: Theme.activeFrameWidth
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 8
+                anchors.rightMargin: 8
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
+                spacing: 8
+                layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+
+                NexvaryMark {
+                    Layout.preferredWidth: 32
+                    Layout.preferredHeight: 32
+                }
+
+                ColumnLayout {
+                    Layout.preferredWidth: 190
+                    spacing: 0
+                    Text {
+                        Layout.fillWidth: true
+                        text: cockpit.rtl ? "NEXVARY • موقع تتبع الطائرات" : "NEXVARY • AIRCRAFT TRACKING WEBSITE"
+                        color: Theme.platinum
+                        font.family: Theme.uiFont(cockpit.rtl)
+                        font.pixelSize: Theme.smallPx
+                        font.bold: true
+                        elide: Text.ElideRight
+                        horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                    }
+                    Text {
+                        Layout.fillWidth: true
+                        text: cockpit.rtl ? "مرجع ويب عام • ليس رابط API" : "PUBLIC WEB REFERENCE • NOT AN API FEED"
+                        color: Theme.signalCyan
+                        font.family: Theme.uiFont(cockpit.rtl)
+                        font.pixelSize: 10
+                        font.bold: true
+                        elide: Text.ElideRight
+                        horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                    }
+                }
+
+                TextField {
+                    id: trackingWebsiteField
+                    objectName: "aircraftTrackingWebsiteUrl"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 34
+                    text: root.trackingWebsiteUrl
+                    readOnly: true
+                    selectByMouse: true
+                    color: Theme.platinum
+                    selectionColor: Theme.royalGold
+                    selectedTextColor: Theme.deepBlack
+                    font.family: Theme.mono
+                    font.pixelSize: Theme.smallPx
+                    horizontalAlignment: Text.AlignLeft
+                    background: Rectangle {
+                        color: Theme.panel2
+                        border.color: Theme.signalCyan
+                        border.width: 1
+                        radius: Theme.radius
+                    }
+                }
+
+                Button {
+                    id: openTrackingWebsiteButton
+                    objectName: "openAircraftTrackingWebsiteButton"
+                    Layout.preferredWidth: 132
+                    Layout.preferredHeight: 34
+                    text: cockpit.rtl ? "فتح الخريطة" : "OPEN MAP"
+                    onClicked: Qt.openUrlExternally(root.trackingWebsiteUrl)
+                    contentItem: Text {
+                        text: parent.text
+                        color: Theme.deepBlack
+                        font.family: Theme.uiFont(cockpit.rtl)
+                        font.pixelSize: Theme.smallPx
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    background: Rectangle {
+                        color: openTrackingWebsiteButton.hovered ? "#E2C357" : Theme.royalGold
+                        border.color: Theme.platinum
+                        border.width: openTrackingWebsiteButton.activeFocus ? 1 : 0
+                        radius: Theme.radius
                     }
                 }
             }

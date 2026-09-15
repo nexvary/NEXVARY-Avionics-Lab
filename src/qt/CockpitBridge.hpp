@@ -1,6 +1,7 @@
 #pragma once
 
 #include "air_ops/AerodromeConditions.hpp"
+#include "air_ops/AerodromeProviderCache.hpp"
 #include "air_ops/AirOperationsIntegration.hpp"
 #include "air_ops/PublicFlightEnrichment.hpp"
 #include "air_ops/PublicFlightFeed.hpp"
@@ -256,6 +257,7 @@ private:
     void refreshTwin();
     void rebuildDiagnosticRows();
     void initializePublicFlightPersistence();
+    void initializeAerodromePersistence();
     void applyPublicFlightEnrichmentAndRecord();
     void savePublicFlightHistory();
 
@@ -280,6 +282,8 @@ private:
     PublicFlightHistoryStore publicFlightHistory_{60};
     AerodromeConditionFeed publicAerodromeWeather_;
     AerodromeConditionFeed licensedAerodromeConditions_;
+    AerodromeProviderCache publicAerodromeWeatherCache_{AerodromeProviderPayloadKind::PublicMetar};
+    AerodromeProviderCache licensedAerodromeConditionsCache_{AerodromeProviderPayloadKind::LicensedConditions};
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
     DataSourceRegistry dataSources_{DataSourceRegistry::operationalDefaults()};
     QNetworkAccessManager* publicFlightNetwork_{nullptr};
@@ -291,7 +295,10 @@ private:
     QString runwayConditionStatus_{QStringLiteral("NO LICENSED RUNWAY CONDITION SOURCE")};
     QString publicFlightHistoryPath_;
     QString publicFlightProviderCachePath_;
+    QString publicAerodromeWeatherCachePath_;
+    QString licensedAerodromeConditionsCachePath_;
     bool publicFlightPersistenceInitialized_{false};
+    bool aerodromePersistenceInitialized_{false};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};
     bool replayPaused_{false};

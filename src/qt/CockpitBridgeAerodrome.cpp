@@ -1,13 +1,17 @@
 #include "qt/CockpitBridge.hpp"
 
 #include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSet>
+#include <QStandardPaths>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QVariantMap>
-#include <QSet>
 
 namespace nexvary::avionics {
 namespace {
@@ -40,6 +44,10 @@ QStringList sanitizedStationIds(const QString& csv) {
         if (result.size() >= kMaximumStationIdsPerRequest) break;
     }
     return result;
+}
+
+QString cacheStatus(const AerodromeProviderCache& cache) {
+    return QString::fromStdString(cache.statusText());
 }
 
 QVariantMap weatherRow(const AerodromeWeatherObservation& item,
@@ -128,14 +136,12 @@ QString CockpitBridge::aerodromeWeatherSource() const {
         return QString::fromStdString(licensedAerodromeConditions_.provider().name);
     return QStringLiteral("NONE");
 }
-
 QString CockpitBridge::aerodromeWeatherStatus() const { return aerodromeWeatherStatus_; }
 
 QString CockpitBridge::runwayConditionSource() const {
     if (licensedAerodromeConditions_.runwayCount() == 0) return QStringLiteral("NONE");
     return QString::fromStdString(licensedAerodromeConditions_.provider().name);
 }
-
 QString CockpitBridge::runwayConditionStatus() const { return runwayConditionStatus_; }
 
 int CockpitBridge::aerodromeWeatherCount() const noexcept {
@@ -151,10 +157,51 @@ int CockpitBridge::runwayConditionCount() const noexcept {
     return static_cast<int>(licensedAerodromeConditions_.runwayCount());
 }
 
+void CockpitBridge::initializeAerodromePersistence() {
+    if (aerodromePersistenceInitialized_) return;
+    aerodromePersistenceInitialized_ = true;
+
+    QString basePath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    if (basePath.isEmpty()) basePath = QDir::tempPath() + QStringLiteral("/NEXVARY-Avionics-Lab");
+    publicAerodromeWeatherCachePath_ = QDir(basePath).filePath(QStringLiteral("public-metar-last-good.json"));
+    licensedAerodromeConditionsCachePath_ = QDir(basePath).filePath(QStringLiteral("licensed-aerodrome-conditions-last-good.json"));
+    const auto now = QDateTime::currentSecsSinceEpoch();
+
+    if (QFileInfo::exists(publicAerodromeWeatherCachePath_)) {
+        if (publicAerodromeWeatherCache_.restoreLastGood(publicAerodromeWeatherCachePath_.toStdString(), now)) {
+            publicAerodromeWeather_ = publicAerodromeWeatherCache_.feed();
+            aerodromeWeatherStatus_ = QStringLiteral("%1 / STARTUP RESTORE / %2 STATIONS")
+                .arg(cacheStatus(publicAerodromeWeatherCache_))
+                .arg(static_cast<qulonglong>(publicAerodromeWeather_.weatherCount()));
+        } else {
+            aerodromeWeatherStatus_ = QStringLiteral("PUBLIC METAR CACHE RESTORE FAILED / %1")
+                .arg(cacheStatus(publicAerodromeWeatherCache_));
+        }
+    }
+
+    if (QFileInfo::exists(licensedAerodromeConditionsCachePath_)) {
+        if (licensedAerodromeConditionsCache_.restoreLastGood(licensedAerodromeConditionsCachePath_.toStdString(), now)) {
+            licensedAerodromeConditions_ = licensedAerodromeConditionsCache_.feed();
+            runwayConditionStatus_ = QStringLiteral("%1 / STARTUP RESTORE / %2 RUNWAYS")
+                .arg(cacheStatus(licensedAerodromeConditionsCache_))
+                .arg(static_cast<qulonglong>(licensedAerodromeConditions_.runwayCount()));
+            if (publicAerodromeWeather_.weatherCount() == 0 && licensedAerodromeConditions_.weatherCount() > 0) {
+                aerodromeWeatherStatus_ = QStringLiteral("LICENSED WEATHER CACHE FALLBACK / STARTUP RESTORE / %1 STATIONS")
+                    .arg(static_cast<qulonglong>(licensedAerodromeConditions_.weatherCount()));
+            }
+        } else {
+            runwayConditionStatus_ = QStringLiteral("LICENSED CONDITION CACHE RESTORE FAILED / %1")
+                .arg(cacheStatus(licensedAerodromeConditionsCache_));
+        }
+    }
+}
+
 void CockpitBridge::fetchPublicAerodromeWeather(const QString& airportIdsCsv) {
+    initializeAerodromePersistence();
     const auto ids = sanitizedStationIds(airportIdsCsv);
     if (ids.isEmpty()) {
-        aerodromeWeatherStatus_ = QStringLiteral("METAR REQUEST REJECTED / VALID 4-CHAR ICAO IDS REQUIRED");
+        publicAerodromeWeatherCache_.noteRefreshFailure("valid 4-character ICAO station IDs required");
+        aerodromeWeatherStatus_ = cacheStatus(publicAerodromeWeatherCache_);
         emit dataChanged();
         return;
     }
@@ -171,13 +218,17 @@ void CockpitBridge::fetchPublicAerodromeWeather(const QString& airportIdsCsv) {
                       QStringLiteral("NEXVARY-Avionics-Lab/3.5 public-metar-read-only"));
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
-    aerodromeWeatherStatus_ = QStringLiteral("FETCHING PUBLIC METAR / %1 STATIONS").arg(ids.size());
+    aerodromeWeatherStatus_ = publicAerodromeWeatherCache_.available()
+        ? QStringLiteral("FETCHING PUBLIC METAR / LAST GOOD RETAINED UNTIL VERIFIED")
+        : QStringLiteral("FETCHING PUBLIC METAR / %1 STATIONS").arg(ids.size());
     emit dataChanged();
 
     QNetworkReply* reply = publicFlightNetwork_->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() != QNetworkReply::NoError) {
-            aerodromeWeatherStatus_ = QStringLiteral("METAR ERROR: %1").arg(reply->errorString());
+            publicAerodromeWeatherCache_.noteRefreshFailure(
+                QStringLiteral("network error: %1").arg(reply->errorString()).toStdString());
+            aerodromeWeatherStatus_ = cacheStatus(publicAerodromeWeatherCache_);
             reply->deleteLater();
             emit dataChanged();
             return;
@@ -185,47 +236,58 @@ void CockpitBridge::fetchPublicAerodromeWeather(const QString& airportIdsCsv) {
         const QByteArray payload = reply->readAll();
         reply->deleteLater();
         if (payload.size() > kMaximumAerodromePayloadBytes) {
-            aerodromeWeatherStatus_ = QStringLiteral("METAR REJECTED / PAYLOAD TOO LARGE");
+            publicAerodromeWeatherCache_.noteRefreshFailure("public METAR payload exceeds configured cache limit");
+            aerodromeWeatherStatus_ = cacheStatus(publicAerodromeWeatherCache_);
             emit dataChanged();
             return;
         }
-        try {
-            publicAerodromeWeather_ = AerodromeConditionFeed::fromAviationWeatherMetarJson(
-                payload.toStdString(), QDateTime::currentSecsSinceEpoch());
-            aerodromeWeatherStatus_ = QStringLiteral("PUBLIC METAR ACTIVE / %1 STATIONS / READ ONLY")
-                .arg(aerodromeWeatherCount());
-        } catch (const std::exception& error) {
-            aerodromeWeatherStatus_ = QStringLiteral("METAR PARSE ERROR: %1").arg(QString::fromUtf8(error.what()));
+
+        const auto now = QDateTime::currentSecsSinceEpoch();
+        if (!publicAerodromeWeatherCache_.refreshFromJson(payload.toStdString(), now)) {
+            aerodromeWeatherStatus_ = cacheStatus(publicAerodromeWeatherCache_);
+            emit dataChanged();
+            return;
         }
+        publicAerodromeWeather_ = publicAerodromeWeatherCache_.feed();
+        if (!publicAerodromeWeatherCachePath_.isEmpty())
+            publicAerodromeWeatherCache_.persistLastGood(publicAerodromeWeatherCachePath_.toStdString());
+        aerodromeWeatherStatus_ = QStringLiteral("%1 / %2 STATIONS / READ ONLY")
+            .arg(cacheStatus(publicAerodromeWeatherCache_))
+            .arg(static_cast<qulonglong>(publicAerodromeWeather_.weatherCount()));
         emit dataChanged();
     });
 }
 
 bool CockpitBridge::loadAerodromeConditionFile(const QString& path) {
-    try {
-        licensedAerodromeConditions_ = AerodromeConditionFeed::fromFile(
-            path.toStdString(), QDateTime::currentSecsSinceEpoch());
-        const auto& provider = licensedAerodromeConditions_.provider();
-        runwayConditionStatus_ = QStringLiteral("LICENSED CONDITIONS LOADED / %1 / %2 RUNWAYS")
-            .arg(QString::fromStdString(provider.name))
-            .arg(runwayConditionCount());
-        if (licensedAerodromeConditions_.weatherCount() > 0 && publicAerodromeWeather_.weatherCount() == 0) {
-            aerodromeWeatherStatus_ = QStringLiteral("LICENSED WEATHER LOADED / %1 STATIONS")
-                .arg(aerodromeWeatherCount());
-        }
-        emit dataChanged();
-        return true;
-    } catch (const std::exception& error) {
-        runwayConditionStatus_ = QStringLiteral("CONDITION IMPORT REJECTED: %1").arg(QString::fromUtf8(error.what()));
+    initializeAerodromePersistence();
+    const auto now = QDateTime::currentSecsSinceEpoch();
+    if (!licensedAerodromeConditionsCache_.refreshFromFile(path.toStdString(), now)) {
+        runwayConditionStatus_ = cacheStatus(licensedAerodromeConditionsCache_);
         emit dataChanged();
         return false;
     }
+
+    licensedAerodromeConditions_ = licensedAerodromeConditionsCache_.feed();
+    if (!licensedAerodromeConditionsCachePath_.isEmpty())
+        licensedAerodromeConditionsCache_.persistLastGood(licensedAerodromeConditionsCachePath_.toStdString());
+    runwayConditionStatus_ = QStringLiteral("%1 / %2 RUNWAYS")
+        .arg(cacheStatus(licensedAerodromeConditionsCache_))
+        .arg(runwayConditionCount());
+    if (licensedAerodromeConditions_.weatherCount() > 0 && publicAerodromeWeather_.weatherCount() == 0) {
+        aerodromeWeatherStatus_ = QStringLiteral("LICENSED WEATHER ACTIVE / %1 STATIONS / %2")
+            .arg(aerodromeWeatherCount())
+            .arg(QString::fromStdString(licensedAerodromeConditions_.provider().name));
+    }
+    emit dataChanged();
+    return true;
 }
 
 void CockpitBridge::fetchLicensedAerodromeConditions(const QString& urlText) {
+    initializeAerodromePersistence();
     QUrl url;
     if (!validHttpsUrl(urlText, url)) {
-        runwayConditionStatus_ = QStringLiteral("URL REJECTED / HTTPS LICENSED CONDITION SOURCE REQUIRED");
+        licensedAerodromeConditionsCache_.noteRefreshFailure("HTTPS licensed condition source required");
+        runwayConditionStatus_ = cacheStatus(licensedAerodromeConditionsCache_);
         emit dataChanged();
         return;
     }
@@ -236,13 +298,17 @@ void CockpitBridge::fetchLicensedAerodromeConditions(const QString& urlText) {
                       QStringLiteral("NEXVARY-Avionics-Lab/3.5 runway-condition-read-only"));
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
-    runwayConditionStatus_ = QStringLiteral("FETCHING LICENSED AERODROME CONDITIONS");
+    runwayConditionStatus_ = licensedAerodromeConditionsCache_.available()
+        ? QStringLiteral("FETCHING LICENSED AERODROME CONDITIONS / LAST GOOD RETAINED UNTIL VERIFIED")
+        : QStringLiteral("FETCHING LICENSED AERODROME CONDITIONS");
     emit dataChanged();
 
     QNetworkReply* reply = publicFlightNetwork_->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() != QNetworkReply::NoError) {
-            runwayConditionStatus_ = QStringLiteral("CONDITION ERROR: %1").arg(reply->errorString());
+            licensedAerodromeConditionsCache_.noteRefreshFailure(
+                QStringLiteral("network error: %1").arg(reply->errorString()).toStdString());
+            runwayConditionStatus_ = cacheStatus(licensedAerodromeConditionsCache_);
             reply->deleteLater();
             emit dataChanged();
             return;
@@ -250,30 +316,40 @@ void CockpitBridge::fetchLicensedAerodromeConditions(const QString& urlText) {
         const QByteArray payload = reply->readAll();
         reply->deleteLater();
         if (payload.size() > kMaximumAerodromePayloadBytes) {
-            runwayConditionStatus_ = QStringLiteral("CONDITION REJECTED / PAYLOAD TOO LARGE");
+            licensedAerodromeConditionsCache_.noteRefreshFailure("licensed condition payload exceeds configured cache limit");
+            runwayConditionStatus_ = cacheStatus(licensedAerodromeConditionsCache_);
             emit dataChanged();
             return;
         }
-        try {
-            licensedAerodromeConditions_ = AerodromeConditionFeed::fromJson(
-                payload.toStdString(), QDateTime::currentSecsSinceEpoch());
-            runwayConditionStatus_ = QStringLiteral("LICENSED CONDITIONS ACTIVE / %1 / %2 RUNWAYS")
-                .arg(QString::fromStdString(licensedAerodromeConditions_.provider().name))
-                .arg(runwayConditionCount());
-            if (licensedAerodromeConditions_.weatherCount() > 0 && publicAerodromeWeather_.weatherCount() == 0) {
-                aerodromeWeatherStatus_ = QStringLiteral("LICENSED WEATHER ACTIVE / %1 STATIONS")
-                    .arg(aerodromeWeatherCount());
-            }
-        } catch (const std::exception& error) {
-            runwayConditionStatus_ = QStringLiteral("CONDITION PARSE ERROR: %1").arg(QString::fromUtf8(error.what()));
+
+        const auto now = QDateTime::currentSecsSinceEpoch();
+        if (!licensedAerodromeConditionsCache_.refreshFromJson(payload.toStdString(), now)) {
+            runwayConditionStatus_ = cacheStatus(licensedAerodromeConditionsCache_);
+            emit dataChanged();
+            return;
+        }
+        licensedAerodromeConditions_ = licensedAerodromeConditionsCache_.feed();
+        if (!licensedAerodromeConditionsCachePath_.isEmpty())
+            licensedAerodromeConditionsCache_.persistLastGood(licensedAerodromeConditionsCachePath_.toStdString());
+        runwayConditionStatus_ = QStringLiteral("%1 / %2 RUNWAYS")
+            .arg(cacheStatus(licensedAerodromeConditionsCache_))
+            .arg(runwayConditionCount());
+        if (licensedAerodromeConditions_.weatherCount() > 0 && publicAerodromeWeather_.weatherCount() == 0) {
+            aerodromeWeatherStatus_ = QStringLiteral("LICENSED WEATHER ACTIVE / %1 STATIONS")
+                .arg(aerodromeWeatherCount());
         }
         emit dataChanged();
     });
 }
 
 void CockpitBridge::clearAerodromeConditions() {
+    initializeAerodromePersistence();
     publicAerodromeWeather_ = AerodromeConditionFeed{};
     licensedAerodromeConditions_ = AerodromeConditionFeed{};
+    publicAerodromeWeatherCache_.clear();
+    licensedAerodromeConditionsCache_.clear();
+    if (!publicAerodromeWeatherCachePath_.isEmpty()) QFile::remove(publicAerodromeWeatherCachePath_);
+    if (!licensedAerodromeConditionsCachePath_.isEmpty()) QFile::remove(licensedAerodromeConditionsCachePath_);
     aerodromeWeatherStatus_ = QStringLiteral("PUBLIC METAR NOT LOADED");
     runwayConditionStatus_ = QStringLiteral("NO LICENSED RUNWAY CONDITION SOURCE");
     emit dataChanged();

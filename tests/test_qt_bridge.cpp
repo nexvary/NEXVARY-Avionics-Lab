@@ -1,6 +1,7 @@
 #include "qt/CockpitBridge.hpp"
 #include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QTemporaryFile>
@@ -25,7 +26,8 @@ int main(int argc, char** argv) {
     QCoreApplication app(argc, argv);
     QStandardPaths::setTestModeEnabled(true);
     const QString testDataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    if (!testDataPath.isEmpty()) QDir(testDataPath).removeRecursively();
+    assert(!testDataPath.isEmpty());
+    QDir(testDataPath).removeRecursively();
 
     CockpitBridge b;
     assert(b.platformProfiles().size() == 4);
@@ -113,7 +115,6 @@ int main(int argc, char** argv) {
     assert(restoredBridge.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
     assert(restoredBridge.publicFlightEnrichmentStatus().contains("FALLBACK"));
     assert(restoredBridge.publicFlightTracks().at(0).toMap().value("registration").toString() == "QT-REG");
-
     restoredBridge.fetchPublicFlightEnrichment("http://example.invalid/enrichment");
     assert(restoredBridge.publicFlightEnrichmentStatus().contains("FALLBACK"));
     assert(restoredBridge.publicFlightEnrichmentStatus().contains("HTTPS"));
@@ -124,7 +125,7 @@ int main(int argc, char** argv) {
     assert(b.aerodromeWeatherSource() == "NONE");
     assert(b.runwayConditionSource() == "NONE");
     b.fetchPublicAerodromeWeather("BAD");
-    assert(b.aerodromeWeatherStatus().contains("REJECTED"));
+    assert(b.aerodromeWeatherStatus().contains("UNAVAILABLE"));
     b.fetchLicensedAerodromeConditions("http://example.invalid/conditions");
     assert(b.runwayConditionStatus().contains("HTTPS"));
 
@@ -154,6 +155,60 @@ int main(int argc, char** argv) {
     assert(!runwayRow.value("closed").toBool());
     assert(findRow(b.dataSourceRows(), "weather").value("source").toString() == "QT AERODROME PROVIDER");
     assert(findRow(b.dataSourceRows(), "airfields").value("source").toString() == "QT AERODROME PROVIDER");
+
+    const QString licensedAerodromeCachePath = QDir(testDataPath).filePath(QStringLiteral("licensed-aerodrome-conditions-last-good.json"));
+    assert(QFileInfo::exists(licensedAerodromeCachePath));
+    assert(QFileInfo(licensedAerodromeCachePath).size() == aerodromePayload.size());
+
+    CockpitBridge restoredAerodromeBridge;
+    assert(restoredAerodromeBridge.runwayConditionCount() == 1);
+    assert(restoredAerodromeBridge.runwayConditionSource() == "QT AERODROME PROVIDER");
+    assert(restoredAerodromeBridge.runwayConditionStatus().contains("FALLBACK"));
+    assert(restoredAerodromeBridge.runwayConditionStatus().contains("STARTUP RESTORE"));
+    assert(restoredAerodromeBridge.runwayConditionRows().at(0).toMap().value("license").toString() == "QT-AERODROME-LICENSE");
+
+    QTemporaryFile invalidAerodromeFile;
+    assert(invalidAerodromeFile.open());
+    const QByteArray invalidAerodromePayload = QByteArrayLiteral("{broken-aerodrome-json");
+    assert(invalidAerodromeFile.write(invalidAerodromePayload) == invalidAerodromePayload.size());
+    assert(invalidAerodromeFile.flush());
+    assert(!restoredAerodromeBridge.loadAerodromeConditionFile(invalidAerodromeFile.fileName()));
+    assert(restoredAerodromeBridge.runwayConditionCount() == 1);
+    assert(restoredAerodromeBridge.runwayConditionStatus().contains("FALLBACK"));
+    restoredAerodromeBridge.fetchLicensedAerodromeConditions("http://example.invalid/conditions");
+    assert(restoredAerodromeBridge.runwayConditionStatus().contains("FALLBACK"));
+    assert(restoredAerodromeBridge.runwayConditionStatus().contains("HTTPS"));
+    assert(restoredAerodromeBridge.runwayConditionCount() == 1);
+
+    const QByteArray publicMetarPayload = R"([
+        {"icaoId":"HEAL","rawOb":"HEAL QT METAR","fltCat":"VFR","wdir":280,"wspd":8,"visib":9.0,"obsTime":1700000000}
+    ])";
+    const QString publicMetarCachePath = QDir(testDataPath).filePath(QStringLiteral("public-metar-last-good.json"));
+    {
+        QFile file(publicMetarCachePath);
+        assert(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        assert(file.write(publicMetarPayload) == publicMetarPayload.size());
+        assert(file.flush());
+    }
+
+    CockpitBridge restoredMetarBridge;
+    assert(restoredMetarBridge.aerodromeWeatherSource() == "NOAA/NWS Aviation Weather Center Data API");
+    assert(restoredMetarBridge.aerodromeWeatherCount() == 2);
+    assert(restoredMetarBridge.aerodromeWeatherStatus().contains("PUBLIC METAR"));
+    assert(restoredMetarBridge.aerodromeWeatherStatus().contains("FALLBACK"));
+    assert(restoredMetarBridge.aerodromeWeatherStatus().contains("STARTUP RESTORE"));
+    const auto metarDataSource = findRow(restoredMetarBridge.dataSourceRows(), "weather");
+    assert(metarDataSource.value("source").toString() == "NOAA/NWS Aviation Weather Center Data API");
+    restoredMetarBridge.fetchPublicAerodromeWeather("BAD");
+    assert(restoredMetarBridge.aerodromeWeatherStatus().contains("FALLBACK"));
+    assert(restoredMetarBridge.aerodromeWeatherCount() == 2);
+
+    restoredMetarBridge.clearAerodromeConditions();
+    assert(restoredMetarBridge.aerodromeWeatherCount() == 0);
+    assert(restoredMetarBridge.runwayConditionCount() == 0);
+    assert(!QFileInfo::exists(publicMetarCachePath));
+    assert(!QFileInfo::exists(licensedAerodromeCachePath));
+
     b.clearAerodromeConditions();
     assert(b.aerodromeWeatherCount() == 0);
     assert(b.runwayConditionCount() == 0);
@@ -208,6 +263,6 @@ int main(int argc, char** argv) {
     b.setLanguage("ar");
     assert(b.rtl());
 
-    if (!testDataPath.isEmpty()) QDir(testDataPath).removeRecursively();
+    QDir(testDataPath).removeRecursively();
     return 0;
 }

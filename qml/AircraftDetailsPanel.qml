@@ -78,10 +78,13 @@ Rectangle {
                 {en:"Serial / year", ar:"الرقم التسلسلي / السنة", value:value("serialNumber") + " / " + value("yearBuilt")},
                 {en:"Registration state", ar:"حالة التسجيل", value:value("registrationStatus")}
             ]},
-            {titleEn:"PROVENANCE", titleAr:"مصادر البيانات", rows:[
+            {titleEn:"PROVENANCE & CACHE", titleAr:"المصدر والترخيص والتخزين", rows:[
                 {en:"Live telemetry", ar:"القياسات الحية", value:value("telemetrySource")},
                 {en:"Aircraft metadata", ar:"بيانات الطائرة", value:value("metadataSource")},
+                {en:"Metadata license", ar:"ترخيص بيانات الطائرة", value:value("metadataLicense")},
                 {en:"Route metadata", ar:"بيانات المسار", value:value("routeSource")},
+                {en:"Route license", ar:"ترخيص بيانات المسار", value:value("routeLicense")},
+                {en:"Enrichment cache", ar:"حالة التخزين المؤقت", value:value("enrichmentCacheState")},
                 {en:"Position mode", ar:"نمط الموقع", value:value("positionSource")},
                 {en:"Signal quality", ar:"جودة الإشارة", value:numberValue("signalQualityPercent", 0, "%")}
             ]}
@@ -107,7 +110,7 @@ Rectangle {
                 }
                 Text {
                     text: root.value("aircraftTypeCode") + "  •  " + root.value("registration")
-                    color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx
+                    color: Theme.royalGold; font.family: Theme.mono; font.pixelSize: Theme.smallPx
                     Layout.fillWidth: true; horizontalAlignment: root.rtl ? Text.AlignRight : Text.AlignLeft
                 }
             }
@@ -186,7 +189,7 @@ Rectangle {
         }
 
         Text {
-            text: root.rtl ? "مصادر عامة • توعية سلبية • دون تحكم بالطائرة" : "PUBLIC SOURCES • PASSIVE AWARENESS • NO AIRCRAFT CONTROL"
+            text: root.rtl ? "مصادر عامة/مرخصة • توعية سلبية • دون تحكم بالطائرة" : "PUBLIC/LICENSED SOURCES • PASSIVE AWARENESS • NO AIRCRAFT CONTROL"
             color: Theme.radarGreen; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx; font.bold: true
             Layout.fillWidth: true; horizontalAlignment: Text.AlignHCenter
         }

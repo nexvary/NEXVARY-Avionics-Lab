@@ -1,4 +1,5 @@
 #include "qt/CockpitBridge.hpp"
+#include <QTemporaryFile>
 #include <QVariantMap>
 #include <cassert>
 using namespace nexvary::avionics;
@@ -46,8 +47,32 @@ int main() {
     assert(b.rfPeakLevelDbm() < -30.0);
     b.fetchPublicFlightFeed("http://example.invalid/feed");
     assert(b.publicFlightFeedStatus().contains("HTTPS"));
+    b.fetchPublicFlightEnrichment("http://example.invalid/enrichment");
+    assert(b.publicFlightEnrichmentStatus().contains("HTTPS"));
     b.resetPublicFlightDemo();
     assert(b.publicFlightTrackCount() == 4);
+    assert(!b.publicFlightHistory("4ca123", 60).isEmpty());
+    assert(b.publicFlightHistoryStatus().contains("HISTORY"));
+
+    QTemporaryFile enrichmentFile;
+    assert(enrichmentFile.open());
+    const QByteArray enrichmentPayload = R"({
+        "provider":{"name":"QT TEST PROVIDER","license":"QT-TEST-LICENSE","sourceUrl":"https://licensed.example.test/data","defaultTtlSeconds":300},
+        "records":[{"icao24":"4ca123","registration":"QT-REG","operatorName":"QT Test Operator","route":"TEST-A → TEST-B"}]
+    })";
+    assert(enrichmentFile.write(enrichmentPayload) == enrichmentPayload.size());
+    enrichmentFile.flush();
+    assert(b.loadPublicFlightEnrichmentFile(enrichmentFile.fileName()));
+    assert(b.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
+    assert(b.publicFlightEnrichmentStatus().contains("LICENSED"));
+    const auto enrichedTrack = b.publicFlightTracks().at(0).toMap();
+    assert(enrichedTrack.value("registration").toString() == "QT-REG");
+    assert(enrichedTrack.value("operatorName").toString() == "QT Test Operator");
+    assert(enrichedTrack.value("route").toString() == "TEST-A → TEST-B");
+    assert(enrichedTrack.value("metadataSource").toString() == "QT TEST PROVIDER");
+    assert(enrichedTrack.value("metadataLicense").toString() == "QT-TEST-LICENSE");
+    assert(enrichedTrack.value("enrichmentCacheState").toString() == "FRESH");
+    assert(!b.publicFlightHistory("4ca123", 15).isEmpty());
 
     assert(b.readinessAssets().size() == 4);
     assert(b.readinessMaintenanceRows().size() == 5);

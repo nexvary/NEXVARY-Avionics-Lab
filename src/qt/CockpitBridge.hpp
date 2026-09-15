@@ -1,6 +1,7 @@
 #pragma once
 
 #include "air_ops/AirOperationsIntegration.hpp"
+#include "air_ops/PublicFlightEnrichment.hpp"
 #include "air_ops/PublicFlightFeed.hpp"
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
@@ -46,6 +47,9 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QString publicFlightFeedSource READ publicFlightFeedSource NOTIFY dataChanged)
     Q_PROPERTY(QString publicFlightFeedStatus READ publicFlightFeedStatus NOTIFY dataChanged)
     Q_PROPERTY(int publicFlightTrackCount READ publicFlightTrackCount NOTIFY dataChanged)
+    Q_PROPERTY(QString publicFlightEnrichmentProvider READ publicFlightEnrichmentProvider NOTIFY dataChanged)
+    Q_PROPERTY(QString publicFlightEnrichmentStatus READ publicFlightEnrichmentStatus NOTIFY dataChanged)
+    Q_PROPERTY(QString publicFlightHistoryStatus READ publicFlightHistoryStatus NOTIFY dataChanged)
     Q_PROPERTY(QVariantList rfSpectrumBins READ rfSpectrumBins NOTIFY dataChanged)
     Q_PROPERTY(QString rfSpectrumMode READ rfSpectrumMode NOTIFY dataChanged)
     Q_PROPERTY(double rfPeakFrequencyMhz READ rfPeakFrequencyMhz NOTIFY dataChanged)
@@ -133,6 +137,9 @@ public:
     QString publicFlightFeedSource() const;
     QString publicFlightFeedStatus() const;
     int publicFlightTrackCount() const noexcept;
+    QString publicFlightEnrichmentProvider() const;
+    QString publicFlightEnrichmentStatus() const;
+    QString publicFlightHistoryStatus() const;
     QVariantList rfSpectrumBins() const;
     QString rfSpectrumMode() const;
     double rfPeakFrequencyMhz() const noexcept;
@@ -212,6 +219,9 @@ public:
     Q_INVOKABLE bool loadPublicFlightFeedFile(const QString& path);
     Q_INVOKABLE void fetchPublicFlightFeed(const QString& url);
     Q_INVOKABLE void resetPublicFlightDemo();
+    Q_INVOKABLE bool loadPublicFlightEnrichmentFile(const QString& path);
+    Q_INVOKABLE void fetchPublicFlightEnrichment(const QString& url);
+    Q_INVOKABLE QVariantList publicFlightHistory(const QString& icao24, int minutes);
 
 signals:
     void dataChanged();
@@ -223,6 +233,9 @@ private:
     void refreshTrends();
     void refreshTwin();
     void rebuildDiagnosticRows();
+    void initializePublicFlightPersistence();
+    void applyPublicFlightEnrichmentAndRecord();
+    void savePublicFlightHistory();
 
     AvionicsLab lab_;
     CockpitViewModel viewModel_;
@@ -241,11 +254,17 @@ private:
     DiagnosticHistory diagnosticHistory_;
     AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
     PublicFlightFeed publicFlightFeed_{PublicFlightFeed::demo()};
+    PublicFlightEnrichmentCache publicFlightEnrichment_;
+    PublicFlightHistoryStore publicFlightHistory_{60};
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
     DataSourceRegistry dataSources_{DataSourceRegistry::operationalDefaults()};
     QNetworkAccessManager* publicFlightNetwork_{nullptr};
     QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
     QString publicFlightFeedStatus_{QStringLiteral("DEMO / PUBLIC-FEED READY")};
+    QString publicFlightEnrichmentStatus_{QStringLiteral("NO ENRICHMENT PROVIDER / LICENSED SOURCE REQUIRED")};
+    QString publicFlightHistoryStatus_{QStringLiteral("HISTORY NOT LOADED")};
+    QString publicFlightHistoryPath_;
+    bool publicFlightPersistenceInitialized_{false};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};
     bool replayPaused_{false};

@@ -309,7 +309,7 @@ Rectangle {
             required property int index
             required property var modelData
             property string identity: root.trackId(modelData)
-            property bool selected: identity !== "" && identity === root.selectedPublicTrackId
+            property bool selected: identity !== "" && (identity === root.selectedPublicTrackId || (root.selectedPublicTrackId === "" && index === 0))
             width: 1
             height: 1
             x: root.xFor(modelData.longitude)
@@ -398,7 +398,7 @@ Rectangle {
 
             Rectangle {
                 id: trackPopup
-                objectName: publicPoint.selected ? "selectedAircraftPopup" : ""
+                objectName: "publicAircraftPopup_" + publicPoint.index
                 visible: pma.containsMouse || (publicPoint.selected && root.showSelectedPublicPopup)
                 x: publicPoint.x < 540 ? root.width - publicPoint.x - 330 : (publicPoint.x > root.width - 350 ? -330 : 20)
                 y: root.popupTopFor(publicPoint.y, height) - publicPoint.y

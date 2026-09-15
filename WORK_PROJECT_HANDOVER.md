@@ -3,82 +3,46 @@
 Last updated: 2026-09-16
 Repository: `nexvary/NEXVARY-Avionics-Lab`
 Branch: `main`
-Stable implementation commit: `d39c322783de63c48077e373f48da71091165b12`
-Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2090 visual/tracking-link closure`
+Stable implementation commit: `e6a9bee78215557e65b0085c954981078e9bb79d`
+Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2091 Flight Tracking layout closure`
 
 ## Current stable state
 
-Stage 2090 closes the Flight Tracking visual regression reported against the Stage 2080 Windows package and preserves all verified Stage 2070–2080 aircraft/aerodrome last-known-good cache work.
+Stage 2091 closes the Flight Tracking regression demonstrated in the user-supplied 1908×964 Windows recording `Video_2026-09-15_152030.mp4`.
 
-The implementation was verified at `d39c322783de63c48077e373f48da71091165b12` on `main`.
+The implementation was verified at `e6a9bee78215557e65b0085c954981078e9bb79d` on `main`. It preserves all Stage 2070–2090 aircraft/aerodrome provider caches, provenance, history, weather/runway separation, Deep Black + Royal Gold identity and passive/read-only safety boundaries.
 
-## Stage 2090 — approved aviation visual identity restored
+## Stage 2091 — video-confirmed layout fix
 
-The user-supplied Stage 1980 Windows build and photographed Flight Tracking screen were used as the visual reference. The uploaded Windows ZIP is a built package, not editable QML source; the actual fix was made in the current GitHub source.
+The supplied recording was inspected frame-by-frame. It confirmed that, after closing the right aircraft-details panel, the persistent selected-aircraft popup inside `StrategicAirMap` could cover map content and the `DATA FUSION / RADAR SWEEP` region on the user's Windows viewport.
 
-Completed visual work:
+Completed fixes:
 
-- Restored a deep black / deep aviation-blue structural base rather than flat black/gray-only panels.
-- Preserved Royal Gold `#D4AF37` as the primary hierarchy, active frame and premium structural accent.
-- Restored restrained cyan / aviation-blue telemetry, map, radar and data accents.
-- Preserved platinum/white high-contrast text and metallic/silver secondary text.
-- Preserved the existing `NexvaryMark` in the main left navigation identity block.
-- Added an additional compact `NexvaryMark` directly in the Flight Tracking web-reference bar so NEXVARY identity remains visible in the relevant workflow.
-- The resulting real CI screenshot was manually opened and visually reviewed after the QML release gate.
+- Removed the full-width Flight Tracking website banner from `AirOperationsPage.qml` to recover 48 px of vertical workspace.
+- Kept the tracking website visible at all times, but localized it to a compact dedicated panel at the top of the Flight Tracking right-hand column.
+- The compact panel includes the NEXVARY mark, the label `AIRCRAFT TRACKING WEBSITE`, the visible URL `https://map.opensky-network.org/` and an `OPEN` button.
+- The displayed URL itself is underlined/clickable and opens externally.
+- The human-facing website remains semantically separate from `AUTHORIZED HTTPS TRACK FEED URL` and `LICENSED HTTPS METADATA / ROUTE URL`.
+- Disabled the persistent selected-aircraft map popup on the Flight Tracking page (`showSelectedPublicPopup: false`).
+- Aircraft selection/highlighting is preserved; detailed text remains in the dedicated right-hand aircraft-details panel instead of floating over the map.
+- The existing strategic map, radar/weather/airspace/routes controls, data-fusion badge, track cards, provider panel and RF spectrum remain intact.
 
-Theme implementation commit:
+Implementation commits:
 
-- `7b1abda715991197c73d89a98c81bba51075c3eb` — `Stage 2090: restore approved aviation black-gold-cyan visual identity`
+- `e25e587d2ba65a70e70cddc17e808c6d333c3a2d` — remove global tracking banner and recover vertical workspace.
+- `e6a9bee78215557e65b0085c954981078e9bb79d` — eliminate persistent map-popup overlap and localize the website link.
 
-Primary theme values now include:
+## Visual identity preserved
 
-- Deep Black: `#020406`
-- Shell: `#070A0F`
-- Deep aviation panel: `#0B1017`
-- Secondary panel: `#101822`
-- Elevated panel: `#1A2632`
-- Royal Gold: `#D4AF37`
-- Signal Cyan: `#72B7D6`
-- Electric/Aviation Blue: `#6FA6CC`
-- Radar Green: `#45D0A0`
-- Platinum: `#F2F4F7`
+Stage 2091 keeps the Stage 2090 approved system:
 
-## Stage 2090 — aircraft-tracking website link restored and separated from the feed
+- Deep Black / deep aviation-blue structural base.
+- Royal Gold `#D4AF37` for active frames and hierarchy.
+- Restrained cyan / aviation-blue telemetry and radar accents.
+- Platinum/white primary text and metallic/silver secondary text.
+- NEXVARY mark visible in the main identity block and Flight Tracking website panel.
 
-The photographed older build showed `https://map.opensky-network.org/` being entered into the data-feed field, which caused a feed-transfer error. Stage 2090 fixes the UI model so a human-facing tracking website can no longer be confused with the authorized HTTPS data-feed endpoint.
-
-Completed work in `qml/AirOperationsPage.qml`:
-
-- Added a dedicated Flight Tracking web-reference bar visible only in the Flight Tracking workspace.
-- Added a read-only website field with:
-  - `https://map.opensky-network.org/`
-- Added a clear label:
-  - `NEXVARY • AIRCRAFT TRACKING WEBSITE`
-- Added an explicit clarification:
-  - `PUBLIC WEB REFERENCE • NOT AN API FEED`
-- Added an `OPEN MAP` button that opens the public website externally.
-- Kept the existing `AUTHORIZED HTTPS TRACK FEED URL` field inside `FlightTrackingPage.qml` separate and unchanged for actual normalized/authorized feed acquisition.
-- Kept the existing `LICENSED HTTPS METADATA / ROUTE URL` field separate for provider enrichment.
-- No web-map URL is automatically submitted to `fetchPublicFlightFeed`.
-- No third-party API credentials or unlicensed provider access were added.
-
-Implementation commit:
-
-- `d39c322783de63c48077e373f48da71091165b12` — `Stage 2090: restore flight-tracking web reference and NEXVARY identity`
-
-## Preserved provider/runtime foundations
-
-Stage 2090 does not rebuild or weaken the prior provider layers:
-
-- `PublicFlightProviderCache` remains bounded and transactional with last-known-good startup restore/fallback.
-- Public-flight metadata/route provenance, provider/license/source URL and freshness remain preserved.
-- Public-flight history retains 5/15/30/60-minute windows.
-- Public NOAA/NWS Aviation Weather Center METAR and licensed runway-condition caches remain separate.
-- `AerodromeProviderCache` retains startup restore, persistence-after-validation and failure fallback.
-- Public METAR and licensed runway-condition provenance remain separate.
-- Synthetic/replay data remains explicitly labelled.
-
-## Verified gates — Stage 2090
+## Verified gates — Stage 2091
 
 | Gate | Result |
 |---|---:|
@@ -95,78 +59,69 @@ Stage 2090 does not rebuild or weaken the prior provider layers:
 | Portable ZIP generation | PASS |
 | One-click Windows installer generation | PASS |
 
-Final verified runs for stable implementation commit `d39c322783de63c48077e373f48da71091165b12`:
+Final verified runs for stable implementation commit `e6a9bee78215557e65b0085c954981078e9bb79d`:
 
-- CI: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35029013766`
-- CodeQL Security: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35029013837`
-- Windows Package: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35029013718`
-
-The CI jobs verified Qt HMI, Linux/Windows builds, tests, QML runtime/route/back-stack/RTL/ten-locale/viewport coverage, responsive screenshot capture, sanitizers and source-security baseline.
+- CI: `35030982773`
+- CodeQL Security: `35030982933`
+- Windows Package: `35030982995`
 
 ## Real screenshot artifact
 
 - Artifact name: `nexvary-avionics-stage2060-responsive-ui-release-gate`
-- Artifact ID: `10420533524`
-- Size: `13,289,197 bytes`
-- SHA-256: `4243affd16ada694f8d79c41796ee23a21dd6fa3b5b11aaae70960bcf9515410`
-- Head SHA: `d39c322783de63c48077e373f48da71091165b12`
-- Relevant reviewed image: `stage1980-flight-tracking-en.png`
-- The artifact filename retains historical Stage 1980/2060 naming, but the screenshot was regenerated from the Stage 2090 implementation head.
+- Artifact ID: `10421806489`
+- Size: `13,288,354 bytes`
+- SHA-256: `088b18050167f41da6562c8c45a8216cf1bccfc17d1860523e5f6df2d677ae64`
+- Head SHA: `e6a9bee78215557e65b0085c954981078e9bb79d`
+- Reviewed image: `stage1980-flight-tracking-en.png`
 
-Manual visual review confirmed:
+Manual visual review confirms that the real rendered Flight Tracking image has:
 
-- NEXVARY logo/mark visible.
-- Deep black / aviation-blue background restored.
-- Royal-gold frames/hierarchy visible.
-- Cyan/blue telemetry/map accents visible.
-- Dedicated aircraft-tracking website URL visible.
-- `OPEN MAP` button visible.
-- Public website is labelled as a web reference, not an API feed.
-- Existing Flight Tracking filters, strategic map/radar composition and aircraft-details panel remain visible.
+- no persistent aircraft information window covering the map/data-fusion region;
+- a dedicated right-hand details column;
+- a compact always-visible `AIRCRAFT TRACKING WEBSITE` panel;
+- visible OpenSky map URL and `OPEN` button;
+- NEXVARY mark;
+- restored black/aviation-blue + Royal Gold + cyan visual system.
 
 ## Windows deliverables
 
 - Artifact name: `NEXVARY-Avionics-Lab-Windows-v3.5.0-Stage1980`
-- Artifact ID: `10420663404`
-- Artifact size: `57,240,676 bytes`
-- SHA-256: `39e0a6228571a915d47cc30764a4f820f2fdd99834eeeda5cba55e1c2e48f614`
-- Head SHA: `d39c322783de63c48077e373f48da71091165b12`
-- Contents:
-  - `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
-  - `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
+- Artifact ID: `10421463388`
+- Artifact size: `57,243,997 bytes`
+- Artifact SHA-256: `9be5e585751635267e1c7032f13a45c50c860ccfcc0818f070062ce53e489bad`
+- Head SHA: `e6a9bee78215557e65b0085c954981078e9bb79d`
 
-Expected build-tree paths:
+Contents:
 
-- Linux HMI: `build-qt/nexvary_avionics_hmi`
-- Linux CLI: `build/nexvary_avionics_lab`
-- Windows HMI before packaging: `build-win/Release/nexvary_avionics_hmi.exe`
-- Windows installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
-- Windows portable ZIP: `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
+- `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
+- `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
 
-## External verification boundary
+Locally extracted verification copies from that exact artifact:
 
-- The OpenSky map URL is used only as a human-facing public web reference and was not treated as a programmatic API contract.
-- CI does not depend on the external map website being online.
-- No external licensed aircraft metadata/route or runway-condition credentials were supplied or contacted in this batch.
-- Provider-specific third-party compatibility beyond deterministic normalized test fixtures is therefore not claimed.
+- Installer SHA-256: `f0feed404180b46867f98f30392f59f5e52f348a1ff050d8fb02cc4314dededc`
+- Portable ZIP SHA-256: `dee6c17921b43d7937c337e081bda4f6b11b022fee9da5870cb6a6a432866c09`
 
-## Public-data and safety boundaries
+## Preserved runtime/provider foundations
 
-- Public web/map references and legally usable telemetry/metadata/weather/condition sources remain read-only.
-- Provider provenance, license, cache state and freshness remain visible and auditable.
-- Synthetic/replay data is never represented as live data.
+- `PublicFlightProviderCache` remains bounded, transactional and last-known-good aware.
+- Public-flight metadata/route provider provenance, license, source URL and cache freshness remain preserved.
+- Public-flight history retains 5/15/30/60-minute windows.
+- Public NOAA/NWS AWC METAR and licensed aerodrome/runway-condition caches remain separate.
+- `AerodromeProviderCache` keeps startup restore, persistence-after-validation and failure fallback.
+- Synthetic/replay data remains explicitly labelled and cannot be confused with live data.
+- No third-party licensed provider credentials were added.
+
+## Safety and external-data boundary
+
+- `https://map.opensky-network.org/` is a human-facing public web reference, not automatically submitted as a programmatic API feed.
+- The authorized feed field remains HTTPS read-only and separate.
 - The application remains limited to awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis.
-- It contains no autonomous engagement, weapons assignment, fire control, strike planning, live-aircraft control, jammer control, spoofing, takeover or destructive interception.
+- No live-aircraft control, targeting, fire control, weapons assignment, jammer control, spoofing or takeover capability was added.
 
 ## Exact continuation point
 
-Continue after Stage 2090 without repeating Stage 1970–2090 work. The stable implementation SHA is `d39c322783de63c48077e373f48da71091165b12` even if later documentation-only commits move `main`.
+Continue after Stage 2091 without repeating Stage 1970–2091. The stable implementation SHA is `e6a9bee78215557e65b0085c954981078e9bb79d`; later documentation-only commits may move `main`.
 
-### Stage 2091 — next useful batch
+### Stage 2092 — next useful batch
 
-1. Continue the previously planned provider observability/auditability work without changing the restored Stage 2090 visual identity.
-2. Surface provider name, license/source, cache age, freshness, fallback/last-good and last-refresh state consistently in Flight Tracking, Aeronautical Data Hub and Data Sources.
-3. Add deterministic Qt/QML presentation checks for fresh/stale/fallback/provider-provenance states without live-Internet CI dependencies.
-4. Preserve the dedicated aircraft-tracking website bar and keep website/feed/metadata URLs semantically separate.
-5. Preserve Deep Black + Royal Gold + restrained aviation-blue/cyan as the locked visual system.
-6. Run Linux, Windows, Qt CTest, QML/RTL/viewport gate, real screenshots, ASan/UBSan, security, CodeQL and Windows packaging before closure.
+Continue provider observability/auditability only after preserving the Stage 2091 video-confirmed layout closure. Surface provider name/license/source, cache age, freshness, fallback/last-good and last-refresh status consistently across Flight Tracking, Aeronautical Data Hub and Data Sources. Keep deterministic CI with no live-Internet dependency and rerun the full Linux/Windows/Qt/QML/screenshot/sanitizer/security/CodeQL/package gates.

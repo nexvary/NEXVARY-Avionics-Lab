@@ -251,9 +251,10 @@ int main(int argc, char* argv[]) {
 
     if (arguments.contains(QStringLiteral("--flight-popup-layout-smoke"))) {
         QTimer::singleShot(120, &app, [root]() {
-            auto* popup = root->findChild<QQuickItem*>(QStringLiteral("selectedAircraftPopup"));
-            auto* dataBadge = root->findChild<QQuickItem*>(QStringLiteral("airMapDataBadge"));
-            auto* toolbar = root->findChild<QQuickItem*>(QStringLiteral("airMapLayerToolbar"));
+            QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
+            auto* popup = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("selectedAircraftPopup")) : nullptr;
+            auto* dataBadge = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapDataBadge")) : nullptr;
+            auto* toolbar = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapLayerToolbar")) : nullptr;
             if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
                 QCoreApplication::exit(16);
                 return;

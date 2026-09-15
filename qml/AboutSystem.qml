@@ -138,8 +138,6 @@ Item {
                             anchors.margins: 10
                             spacing: 2
                             Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: Theme.secondaryPx; font.bold: true }
-                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
-                            Text { text: "v3.5.0 / STAGE 1980"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                             Text { text: "INTEGRATED PLATFORM BRIEF"; color: Theme.amber; font.pixelSize: Theme.smallPx; font.bold: true }
                             Item { Layout.fillHeight: true }
                             Text { text: "AWARENESS / MANAGEMENT / TRAINING"; color: Theme.green; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
@@ -287,7 +285,7 @@ Item {
                                 Text {
                                     text: cockpit.rtl ? modelData.ar : modelData.en
                                     color: Theme.platinum
-                                    font.pixelSize: 10
+                                    font.pixelSize: 11
                                     font.bold: true
                                     Layout.fillWidth: true
                                     horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -298,7 +296,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.descAr : modelData.descEn
                                 color: Theme.silver
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
@@ -345,7 +343,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.titleAr : modelData.titleEn
                                 color: index === 3 ? Theme.accent : Theme.platinum
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 font.bold: true
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
@@ -355,7 +353,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.bodyAr : modelData.bodyEn
                                 color: Theme.silver
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap

@@ -97,6 +97,8 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-bases-airfields-en.png --page 12 --force-workspace 2 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-platform-library-en.png --page 7 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-cuas-detection-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2000-professional-radar-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2000-professional-radar-ar.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-en.png --page 11 --air-ops-workspace 7 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-ar.png --page 11 --air-ops-workspace 7 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-data-sources-en.png --page 15 --language en --width 1920 --height 1080
@@ -107,6 +109,6 @@ jobs:
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1990-aircraft-intelligence-ui-release-gate
+          name: nexvary-avionics-stage2000-professional-radar-ui-release-gate
           path: build-qt/stage*.png
           if-no-files-found: error

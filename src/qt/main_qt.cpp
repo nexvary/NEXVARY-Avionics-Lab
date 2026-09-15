@@ -203,6 +203,11 @@ int main(int argc, char* argv[]) {
     if (arguments.contains(QStringLiteral("--radar-motion-smoke"))) {
         QObject* tacticalPlot = root->findChild<QObject*>(QStringLiteral("cuasTacticalPlot"));
         if (!tacticalPlot) return 13;
+        const QVariantList tracks = tacticalPlot->property("tracks").toList();
+        const double rangeKm = tacticalPlot->property("rangeKm").toDouble();
+        const int selectedTrackIndex = tacticalPlot->property("selectedTrackIndex").toInt();
+        if (tracks.size() < 3 || std::abs(rangeKm - 25.0) > 0.01 ||
+            selectedTrackIndex < 0 || selectedTrackIndex >= tracks.size()) return 13;
         const double initialAngle = tacticalPlot->property("sweepAngle").toDouble();
         QTimer::singleShot(450, &app, [tacticalPlot, initialAngle]() {
             const double currentAngle = tacticalPlot->property("sweepAngle").toDouble();

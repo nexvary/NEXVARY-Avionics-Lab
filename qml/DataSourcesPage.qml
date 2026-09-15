@@ -153,8 +153,9 @@ Item {
                 id: sourceGrid
                 anchors.fill: parent
                 anchors.margins: 10
-                cellWidth: width / 2
-                cellHeight: 176
+                property int columnCount: width >= 1320 ? 3 : 2
+                cellWidth: width / columnCount
+                cellHeight: columnCount === 3 ? height / 3 : 176
                 model: cockpit.dataSourceRows
                 clip: true
                 ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }

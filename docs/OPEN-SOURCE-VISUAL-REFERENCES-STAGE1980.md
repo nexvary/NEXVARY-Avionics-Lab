@@ -23,6 +23,7 @@ Stage 1980 uses public open-source projects to study information hierarchy, geos
 - Open Drone ID is represented as passive receive/replay evidence correlated with AEGIS tracks.
 - The Common Air Picture exposes explicit radar, weather, airspace and route layer controls.
 - Every new provider reports source, mode, freshness, health, record count and trust boundary through the existing Data Sources workspace.
+- New external connectors and API keys remain disabled by default; the committed build uses deterministic replay/training inputs.
 
 ## Safety boundary
 

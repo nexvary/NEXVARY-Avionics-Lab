@@ -15,6 +15,8 @@ std::string_view toString(DataSourceKind kind) noexcept {
         case DataSourceKind::Weather: return "WEATHER";
         case DataSourceKind::Airspace: return "AIRSPACE DATASET";
         case DataSourceKind::Airfield: return "AIRFIELD";
+        case DataSourceKind::PublicOrbitalElements: return "ORBITAL ELEMENTS";
+        case DataSourceKind::OpenDroneId: return "OPEN DRONE ID";
     }
     return "UNKNOWN";
 }
@@ -28,6 +30,8 @@ DataSourceRegistry DataSourceRegistry::operationalDefaults() {
     registry.registerSource({"weather", "Weather Constraints", DataSourceKind::Weather, "PROVIDER ADAPTER", "READ-ONLY CONSTRAINT LAYER", true, true});
     registry.registerSource({"airspace", "Airspace Dataset", DataSourceKind::Airspace, "VERSIONED DATASET", "READ-ONLY GEOMETRY", false, true});
     registry.registerSource({"airfields", "Airfields & Bases", DataSourceKind::Airfield, "MANAGEMENT SNAPSHOT", "TRAINING READINESS", false, true});
+    registry.registerSource({"public-orbital-elements", "Public Orbital Elements", DataSourceKind::PublicOrbitalElements, "PUBLIC / REPLAY EPHEMERIS", "SPACE AWARENESS / NOT FOR NAVIGATION", true, true});
+    registry.registerSource({"open-drone-id", "Open Drone ID", DataSourceKind::OpenDroneId, "PASSIVE RECEIVE / REPLAY", "IDENTIFICATION AWARENESS ONLY", false, true});
     return registry;
 }
 

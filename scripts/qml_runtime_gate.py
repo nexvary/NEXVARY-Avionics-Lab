@@ -52,7 +52,7 @@ def main() -> None:
     cases: list[list[str]] = []
     cases.extend([["--smoke", "--page", "0", "--language", language] for language in LANGUAGES])
     cases.extend([["--smoke", "--page", str(page), "--language", "en"] for page in range(1, 17)])
-    cases.extend([["--smoke", "--page", "11", "--air-ops-workspace", str(workspace), "--language", "en"] for workspace in range(7)])
+    cases.extend([["--smoke", "--page", "11", "--air-ops-workspace", str(workspace), "--language", "en"] for workspace in range(8)])
     cases.extend([["--smoke", "--page", "12", "--force-workspace", str(workspace), "--language", "ar"] for workspace in range(6)])
     cases.extend([["--smoke", "--page", "11", "--air-ops-workspace", "6", "--cuas-section", str(section), "--language", "en"] for section in range(4)])
     cases.extend([["--smoke", "--page", "16", "--system-workspace", str(workspace), "--language", "en"] for workspace in range(3)])
@@ -61,6 +61,7 @@ def main() -> None:
         ["--navigation-smoke", "--language", "ar"],
         ["--rtl-smoke", "--language", "ar"],
         ["--radar-motion-smoke", "--page", "11", "--air-ops-workspace", "6", "--cuas-section", "0", "--language", "en"],
+        ["--orbit-motion-smoke", "--page", "11", "--air-ops-workspace", "7", "--language", "en"],
     ])
 
     with tempfile.TemporaryDirectory(prefix="nexvary-qml-") as runtime_dir:

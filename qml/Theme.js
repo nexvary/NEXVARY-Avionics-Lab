@@ -45,7 +45,7 @@ var amber = "#F4B942"
 var red = "#F06262"
 var radius = 7
 
-// Stage 1970 ministerial readability system.
+// Stage 1980 ministerial readability system.
 var arabicKufi = "Noto Kufi Arabic"
 var latinUi = "Noto Sans"
 var mono = "Noto Sans Mono"

@@ -419,6 +419,40 @@ Item {
                             }
                         }
 
+                        Rectangle {
+                            visible: page.selectedSection === 0 || page.selectedSection === 1
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: 12
+                            width: 276
+                            height: 62
+                            color: "#E80A0A0A"
+                            border.color: Theme.signalCyan
+                            border.width: 1
+                            radius: 5
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 8
+                                spacing: 8
+                                Rectangle {
+                                    width: 32
+                                    height: 32
+                                    radius: 16
+                                    color: "#142CCEFF"
+                                    border.color: Theme.signalCyan
+                                    border.width: 1
+                                    Text { anchors.centerIn: parent; text: "ID"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                                }
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 1
+                                    Text { text: "OPEN DRONE ID / REMOTE ID"; color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { text: "PASSIVE RECEIVE • REPLAY • " + cockpit.airOperationsTrackCount + " CORRELATED"; color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                                }
+                                Rectangle { width: 8; height: 8; radius: 4; color: Theme.radarGreen }
+                            }
+                        }
+
                         RfSpectrumMini {
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom

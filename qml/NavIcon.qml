@@ -182,6 +182,11 @@ Canvas {
             c.beginPath(); c.arc(.5*w,.5*h,.23*w,0,Math.PI*2); c.stroke()
             line(.5,.5,.81,.23)
             c.beginPath(); c.arc(.68*w,.36*h,.04*w,0,Math.PI*2); c.fill()
+        } else if (kind === "orbit") {
+            c.beginPath(); c.arc(.5*w,.5*h,.14*w,0,Math.PI*2); c.stroke()
+            c.beginPath(); c.ellipse(.08*w,.34*h,.84*w,.32*h); c.stroke()
+            c.beginPath(); c.ellipse(.34*w,.08*h,.32*w,.84*h); c.stroke()
+            c.beginPath(); c.arc(.82*w,.47*h,.045*w,0,Math.PI*2); c.fill()
         } else if (kind === "classify") {
             c.strokeRect(.14*w,.14*h,.30*w,.30*h); c.strokeRect(.56*w,.14*h,.30*w,.30*h)
             c.strokeRect(.14*w,.56*h,.30*w,.30*h); c.beginPath(); c.arc(.71*w,.71*h,.15*w,0,Math.PI*2); c.stroke()

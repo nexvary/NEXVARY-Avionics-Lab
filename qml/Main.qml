@@ -52,7 +52,8 @@ ApplicationWindow {
                     {route:"airspace", label:tr("airspace"), icon:"airspace", page:11, workspace:0},
                     {route:"flight-tracking", label:tr("flightTracking"), icon:"radar", page:11, workspace:5},
                     {route:"route-lab", label:tr("routeLab"), icon:"route", page:11, workspace:3},
-                    {route:"aeronautical-data", label:tr("aeroData"), icon:"data", page:11, workspace:2}
+                    {route:"aeronautical-data", label:tr("aeroData"), icon:"data", page:11, workspace:2},
+                    {route:"space-domain", label:tr("spaceDomain"), icon:"orbit", page:11, workspace:7}
                 ]
             },
             {
@@ -170,9 +171,9 @@ ApplicationWindow {
 
     function initializeView(index, airWorkspace, forceWorkspace, cuasSection, systemWorkspace) {
         if (index === 11) {
-            const routes = ["airspace", "common-picture", "aeronautical-data", "route-lab", "aircraft-visuals", "flight-tracking", "cuas-detection"]
-            const groups = ["air-operations", "command", "air-operations", "air-operations", "engineering", "air-operations", "cuas"]
-            const workspace = Math.max(0, Math.min(6, airWorkspace))
+            const routes = ["airspace", "common-picture", "aeronautical-data", "route-lab", "aircraft-visuals", "flight-tracking", "cuas-detection", "space-domain"]
+            const groups = ["air-operations", "command", "air-operations", "air-operations", "engineering", "air-operations", "cuas", "air-operations"]
+            const workspace = Math.max(0, Math.min(7, airWorkspace))
             if (workspace === 6) {
                 const section = Math.max(0, Math.min(3, Number(cuasSection || 0)))
                 const cuasRoutes = ["cuas-detection", "cuas-classification", "cuas-incidents", "cuas-coordination"]
@@ -382,7 +383,7 @@ ApplicationWindow {
                         Text { text: cockpit.rtl ? "لا يوجد مسار تحكم حي" : "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx }
                         Text { text: cockpit.rtl ? "تدريب • تحقق • تحليل" : "TRAINING • VERIFICATION • ANALYSIS"; color: Theme.signalCyan; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
                         Item { Layout.fillHeight: true }
-                        Text { text: "v3.4.0  •  MINISTERIAL GATE 1970"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                        Text { text: "v3.5.0  •  SPACE DOMAIN GATE 1980"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                     }
                 }
             }
@@ -612,7 +613,7 @@ ApplicationWindow {
                     anchors.rightMargin: 12
                     spacing: 10
                     layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
-                    Text { text: "NEXVARY AVIONICS LAB  /  v3.4.0"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                    Text { text: "NEXVARY AVIONICS LAB  /  v3.5.0"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
                     Item { Layout.fillWidth: true }
                     Text { text: cockpit.text("simulation_only"); color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; elide: Text.ElideRight; Layout.maximumWidth: parent.width * 0.44 }
                     Item { Layout.fillWidth: true }

@@ -72,35 +72,37 @@ jobs:
         run: ctest --test-dir build-qt --output-on-failure
       - name: QML runtime, route, back-stack, RTL and ten-locale gate
         run: python scripts/qml_runtime_gate.py ./build-qt/nexvary_avionics_hmi
-      - name: Capture Stage 1970 command UI release gate
+      - name: Capture Stage 1980 space and air command UI release gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
         run: |
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-command-overview-en-1920x1080.png --page 0 --language en --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-command-overview-ar-1920x1080.png --page 0 --language ar --aircraft-profile generic-jet --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-command-overview-ar-2560x1440.png --page 0 --language ar --aircraft-profile generic-uav --width 2560 --height 1440
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-common-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-flight-tracking-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-aeronautical-data-en.png --page 11 --air-ops-workspace 2 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-aircraft-visual-en.png --page 11 --air-ops-workspace 4 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-aircraft-helicopter-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-helicopter --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-aircraft-uav-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-uav --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-aircraft-turboprop-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-turboprop --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-force-fleet-ar.png --page 12 --force-workspace 0 --language ar --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-bases-airfields-en.png --page 12 --force-workspace 2 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-platform-library-en.png --page 7 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-cuas-detection-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-data-sources-en.png --page 15 --language en --width 1920 --height 1080
-          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1970-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-en-1920x1080.png --page 0 --language en --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-ar-1920x1080.png --page 0 --language ar --aircraft-profile generic-jet --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-ar-2560x1440.png --page 0 --language ar --aircraft-profile generic-uav --width 2560 --height 1440
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-common-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-flight-tracking-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aeronautical-data-en.png --page 11 --air-ops-workspace 2 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aircraft-visual-en.png --page 11 --air-ops-workspace 4 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aircraft-helicopter-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-helicopter --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aircraft-uav-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-uav --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aircraft-turboprop-en.png --page 11 --air-ops-workspace 4 --language en --aircraft-profile generic-turboprop --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-force-fleet-ar.png --page 12 --force-workspace 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-bases-airfields-en.png --page 12 --force-workspace 2 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-platform-library-en.png --page 7 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-cuas-detection-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-en.png --page 11 --air-ops-workspace 7 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-ar.png --page 11 --air-ops-workspace 7 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-data-sources-en.png --page 15 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-diagnostic-ar.png --page 9 --language ar --width 1920 --height 1080
           for lang in ar en tr es de it fr ur fa ru; do
-            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1970-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
+            ./build-qt/nexvary_avionics_hmi --screenshot "build-qt/stage1980-lang-${lang}.png" --page 0 --language "$lang" --width 1720 --height 1000
           done
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage1970-command-ui-release-gate
-          path: build-qt/stage1970-*.png
+          name: nexvary-avionics-stage1980-space-air-command-ui-release-gate
+          path: build-qt/stage1980-*.png
           if-no-files-found: error

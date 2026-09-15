@@ -4,10 +4,10 @@ p=sys.argv[1]
 with open(p,'r',encoding='utf-8') as f:d=json.load(f)
 assert d['schema']=='nexvary-avionics-release-manifest/v1'
 assert d['product']=='NEXVARY Avionics Lab'
-assert d['version']=='3.4.0'
-assert d['stage']==1970
+assert d['version']=='3.5.0'
+assert d['stage']==1980
 assert d['scope']=='training-simulation-only'
 assert len(d['dependencies'])>=4
 for dep in d['dependencies']:
     assert dep['name'] and dep['version'] and dep['license'] and dep['source']
-print('Stage 1970 release manifest verified')
+print('Stage 1980 release manifest verified')

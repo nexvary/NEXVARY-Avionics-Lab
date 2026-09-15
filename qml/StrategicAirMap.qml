@@ -15,6 +15,9 @@ Rectangle {
     property bool showDataBadge: true
     property bool showBaseLabels: true
     property bool showRadar: true
+    property bool showWeather: true
+    property bool showAirspace: true
+    property bool showRoutes: true
     property real sweepAngle: 0
 
     color: "#02080D"
@@ -49,6 +52,9 @@ Rectangle {
         running: root.visible && root.showRadar
     }
     onSweepAngleChanged: mapCanvas.requestPaint()
+    onShowWeatherChanged: mapCanvas.requestPaint()
+    onShowAirspaceChanged: mapCanvas.requestPaint()
+    onShowRoutesChanged: mapCanvas.requestPaint()
 
     Canvas {
         id: mapCanvas
@@ -134,6 +140,7 @@ Rectangle {
                 {x:.385,y:.54,w:.18,h:.21,f:"rgba(70,226,160,.070)",s:Theme.radarGreen,n:root.rtl?"منطقة طرفية":"TMA"},
                 {x:.595,y:.49,w:.18,h:.18,f:"rgba(255,155,84,.070)",s:Theme.warmOrange,n:root.rtl?"منطقة تدريب":"TRAINING"}
             ]
+            c.globalAlpha = root.showAirspace ? 1 : 0
             c.lineWidth = 1.2
             c.font = root.rtl ? "700 12px 'Noto Kufi Arabic'" : "700 12px 'Noto Sans'"
             for (var si=0; si<sectors.length; ++si) {
@@ -144,7 +151,9 @@ Rectangle {
                 c.fillStyle=s.s
                 c.fillText(s.n,w*s.x+9,h*s.y+19)
             }
+            c.globalAlpha = 1
 
+            c.globalAlpha = root.showRoutes ? 1 : 0
             c.lineWidth = 2.1
             c.setLineDash([11,8])
             c.strokeStyle = Theme.signalCyan
@@ -158,6 +167,33 @@ Rectangle {
             c.bezierCurveTo(w*.44,h*.60,w*.58,h*.58,w*.77,h*.72)
             c.stroke()
             c.setLineDash([])
+            c.globalAlpha = 1
+
+            if (root.showWeather) {
+                var weatherCells = [
+                    {x:.21,y:.25,t:"18°C",wind:"NW 16 KT",color:Theme.skyBlue},
+                    {x:.61,y:.19,t:"21°C",wind:"W 09 KT",color:Theme.radarGreen},
+                    {x:.77,y:.58,t:"31°C",wind:"SE 22 KT",color:Theme.amber}
+                ]
+                c.textAlign = "center"
+                for (var wi = 0; wi < weatherCells.length; ++wi) {
+                    var wc = weatherCells[wi]
+                    var wx = w * wc.x
+                    var wy = h * wc.y
+                    c.fillStyle = "#D9050D13"
+                    c.strokeStyle = wc.color
+                    c.lineWidth = 1
+                    c.fillRect(wx - 42, wy - 19, 84, 38)
+                    c.strokeRect(wx - 42, wy - 19, 84, 38)
+                    c.fillStyle = wc.color
+                    c.font = "700 11px 'Noto Sans Mono'"
+                    c.fillText(wc.t, wx, wy - 3)
+                    c.fillStyle = Theme.silver
+                    c.font = "10px 'Noto Sans Mono'"
+                    c.fillText(wc.wind, wx, wy + 12)
+                }
+                c.textAlign = "left"
+            }
 
             if (root.showRadar) {
                 var rx=w*.485
@@ -621,6 +657,60 @@ Rectangle {
                 }
             }
             Rectangle { width: 8; height: 8; radius: 4; color: Theme.radarGreen }
+        }
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.margins: 14
+        width: 478
+        height: 50
+        color: "#EB050D13"
+        border.color: Theme.border
+        border.width: 1
+        radius: 6
+        z: 10
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.margins: 6
+            spacing: 5
+            layoutDirection: root.rtl ? Qt.RightToLeft : Qt.LeftToRight
+
+            Repeater {
+                model: [
+                    {label:root.rtl ? "رادار" : "RADAR", active:root.showRadar, color:Theme.radarGreen, index:0},
+                    {label:root.rtl ? "طقس" : "WEATHER", active:root.showWeather, color:Theme.skyBlue, index:1},
+                    {label:root.rtl ? "قطاعات" : "AIRSPACE", active:root.showAirspace, color:Theme.rfViolet, index:2},
+                    {label:root.rtl ? "مسارات" : "ROUTES", active:root.showRoutes, color:Theme.royalGold, index:3}
+                ]
+                delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: modelData.active ? Theme.panel3 : Theme.panel2
+                    border.color: modelData.active ? modelData.color : Theme.borderSoft
+                    border.width: modelData.active ? Theme.activeFrameWidth : Theme.frameWidth
+                    radius: 5
+                    RowLayout {
+                        anchors.centerIn: parent
+                        spacing: 5
+                        Rectangle { width: 7; height: 7; radius: 4; color: modelData.active ? modelData.color : Theme.muted }
+                        Text { text: modelData.label; color: modelData.active ? Theme.platinum : Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (modelData.index === 0) root.showRadar = !root.showRadar
+                            else if (modelData.index === 1) root.showWeather = !root.showWeather
+                            else if (modelData.index === 2) root.showAirspace = !root.showAirspace
+                            else root.showRoutes = !root.showRoutes
+                        }
+                    }
+                }
+            }
         }
     }
 }

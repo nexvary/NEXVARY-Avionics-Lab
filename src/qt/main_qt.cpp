@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
     if (airOpsWorkspaceIndex >= 0 && airOpsWorkspaceIndex + 1 < arguments.size()) {
         bool ok = false;
         const int value = arguments.at(airOpsWorkspaceIndex + 1).toInt(&ok);
-        if (ok && value >= 0 && value <= 6) airOpsWorkspace = value;
+        if (ok && value >= 0 && value <= 7) airOpsWorkspace = value;
     }
 
     int forceWorkspace = 0;
@@ -187,7 +187,7 @@ int main(int argc, char* argv[]) {
         QQmlExpression navigationTest(
             qmlContext,
             root,
-            QStringLiteral("navigationHistory=[]; initializeView(0,0,0,0,0); navigateRoute('maintenance',12,5,'force-management'); var forceOpened=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5 && navigationHistory.length===1); navigateRoute('cuas-incidents',11,62,'cuas'); var cuasOpened=(selectedPage===11 && selectedRoute==='cuas-incidents' && currentWorkspace()===62 && navigationHistory.length===2); goBack(); var forceRestored=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5); goBack(); forceOpened && cuasOpened && forceRestored && selectedPage===0 && selectedRoute==='overview' && currentWorkspace()===0 && navigationHistory.length===0")
+            QStringLiteral("navigationHistory=[]; initializeView(0,0,0,0,0); navigateRoute('space-domain',11,7,'air-operations'); var spaceOpened=(selectedPage===11 && selectedRoute==='space-domain' && currentWorkspace()===7 && navigationHistory.length===1); navigateRoute('maintenance',12,5,'force-management'); var forceOpened=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5 && navigationHistory.length===2); navigateRoute('cuas-incidents',11,62,'cuas'); var cuasOpened=(selectedPage===11 && selectedRoute==='cuas-incidents' && currentWorkspace()===62 && navigationHistory.length===3); goBack(); var forceRestored=(selectedPage===12 && selectedRoute==='maintenance' && currentWorkspace()===5); goBack(); var spaceRestored=(selectedPage===11 && selectedRoute==='space-domain' && currentWorkspace()===7); goBack(); spaceOpened && forceOpened && cuasOpened && forceRestored && spaceRestored && selectedPage===0 && selectedRoute==='overview' && currentWorkspace()===0 && navigationHistory.length===0")
         );
         const QVariant result = navigationTest.evaluate();
         if (navigationTest.hasError() || !result.toBool()) return 9;
@@ -206,6 +206,17 @@ int main(int argc, char* argv[]) {
         QTimer::singleShot(450, &app, [tacticalPlot, initialAngle]() {
             const double currentAngle = tacticalPlot->property("sweepAngle").toDouble();
             QCoreApplication::exit(std::abs(currentAngle - initialAngle) > 0.02 ? 0 : 13);
+        });
+        return app.exec();
+    }
+
+    if (arguments.contains(QStringLiteral("--orbit-motion-smoke"))) {
+        QObject* orbitalPlot = root->findChild<QObject*>(QStringLiteral("orbitalSituationPlot"));
+        if (!orbitalPlot) return 14;
+        const double initialPhase = orbitalPlot->property("orbitalPhase").toDouble();
+        QTimer::singleShot(450, &app, [orbitalPlot, initialPhase]() {
+            const double currentPhase = orbitalPlot->property("orbitalPhase").toDouble();
+            QCoreApplication::exit(std::abs(currentPhase - initialPhase) > 0.002 ? 0 : 14);
         });
         return app.exec();
     }

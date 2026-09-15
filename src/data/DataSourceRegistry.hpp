@@ -14,7 +14,9 @@ enum class DataSourceKind {
     AegisAwareness,
     Weather,
     Airspace,
-    Airfield
+    Airfield,
+    PublicOrbitalElements,
+    OpenDroneId
 };
 
 struct DataSourceDefinition {

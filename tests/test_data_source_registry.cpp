@@ -7,7 +7,7 @@ using namespace nexvary::avionics;
 
 int main() {
     auto registry = DataSourceRegistry::operationalDefaults();
-    assert(registry.sources().size() == 7);
+    assert(registry.sources().size() == 9);
 
     const auto adsb = registry.find("public-adsb");
     assert(adsb.has_value());
@@ -20,6 +20,20 @@ int main() {
     assert(aegis.has_value());
     assert(!aegis->networkCapable);
     assert(aegis->readOnly);
+
+    const auto orbital = registry.find("public-orbital-elements");
+    assert(orbital.has_value());
+    assert(orbital->kind == DataSourceKind::PublicOrbitalElements);
+    assert(orbital->networkCapable);
+    assert(orbital->readOnly);
+    assert(toString(orbital->kind) == "ORBITAL ELEMENTS");
+
+    const auto remoteId = registry.find("open-drone-id");
+    assert(remoteId.has_value());
+    assert(remoteId->kind == DataSourceKind::OpenDroneId);
+    assert(!remoteId->networkCapable);
+    assert(remoteId->readOnly);
+    assert(toString(remoteId->kind) == "OPEN DRONE ID");
 
     bool duplicateRejected = false;
     try {

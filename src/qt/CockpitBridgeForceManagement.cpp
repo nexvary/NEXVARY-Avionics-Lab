@@ -140,6 +140,16 @@ QVariantList CockpitBridge::dataSourceRows() const {
         } else if (id == QStringLiteral("airfields")) {
             row[QStringLiteral("source")] = QStringLiteral("FORCE MANAGEMENT");
             row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+        } else if (id == QStringLiteral("public-orbital-elements")) {
+            row[QStringLiteral("source")] = QStringLiteral("PUBLIC EPHEMERIS / TRAINING REPLAY");
+            row[QStringLiteral("mode")] = QStringLiteral("MEO AWARENESS / READ ONLY");
+            row[QStringLiteral("records")] = 12;
+            row[QStringLiteral("freshness")] = QStringLiteral("REPLAY / VERIFIED");
+        } else if (id == QStringLiteral("open-drone-id")) {
+            row[QStringLiteral("source")] = QStringLiteral("REMOTE ID / TRAINING REPLAY");
+            row[QStringLiteral("mode")] = QStringLiteral("PASSIVE RECEIVE ONLY");
+            row[QStringLiteral("records")] = airOperationsTrackCount();
+            row[QStringLiteral("freshness")] = QStringLiteral("FRESH / CORRELATED");
         }
         rows.push_back(row);
     }

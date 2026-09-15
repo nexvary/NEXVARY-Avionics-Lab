@@ -6,6 +6,7 @@ import "Theme.js" as Theme
 Item {
     id: page
     clip: true
+    property string trackingWebsiteUrl: "https://map.opensky-network.org/"
     property var selectedTrack: cockpit.publicFlightTracks.length > 0 ? cockpit.publicFlightTracks[0] : ({})
     property bool detailsOpen: cockpit.publicFlightTracks.length > 0
     property int historyMinutes: historyFilter.currentIndex === 0 ? 5 : historyFilter.currentIndex === 1 ? 15 : historyFilter.currentIndex === 2 ? 30 : 60
@@ -242,7 +243,11 @@ Item {
                     bases: []
                     rtl: cockpit.rtl
                     modeLabel: cockpit.rtl ? "تتبع الرحلات العامة" : "PUBLIC FLIGHT TRACKING"
-                    showSelectedPublicPopup: !page.detailsOpen
+                    // Keep the selected aircraft highlighted on the map, but use the
+                    // dedicated right-hand details panel for text. The old persistent
+                    // map popup overlapped radar/data-fusion controls on 1908x964 and
+                    // smaller Windows viewports.
+                    showSelectedPublicPopup: false
                     Component.onCompleted: {
                         if (page.selectedTrack && page.selectedTrack.icao24)
                             selectedPublicTrackId = String(page.selectedTrack.icao24).toLowerCase()
@@ -298,6 +303,63 @@ Item {
                 Layout.maximumWidth: 460
                 Layout.fillHeight: true
                 spacing: 8
+
+                Rectangle {
+                    id: trackingWebsitePanel
+                    objectName: "aircraftTrackingWebsitePanel"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 44
+                    color: Theme.deepBlue
+                    border.color: Theme.royalGold
+                    border.width: 1
+                    radius: Theme.radius
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 7
+                        layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                        NexvaryMark { Layout.preferredWidth: 28; Layout.preferredHeight: 28 }
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 0
+                            Text {
+                                Layout.fillWidth: true
+                                text: cockpit.rtl ? "موقع تتبع الطائرات" : "AIRCRAFT TRACKING WEBSITE"
+                                color: Theme.platinum
+                                font.family: Theme.uiFont(cockpit.rtl)
+                                font.pixelSize: 11
+                                font.bold: true
+                                elide: Text.ElideRight
+                                horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
+                            }
+                            Text {
+                                Layout.fillWidth: true
+                                text: page.trackingWebsiteUrl
+                                color: Theme.signalCyan
+                                font.family: Theme.mono
+                                font.pixelSize: 10
+                                font.underline: true
+                                elide: Text.ElideMiddle
+                                horizontalAlignment: Text.AlignLeft
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Qt.openUrlExternally(page.trackingWebsiteUrl)
+                                }
+                            }
+                        }
+                        Button {
+                            id: openTrackingWebsiteButton
+                            objectName: "openAircraftTrackingWebsiteButton"
+                            Layout.preferredWidth: 72
+                            Layout.preferredHeight: 30
+                            text: cockpit.rtl ? "فتح" : "OPEN"
+                            onClicked: Qt.openUrlExternally(page.trackingWebsiteUrl)
+                            contentItem: Text { text: parent.text; color: Theme.deepBlack; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                            background: Rectangle { color: Theme.royalGold; radius: Theme.radius }
+                        }
+                    }
+                }
 
                 AircraftDetailsPanel {
                     Layout.fillWidth: true

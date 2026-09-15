@@ -20,6 +20,15 @@
 #include <cmath>
 
 namespace {
+QQuickItem* findQuickItem(QQuickItem* parent, const QString& objectName) {
+    if (!parent) return nullptr;
+    if (parent->objectName() == objectName) return parent;
+    for (QQuickItem* child : parent->childItems()) {
+        if (QQuickItem* match = findQuickItem(child, objectName)) return match;
+    }
+    return nullptr;
+}
+
 QIcon makeAvionicsIcon() {
     QPixmap pixmap(128, 128);
     pixmap.fill(Qt::transparent);
@@ -260,9 +269,10 @@ int main(int argc, char* argv[]) {
     if (arguments.contains(QStringLiteral("--flight-popup-layout-smoke"))) {
         QTimer::singleShot(120, &app, [root]() {
             QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
-            auto* popup = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("publicAircraftPopup_0")) : nullptr;
-            auto* dataBadge = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapDataBadge")) : nullptr;
-            auto* toolbar = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapLayerToolbar")) : nullptr;
+            auto* trackingMap = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("flightTrackingAirMap")) : nullptr;
+            auto* popup = findQuickItem(trackingMap, QStringLiteral("publicAircraftPopup_0"));
+            auto* dataBadge = findQuickItem(trackingMap, QStringLiteral("airMapDataBadge"));
+            auto* toolbar = findQuickItem(trackingMap, QStringLiteral("airMapLayerToolbar"));
             if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
                 qWarning() << "Flight popup gate objects"
                            << trackingPage << popup << dataBadge << toolbar

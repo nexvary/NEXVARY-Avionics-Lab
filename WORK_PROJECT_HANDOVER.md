@@ -1,74 +1,100 @@
 # NEXVARY Avionics Lab — Work Project Handover
 
-Last updated: 2026-09-15
+Last updated: 2026-09-16
 Repository: `nexvary/NEXVARY-Avionics-Lab`
 Branch: `main`
-Stable implementation commit: `007209d2b317ce29cf95237e607b8ecde3801f14`
-Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2071 Qt provider-runtime closure`
+Stable implementation commit: `5487fe4a62b67417d1c0ead9b263ca887517075e`
+Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2080 aerodrome-provider runtime-cache closure`
 
 ## Current stable state
 
-Stage 2071 continues directly from the verified Stage 2070 provider-cache closure. It preserves the approved Deep Black + Royal Gold visual system, Air Operations, Force Management, avionics engineering, diagnostics, telemetry, verification, replay, reports, ten locales, Arabic RTL, Presentation Mode, responsive 1366×768 / 1440×900 coverage and the inherited real-application screenshot gate.
+Stage 2080 continues directly from the verified Stage 2071 aircraft-provider runtime closure. It preserves the approved Deep Black + Royal Gold visual system, Air Operations, Force Management, avionics engineering, diagnostics, telemetry, verification, replay, reports, ten locales, Arabic RTL, Presentation Mode, responsive 1366×768 / 1440×900 coverage and the inherited real-application screenshot gate.
 
-The stable implementation commit is `007209d2b317ce29cf95237e607b8ecde3801f14` on `main`.
+The current stable implementation commit is `5487fe4a62b67417d1c0ead9b263ca887517075e` on `main`.
 
-## Stage 2071 — Qt runtime last-known-good provider integration
+## Stage 2080 — aerodrome last-known-good runtime caches
 
-Stage 2071 wires the Stage 2070 transactional `PublicFlightProviderCache` into the live Qt runtime path instead of leaving it as an isolated core primitive.
+Stage 2080 extends the transactional last-known-good runtime model to the existing aerodrome provider path without rebuilding the weather/airfield modules already completed in Stages 2030–2040.
 
 ### Completed work
 
-- Qt runtime now restores `public-flight-provider-last-good.json` automatically during `CockpitBridge` startup.
-- A restored provider is explicitly marked as `CACHE FALLBACK / LAST GOOD` and is never presented as a newly fetched live provider.
-- Restored metadata/route records are applied immediately to the current public-flight snapshot with provider name, license, source URL and TTL/cache provenance preserved.
-- Successful provider-file imports pass through the transactional provider cache and persist only after validation succeeds.
-- Successful HTTPS provider refreshes persist only after the new payload parses and validates successfully.
-- Malformed JSON, invalid provider payloads and oversized payloads do not replace the existing last-known-good provider.
-- HTTPS URL validation and network failures now mark the existing provider explicitly as fallback while keeping it active.
-- During a refresh, status states that the last-known-good provider is retained until the replacement is verified.
-- Public-flight telemetry coordinates and kinematics remain separate from metadata/route enrichment; the cache remains read-only.
-- Public-flight history persistence and 5/15/30/60-minute windows continue unchanged.
+- Added a dedicated bounded transactional `AerodromeProviderCache` core component.
+- Public NOAA/NWS Aviation Weather Center METAR data and licensed aerodrome/runway-condition data use separate cache instances and separate persisted last-good files.
+- Qt runtime restores the latest verified public METAR cache automatically at startup when available.
+- Qt runtime restores the latest verified licensed aerodrome/runway-condition cache automatically at startup when available.
+- Restored data is explicitly marked as `CACHE FALLBACK / LAST GOOD` / startup restore rather than being represented as newly fetched live data.
+- Public METAR refreshes retain the prior verified dataset until the new network payload has passed size and parser validation.
+- Licensed runway-condition refreshes retain the prior verified dataset on invalid URL, network error, oversized payload or parse/validation failure.
+- Only successfully parsed and validated replacements are persisted to the local last-known-good files.
+- Public METAR provenance and licensed runway-condition provenance remain separate at the persistence layer and in runtime status/source reporting.
+- The existing Aviation Weather Center connector remains HTTPS read-only and limits station requests to sanitized ICAO identifiers.
+- The existing licensed aerodrome-condition path remains HTTPS/file based, read-only and provider/license/provenance aware.
+- Weather and runway observations retain source, license, source URL, cache state, cached/expires timestamps and observation fields.
+- Public METAR remains preferred for weather rows where available; licensed weather may provide fallback coverage without replacing the public-source provenance.
+- No control, targeting, flight-control or active RF behavior was added.
 
 ### Changed files
 
-- `src/air_ops/PublicFlightProviderCache.hpp`
-- `src/air_ops/PublicFlightProviderCache.cpp`
-- `src/qt/CockpitBridge.hpp`
+Stage 2080 is a single implementation commit over its parent and changed exactly these files:
+
+- `CMakeLists.txt`
+- `src/air_ops/AerodromeProviderCache.cpp` — added
+- `src/air_ops/AerodromeProviderCache.hpp` — added
 - `src/qt/CockpitBridge.cpp`
-- `src/qt/CockpitBridgeFlightFeed.cpp`
+- `src/qt/CockpitBridge.hpp`
+- `src/qt/CockpitBridgeAerodrome.cpp`
+- `tests/test_aerodrome_provider_cache.cpp` — added
 - `tests/test_qt_bridge.cpp`
 
-### Qt bridge verification added
+The commit adds the new core cache to the build/test matrix and extends Qt bridge tests for runtime persistence/fallback behavior.
 
-The Qt bridge test now uses an isolated `QStandardPaths` test location and verifies:
+## Stage 2080 persistence model
 
-- no provider exists in a clean startup state;
-- valid licensed provider import enriches tracks and persists the exact last-good payload;
-- a second `CockpitBridge` process restores the provider automatically at startup;
-- startup-restored status includes `LICENSED`, `FALLBACK` and `STARTUP RESTORE`;
-- provider source/license provenance survives restart;
-- malformed provider refresh returns failure without replacing the last-good provider;
-- invalid non-HTTPS refresh request preserves the last-good provider and exposes the HTTPS failure reason;
-- existing enriched track values remain available during fallback.
+The runtime uses two intentionally separate persisted last-known-good datasets:
 
-## Existing foundations preserved
+- Public METAR cache: `public-metar-last-good.json`
+- Licensed aerodrome/runway cache: `licensed-aerodrome-conditions-last-good.json`
 
-- `PublicFlightProviderCache` remains bounded and transactional.
-- `PublicFlightEnrichmentCache` continues to parse provider records and attach FRESH/STALE TTL state.
-- `PublicFlightHistoryStore` retains persisted public-flight history with 5/15/30/60-minute windows.
-- Flight Tracking retains search, type, altitude, operator and source filters.
-- Public ADS-B/synthetic telemetry remains distinct from licensed metadata/route provenance.
-- NOAA/NWS Aviation Weather Center public METAR support and licensed runway-condition ingress from Stages 2030–2040 remain present and must not be duplicated.
+This separation is an architectural decision. Public weather data and licensed runway/condition data must not be merged into one persisted provider envelope because their provenance, licensing and refresh behavior are different.
 
-## Verified gates — Stage 2071
+### Public METAR behavior
+
+- Existing endpoint remains `https://aviationweather.gov/api/data/metar`.
+- Requests are read-only and station IDs are sanitized and capped.
+- Response payload is size bounded.
+- New data is parsed through the existing Aviation Weather METAR adapter.
+- A failed replacement leaves the previous verified METAR dataset active.
+- A successful replacement is persisted only after validation.
+- Startup restore is visibly marked as cached/fallback data.
+
+### Licensed runway / aerodrome-condition behavior
+
+- Source must be a validated local file or HTTPS provider endpoint.
+- Provider name and license/provenance remain mandatory in the normalized envelope.
+- New refresh is transactional: invalid data never replaces an active valid cache.
+- Last-known-good data is preserved across network/parse failures and process restart.
+- Runway and licensed-weather records keep their provider provenance distinct from public METAR.
+
+## Stage 2071 aircraft-provider runtime foundation preserved
+
+Stage 2071 remains fully intact beneath Stage 2080:
+
+- `PublicFlightProviderCache` restores `public-flight-provider-last-good.json` at startup.
+- Successful aircraft metadata/route provider refreshes persist only after validation.
+- Malformed/oversized/network-failed refreshes preserve the previous licensed provider and expose explicit fallback status.
+- Aircraft provider name, license, source URL, TTL/cache provenance and 5/15/30/60-minute history remain available.
+- Public/synthetic telemetry remains separated from aircraft metadata/route provenance.
+
+## Verified gates — Stage 2080
 
 | Gate | Result |
 |---|---:|
 | Linux C++20 Release build, CTest and release smoke | PASS |
 | Windows C++20 Release build, CTest and release smoke | PASS |
 | Qt 6 Release build and Qt-enabled CTest | PASS |
-| Stage 2071 startup restore / persistence / failure fallback Qt tests | PASS |
-| QML routes/workspaces/Back/RTL/ten locales/viewport matrix | 55/55 PASS |
+| Aerodrome provider cache core tests | PASS |
+| Qt startup restore / persistence / failure-fallback tests | PASS |
+| QML routes/workspaces/Back/RTL/ten locales/viewport matrix | PASS |
 | Responsive real-application screenshot gate | PASS |
 | ASan/UBSan suite | PASS |
 | Source security baseline | PASS |
@@ -77,28 +103,30 @@ The Qt bridge test now uses an isolated `QStandardPaths` test location and verif
 | Portable ZIP generation | PASS |
 | One-click Windows installer generation | PASS |
 
-Final verified runs for stable implementation commit `007209d2b317ce29cf95237e607b8ecde3801f14`:
+Final verified runs for stable implementation commit `5487fe4a62b67417d1c0ead9b263ca887517075e`:
 
-- CI: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805262`
-- CodeQL Security: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805296`
-- Windows Package: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805381`
+- CI: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35018324055`
+- CodeQL Security: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35018324002`
+- Windows Package: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35018324065`
+
+The CI run completed successfully for all five jobs: Qt HMI Linux, Windows build/test, Ubuntu build/test, security baseline and sanitizer suite.
 
 ## Real screenshot artifact
 
 - Name: `nexvary-avionics-stage2060-responsive-ui-release-gate`
-- Artifact ID: `10416366228`
-- Size: `12,980,971 bytes`
-- SHA-256: `2802822d79a8133a9cf12c1f9bf61e817e2e12b349745fcea3663f4842ad0153`
-- Head SHA: `007209d2b317ce29cf95237e607b8ecde3801f14`
-- The inherited workflow artifact name retains Stage 2060 naming, but this artifact was regenerated successfully from the Stage 2071 head.
+- Artifact ID: `10416588431`
+- Size: `12,982,879 bytes`
+- SHA-256: `b79e6e1eb9c95ad3d281dd6f3713904881c394b478bad60e49541a08f97d59f8`
+- Head SHA: `5487fe4a62b67417d1c0ead9b263ca887517075e`
+- The workflow artifact name retains the inherited Stage 2060 naming, but the captures were regenerated successfully from the Stage 2080 head.
 
 ## Windows deliverables
 
 - Artifact: `NEXVARY-Avionics-Lab-Windows-v3.5.0-Stage1980`
-- Artifact ID: `10416331992`
-- Artifact size: `57,224,221 bytes`
-- Artifact SHA-256: `57e39e4b63ae857be603cab62773cb867ea6298cc861ab5fae0e0f0becc4908b`
-- Head SHA: `007209d2b317ce29cf95237e607b8ecde3801f14`
+- Artifact ID: `10417031633`
+- Artifact size: `57,232,057 bytes`
+- Artifact SHA-256: `1da1e783a3348ccb5380823a6e05847219fc5736bcf4568e6e7370c43bb43a79`
+- Head SHA: `5487fe4a62b67417d1c0ead9b263ca887517075e`
 - Contents include:
   - `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
   - `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
@@ -113,19 +141,21 @@ Expected build-tree paths:
 
 ## Tests not performed / external verification boundary
 
-- No external licensed aircraft metadata/route provider endpoint was contacted in Stage 2071 because no legally usable licensed endpoint/credentials were supplied.
-- Therefore live external-provider availability and provider-specific response compatibility are not claimed as verified.
-- Runtime acquisition, transactional validation, persistence, startup restore and failure fallback are verified using deterministic local licensed-provider fixtures and the Qt runtime tests.
+- Stage 2080 verified the runtime cache, parser, persistence, startup restore and failure-fallback behavior with deterministic tests.
+- No external licensed runway-condition provider endpoint was contacted because no legally usable licensed endpoint/credentials were supplied.
+- Therefore provider-specific compatibility for a future third-party licensed runway source is not claimed as verified.
+- The existing public Aviation Weather Center connector is implemented and preserved, but CI does not depend on live external-network availability; deterministic fixtures are used for release verification.
 
 ## Known issues / constraints
 
-- No known build, test, QML, sanitizer, security or packaging regression remains in Stage 2071.
-- The runtime has no default third-party aircraft metadata/route provider configured; a legally usable licensed provider must be supplied before external live enrichment can be validated.
+- No known build, CTest, Qt, QML, sanitizer, security, CodeQL or Windows-packaging regression remains at Stage 2080.
+- The inherited workflow/artifact release names still contain historical Stage 1980 / Stage 2060 labels even though their head SHA is Stage 2080. This is naming debt only; the generated binaries/screenshots are from the Stage 2080 implementation SHA.
+- No default third-party licensed runway-condition provider is configured.
 - External API keys/connectors remain disabled by default.
 
 ## Public-data and safety boundaries
 
-- Public flight telemetry and legally usable metadata/route sources remain read-only.
+- Public flight, public METAR and legally usable metadata/runway-condition sources remain read-only.
 - Provider provenance, license, cache state and freshness remain visible and auditable.
 - Synthetic/replay data is labelled explicitly and is never represented as live data.
 - The application remains limited to awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis.
@@ -133,15 +163,15 @@ Expected build-tree paths:
 
 ## Exact continuation point
 
-Continue after Stage 2071 without repeating completed Stage 1970–2071 work.
+Continue after Stage 2080 without repeating completed Stage 1970–2080 work. GitHub `main` and this handoff are the source of truth.
 
-### Stage 2080 — exact next step
+### Stage 2090 — exact next step
 
-Extend the same last-known-good transactional runtime model to the existing aerodrome-provider path without rebuilding the weather/airfield modules already completed in Stages 2030–2040:
+Do not rebuild the aircraft, METAR or aerodrome cache layers. The next useful batch should focus on provider observability and operator-facing auditability:
 
-1. Preserve the existing NOAA/NWS Aviation Weather Center public METAR connector and provenance.
-2. Add bounded startup restore and explicit stale/fallback state for the existing aerodrome weather cache where appropriate.
-3. Persist licensed runway-condition refreshes only after successful validation; never persist a failed replacement over a valid last-good runway dataset.
-4. Keep public METAR and licensed runway-condition provenance separate and visible in Aeronautical Data Hub / Data Sources.
-5. Add Qt bridge tests for startup restore, successful persistence and network/parse fallback for aerodrome/runway providers.
-6. Run Linux, Windows, Qt CTest, QML 55-case gate, responsive screenshots, ASan/UBSan, security, CodeQL and independent Windows packaging before closing the batch.
+1. Surface last-known-good/fallback state, provider name, license/source, freshness/cache age and last refresh status consistently in Aeronautical Data Hub and Data Sources.
+2. Add clear visual distinction between fresh public METAR, restored cached METAR and licensed-condition fallback without changing the Deep Black + Royal Gold system.
+3. Add deterministic Qt/QML checks for fallback/stale/provider-provenance presentation; do not make CI depend on live Internet access.
+4. Preserve the current separate public-METAR and licensed-condition persistence model.
+5. Keep a future third-party licensed runway provider behind the existing normalized HTTPS/file contract until a legally usable endpoint/credentials are supplied.
+6. Run Linux, Windows, Qt CTest, QML gate, responsive real screenshots, ASan/UBSan, security, CodeQL and independent Windows packaging before closing Stage 2090.

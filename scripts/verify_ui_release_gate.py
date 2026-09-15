@@ -45,13 +45,15 @@ def main():
     require(root / "stage1980-bases-airfields-en.png", (1920, 1080))
     require(root / "stage1980-platform-library-en.png", (1920, 1080))
     require(root / "stage1980-cuas-detection-en.png", (1920, 1080))
+    require(root / "stage2000-professional-radar-en.png", (1920, 1080))
+    require(root / "stage2000-professional-radar-ar.png", (1920, 1080))
     require(root / "stage1980-space-domain-en.png", (1920, 1080))
     require(root / "stage1980-space-domain-ar.png", (1920, 1080))
     require(root / "stage1980-data-sources-en.png", (1920, 1080))
     require(root / "stage1980-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
         require(root / f"stage1980-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 1990 preserves the Stage 1980 command gate and verifies bilingual aircraft intelligence details, professional selected-track presentation, the integrated About System brief, Arabic RTL and ten-locale rendering.")
+    print("UI RELEASE GATE PASS: Stage 2000 preserves the Stage 1990 command gate and verifies the bilingual professional passive radar scope, aircraft intelligence details, the integrated About System brief, Arabic RTL and ten-locale rendering.")
 
 
 if __name__ == "__main__":

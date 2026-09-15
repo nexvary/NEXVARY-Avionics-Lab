@@ -2,6 +2,7 @@
 #include <QColor>
 #include <QCoreApplication>
 #include <QDir>
+#include <QDebug>
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QIcon>
@@ -190,6 +191,13 @@ int main(int argc, char* argv[]) {
         QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
         if (!trackingPage) return 16;
         trackingPage->setProperty("detailsOpen", false);
+        QObject* trackingMap = trackingPage->findChild<QObject*>(QStringLiteral("flightTrackingAirMap"));
+        if (!trackingMap) return 16;
+        const QVariantList tracks = trackingMap->property("publicTracks").toList();
+        if (tracks.isEmpty()) return 16;
+        const QVariantMap firstTrack = tracks.constFirst().toMap();
+        trackingMap->setProperty("selectedPublicTrack", firstTrack);
+        trackingMap->setProperty("selectedPublicTrackId", firstTrack.value(QStringLiteral("icao24")).toString().toLower());
         QCoreApplication::processEvents();
     }
 
@@ -256,6 +264,9 @@ int main(int argc, char* argv[]) {
             auto* dataBadge = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapDataBadge")) : nullptr;
             auto* toolbar = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("airMapLayerToolbar")) : nullptr;
             if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
+                qWarning() << "Flight popup gate objects"
+                           << trackingPage << popup << dataBadge << toolbar
+                           << (popup ? popup->isVisible() : false);
                 QCoreApplication::exit(16);
                 return;
             }
@@ -264,6 +275,7 @@ int main(int argc, char* argv[]) {
                 dataBadge->mapToScene(QPointF(0.0, 0.0)).y(),
                 toolbar->mapToScene(QPointF(0.0, 0.0)).y()
             );
+            qInfo() << "Flight popup gate geometry" << popupBottom << protectedTop;
             QCoreApplication::exit(popupBottom + 1.0 < protectedTop ? 0 : 16);
         });
         return app.exec();

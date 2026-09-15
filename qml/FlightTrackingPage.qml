@@ -120,6 +120,7 @@ Item {
                 spacing: 8
                 StrategicAirMap {
                     id: airMap
+                    objectName: "flightTrackingAirMap"
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     publicTracks: page.filteredTracks

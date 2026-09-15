@@ -35,14 +35,58 @@ QVariantList CockpitBridge::publicFlightTracks() const {
     QVariantList rows;
     for (const auto& track : publicFlightFeed_.snapshot().tracks) {
         QVariantMap row;
+        const auto putString = [&row](const char* key, const std::string& value) {
+            if (!value.empty()) row[QString::fromLatin1(key)] = QString::fromStdString(value);
+        };
+        const auto putNumber = [&row](const char* key, const std::optional<double>& value) {
+            if (value) row[QString::fromLatin1(key)] = *value;
+        };
+        const auto putInteger = [&row](const char* key, const std::optional<long long>& value) {
+            if (value) row[QString::fromLatin1(key)] = QVariant::fromValue<qlonglong>(*value);
+        };
         row[QStringLiteral("icao24")] = QString::fromStdString(track.icao24);
-        row[QStringLiteral("callsign")] = QString::fromStdString(track.callsign);
-        row[QStringLiteral("country")] = QString::fromStdString(track.country);
+        putString("callsign", track.callsign);
+        putString("country", track.country);
+        putString("flightNumber", track.flightNumber);
+        putString("aircraftTypeCode", track.aircraftTypeCode);
+        putString("registration", track.registration);
+        putString("aircraftModel", track.aircraftModel);
+        putString("manufacturer", track.manufacturer);
+        putString("serialNumber", track.serialNumber);
+        putString("operatorName", track.operatorName);
+        putString("marketingOperator", track.marketingOperator);
+        putString("operatorIcao", track.operatorIcao);
+        putString("operatorIata", track.operatorIata);
+        putString("originAirportIcao", track.originAirportIcao);
+        putString("originAirportIata", track.originAirportIata);
+        putString("destinationAirportIcao", track.destinationAirportIcao);
+        putString("destinationAirportIata", track.destinationAirportIata);
+        putString("route", track.route);
+        putString("scheduledDeparture", track.scheduledDeparture);
+        putString("estimatedArrival", track.estimatedArrival);
+        putString("aircraftFamily", track.aircraftFamily);
+        putString("variant", track.variant);
+        putString("engineType", track.engineType);
+        putString("yearBuilt", track.yearBuilt);
+        putString("registrationStatus", track.registrationStatus);
+        putString("registrationCountry", track.registrationCountry);
+        putString("telemetrySource", track.telemetrySource);
+        putString("metadataSource", track.metadataSource);
+        putString("routeSource", track.routeSource);
+        putString("positionSource", track.positionSource);
+        putString("squawk", track.squawk);
         row[QStringLiteral("latitude")] = track.latitude;
         row[QStringLiteral("longitude")] = track.longitude;
-        row[QStringLiteral("altitudeMeters")] = track.altitudeMeters;
-        row[QStringLiteral("velocityMetersPerSecond")] = track.velocityMetersPerSecond;
-        row[QStringLiteral("headingDegrees")] = track.headingDegrees;
+        putNumber("altitudeMeters", track.altitudeMeters);
+        putNumber("geometricAltitudeMeters", track.geometricAltitudeMeters);
+        putNumber("velocityMetersPerSecond", track.velocityMetersPerSecond);
+        putNumber("trueAirspeedMetersPerSecond", track.trueAirspeedMetersPerSecond);
+        putNumber("headingDegrees", track.headingDegrees);
+        putNumber("verticalRateMetersPerSecond", track.verticalRateMetersPerSecond);
+        putNumber("signalQualityPercent", track.signalQualityPercent);
+        putInteger("lastContactEpoch", track.lastContactEpoch);
+        putInteger("dataAgeSeconds", track.dataAgeSeconds);
+        if (track.category > 0) row[QStringLiteral("category")] = track.category;
         row[QStringLiteral("onGround")] = track.onGround;
         rows.push_back(row);
     }

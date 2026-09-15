@@ -13,6 +13,7 @@
 #include <QQmlExpression>
 #include <QQuickWindow>
 #include <QTimer>
+#include <QVariantMap>
 #include <cmath>
 
 namespace {
@@ -219,6 +220,17 @@ int main(int argc, char* argv[]) {
             QCoreApplication::exit(std::abs(currentPhase - initialPhase) > 0.002 ? 0 : 14);
         });
         return app.exec();
+    }
+
+    if (arguments.contains(QStringLiteral("--aircraft-details-smoke"))) {
+        QCoreApplication::processEvents();
+        QObject* detailsPanel = root->findChild<QObject*>(QStringLiteral("aircraftDetailsPanel"));
+        QObject* searchField = root->findChild<QObject*>(QStringLiteral("aircraftSearchField"));
+        if (!detailsPanel || !searchField || !detailsPanel->property("visible").toBool()) return 15;
+        const QVariantMap track = detailsPanel->property("track").toMap();
+        if (track.value(QStringLiteral("icao24")).toString().isEmpty()) return 15;
+        if (track.value(QStringLiteral("telemetrySource")).toString().isEmpty()) return 15;
+        return 0;
     }
 
     if (screenshotIndex >= 0) {

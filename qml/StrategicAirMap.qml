@@ -19,6 +19,11 @@ Rectangle {
     property bool showAirspace: true
     property bool showRoutes: true
     property real sweepAngle: 0
+    property string selectedPublicTrackId: ""
+    property var selectedPublicTrack: ({})
+    property int publicLodStride: publicTracks.length > 1000 ? 4 : (publicTracks.length > 400 ? 2 : 1)
+    signal publicTrackSelected(var track)
+    signal aircraftDetailsRequested(var track)
 
     color: "#02080D"
     border.color: Theme.border
@@ -42,6 +47,29 @@ Rectangle {
     function baseY(index) {
         var ys = [0.60, 0.45, 0.64, 0.48, 0.74, 0.69]
         return height * ys[index % ys.length]
+    }
+    function trackId(track) { return String(track && track.icao24 ? track.icao24 : "").toLowerCase() }
+    function available(value) { return value !== undefined && value !== null && String(value).trim() !== "" }
+    function textOr(value, fallback) { return available(value) ? String(value) : fallback }
+    function numberOrNa(value, decimals, suffix) {
+        return available(value) && !isNaN(Number(value)) ? Number(value).toFixed(decimals) + suffix : "N/A"
+    }
+    function selectPublicTrack(track, requestDetails) {
+        selectedPublicTrackId = trackId(track)
+        selectedPublicTrack = track
+        publicTrackSelected(track)
+        if (requestDetails) aircraftDetailsRequested(track)
+    }
+    onPublicTracksChanged: {
+        if (selectedPublicTrackId === "" && publicTracks.length > 0) return
+        for (var i = 0; i < publicTracks.length; ++i) {
+            if (trackId(publicTracks[i]) === selectedPublicTrackId) {
+                selectedPublicTrack = publicTracks[i]
+                return
+            }
+        }
+        selectedPublicTrackId = ""
+        selectedPublicTrack = ({})
     }
 
     NumberAnimation on sweepAngle {
@@ -264,45 +292,65 @@ Rectangle {
     Repeater {
         model: root.publicTracks
         delegate: Item {
+            id: publicPoint
             required property int index
             required property var modelData
+            property string identity: root.trackId(modelData)
+            property bool selected: identity !== "" && identity === root.selectedPublicTrackId
             width: 1
             height: 1
             x: root.xFor(modelData.longitude)
             y: root.yFor(modelData.latitude)
             z: 4
+            visible: selected || index % root.publicLodStride === 0
 
             Item {
                 id: publicGlyph
-                width: 38
-                height: 38
-                x: -19
-                y: -19
+                width: publicPoint.selected ? 28 : 24
+                height: width
+                x: -width / 2
+                y: -height / 2
                 rotation: Number(modelData.headingDegrees || 0)
 
                 Repeater {
-                    model: 4
+                    model: publicPoint.selected ? 5 : 3
                     Rectangle {
                         required property int index
-                        width: 3
-                        height: 3
+                        width: 2.5
+                        height: 2.5
                         radius: 2
-                        x: 17.5
-                        y: 37 + index * 7
-                        color: Theme.signalCyan
-                        opacity: .48 - index * .08
+                        x: publicGlyph.width / 2 - 1.25
+                        y: publicGlyph.height + 4 + index * 6
+                        color: publicPoint.selected ? Theme.royalGold : Theme.signalCyan
+                        opacity: .55 - index * .07
+                    }
+                }
+
+                Rectangle {
+                    visible: publicPoint.selected
+                    anchors.centerIn: parent
+                    width: 38; height: 38; radius: 19
+                    color: "transparent"; border.color: Theme.royalGold; border.width: 1
+                    opacity: .72
+                    SequentialAnimation on opacity {
+                        running: publicPoint.selected && root.visible
+                        loops: Animation.Infinite
+                        NumberAnimation { to: .26; duration: 850 }
+                        NumberAnimation { to: .72; duration: 850 }
                     }
                 }
 
                 Canvas {
+                    property bool activeSelection: publicPoint.selected
                     anchors.fill: parent
                     antialiasing: true
+                    onActiveSelectionChanged: requestPaint()
                     onPaint: {
                         var c=getContext("2d")
                         c.reset()
-                        c.fillStyle=Theme.signalCyan
-                        c.strokeStyle=Theme.platinum
-                        c.lineWidth=1
+                        c.fillStyle=publicPoint.selected ? Theme.royalGold : Theme.signalCyan
+                        c.strokeStyle=publicPoint.selected ? Theme.platinum : "#D8F4FF"
+                        c.lineWidth=publicPoint.selected ? 1.4 : 1
                         c.beginPath()
                         c.moveTo(width*.50,height*.04)
                         c.lineTo(width*.58,height*.39)
@@ -326,10 +374,77 @@ Rectangle {
                 }
             }
 
-            MouseArea { id: pma; x: -23; y: -23; width: 46; height: 46; hoverEnabled: true }
-            ToolTip.visible: pma.containsMouse
-            ToolTip.text: (modelData.callsign || modelData.icao24 || "AIRCRAFT") + "\n" +
-                          Math.round(Number(modelData.altitudeMeters || 0)) + " m"
+            MouseArea {
+                id: pma
+                x: -18; y: -18; width: 36; height: 36
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.selectPublicTrack(modelData, false)
+                onDoubleClicked: root.selectPublicTrack(modelData, true)
+            }
+
+            Rectangle {
+                id: trackPopup
+                objectName: publicPoint.selected ? "selectedAircraftPopup" : ""
+                visible: pma.containsMouse || publicPoint.selected
+                x: publicPoint.x > root.width - 350 ? -330 : 20
+                y: publicPoint.y > root.height - 330 ? -306 : 20
+                width: 316
+                height: 288
+                radius: Theme.radius
+                color: "#F2080808"
+                border.color: publicPoint.selected ? Theme.royalGold : Theme.signalCyan
+                border.width: publicPoint.selected ? Theme.activeFrameWidth : 1
+                z: 30
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 10
+                    spacing: 4
+                    RowLayout {
+                        Layout.fillWidth: true
+                        layoutDirection: root.rtl ? Qt.RightToLeft : Qt.LeftToRight
+                        Rectangle { width: 4; Layout.preferredHeight: 34; radius: 2; color: publicPoint.selected ? Theme.royalGold : Theme.signalCyan }
+                        ColumnLayout {
+                            Layout.fillWidth: true; spacing: 0
+                            Text { text: root.textOr(modelData.callsign, root.textOr(modelData.icao24, "AIRCRAFT")); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: 16; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Text { text: root.textOr(modelData.aircraftModel, root.textOr(modelData.aircraftTypeCode, "TYPE N/A")); color: Theme.signalCyan; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                        }
+                        Text { text: root.textOr(modelData.registration, "N/A"); color: Theme.royalGold; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                    }
+                    Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
+                    GridLayout {
+                        Layout.fillWidth: true
+                        columns: 2; columnSpacing: 10; rowSpacing: 3
+                        Text { text: root.rtl ? "الرحلة" : "FLIGHT"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.textOr(modelData.flightNumber, "N/A"); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: "ICAO / HEX"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                        Text { text: root.textOr(modelData.icao24, "N/A").toUpperCase(); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "النوع" : "TYPE"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.textOr(modelData.aircraftTypeCode, "N/A"); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "الارتفاع" : "ALTITUDE"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.numberOrNa(modelData.altitudeMeters, 0, " m"); color: Theme.skyBlue; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "السرعة" : "SPEED"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.numberOrNa(modelData.velocityMetersPerSecond, 1, " m/s"); color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "الاتجاه" : "TRACK"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.numberOrNa(modelData.headingDegrees, 0, "°"); color: Theme.royalGold; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "الصعود/الهبوط" : "VERT RATE"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.numberOrNa(modelData.verticalRateMetersPerSecond, 1, " m/s"); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: "SQUAWK / AGE"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
+                        Text { text: root.textOr(modelData.squawk, "N/A") + " / " + root.numberOrNa(modelData.dataAgeSeconds, 0, "s"); color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Text { text: root.rtl ? "المصدر" : "SOURCE"; color: Theme.muted; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx }
+                        Text { text: root.textOr(modelData.telemetrySource, "PUBLIC ADS-B"); color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight; elide: Text.ElideRight }
+                    }
+                    Item { Layout.fillHeight: true }
+                    Button {
+                        Layout.fillWidth: true; Layout.preferredHeight: 32
+                        text: root.rtl ? "فتح تفاصيل الطائرة" : "OPEN AIRCRAFT DETAILS"
+                        onClicked: root.selectPublicTrack(modelData, true)
+                        contentItem: Text { text: parent.text; color: Theme.deepBlack; font.family: Theme.uiFont(root.rtl); font.pixelSize: Theme.smallPx; font.bold: true; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                        background: Rectangle { color: Theme.royalGold; radius: Theme.radius }
+                    }
+                }
+            }
         }
     }
 

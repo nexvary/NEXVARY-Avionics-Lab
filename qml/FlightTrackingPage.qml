@@ -6,6 +6,34 @@ import "Theme.js" as Theme
 Item {
     id: page
     clip: true
+    property var selectedTrack: cockpit.publicFlightTracks.length > 0 ? cockpit.publicFlightTracks[0] : ({})
+    property bool detailsOpen: cockpit.publicFlightTracks.length > 0
+    property var filteredTracks: filterTracks(cockpit.publicFlightTracks, searchField.text, typeFilter.currentText, altitudeFilter.currentIndex)
+
+    function selectTrack(track, openDetails) {
+        selectedTrack = track
+        airMap.selectedPublicTrackId = String(track && track.icao24 ? track.icao24 : "").toLowerCase()
+        airMap.selectedPublicTrack = track
+        if (openDetails) detailsOpen = true
+    }
+    function filterTracks(tracks, query, typeName, altitudeIndex) {
+        var q = String(query || "").trim().toLowerCase()
+        var result = []
+        for (var i = 0; i < tracks.length; ++i) {
+            var t = tracks[i]
+            var haystack = [t.callsign, t.flightNumber, t.registration, t.icao24, t.aircraftTypeCode, t.aircraftModel, t.operatorName, t.telemetrySource].join(" ").toLowerCase()
+            if (q !== "" && haystack.indexOf(q) < 0) continue
+            var category = String(t.aircraftTypeCode || "").toUpperCase()
+            if (typeName === "JET" && (category.indexOf("A") !== 0 && category.indexOf("B") !== 0 && category.indexOf("E") !== 0)) continue
+            if (typeName === "TURBOPROP" && category.indexOf("AT") !== 0 && category.indexOf("DH") !== 0) continue
+            var altitude = Number(t.altitudeMeters)
+            if (altitudeIndex === 1 && (!isFinite(altitude) || altitude >= 3000)) continue
+            if (altitudeIndex === 2 && (!isFinite(altitude) || altitude < 3000 || altitude > 9000)) continue
+            if (altitudeIndex === 3 && (!isFinite(altitude) || altitude <= 9000)) continue
+            result.push(t)
+        }
+        return result
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -32,6 +60,35 @@ Item {
                     Text { text: cockpit.rtl ? "تتبع الرحلات العامة" : "PUBLIC FLIGHT TRACKING"; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.pageTitlePx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
                     Text { text: cockpit.rtl ? "مسارات ADS-B المدنية • الارتفاع والسرعة والاتجاه • مصدر وحالة التحديث" : "CIVIL ADS-B TRACKS • ALTITUDE / SPEED / HEADING • SOURCE AND UPDATE HEALTH"; color: Theme.signalCyan; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.secondaryPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
                 }
+                TextField {
+                    id: searchField
+                    objectName: "aircraftSearchField"
+                    Layout.preferredWidth: 245
+                    Layout.preferredHeight: 42
+                    placeholderText: cockpit.rtl ? "بحث: النداء / التسجيل / HEX / النوع" : "SEARCH CALLSIGN / REG / HEX / TYPE"
+                    color: Theme.platinum
+                    placeholderTextColor: Theme.muted
+                    font.family: Theme.uiFont(cockpit.rtl)
+                    font.pixelSize: Theme.smallPx
+                    selectByMouse: true
+                    background: Rectangle { color: Theme.panel2; border.color: searchField.activeFocus ? Theme.royalGold : Theme.border; border.width: 1; radius: Theme.radius }
+                }
+                ComboBox {
+                    id: typeFilter
+                    Layout.preferredWidth: 118
+                    Layout.preferredHeight: 42
+                    model: ["ALL TYPES", "JET", "TURBOPROP"]
+                    contentItem: Text { text: typeFilter.displayText; color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; verticalAlignment: Text.AlignVCenter; leftPadding: 9 }
+                    background: Rectangle { color: Theme.panel2; border.color: Theme.border; border.width: 1; radius: Theme.radius }
+                }
+                ComboBox {
+                    id: altitudeFilter
+                    Layout.preferredWidth: 126
+                    Layout.preferredHeight: 42
+                    model: ["ALL ALT", "< 3 KM", "3–9 KM", "> 9 KM"]
+                    contentItem: Text { text: altitudeFilter.displayText; color: Theme.platinum; font.family: Theme.mono; font.pixelSize: Theme.smallPx; verticalAlignment: Text.AlignVCenter; leftPadding: 9 }
+                    background: Rectangle { color: Theme.panel2; border.color: Theme.border; border.width: 1; radius: Theme.radius }
+                }
                 Rectangle {
                     Layout.preferredWidth: 210
                     Layout.fillHeight: true
@@ -43,7 +100,7 @@ Item {
                         anchors.centerIn: parent
                         spacing: 2
                         Text { anchors.horizontalCenter: parent.horizontalCenter; text: cockpit.rtl ? "المسارات الحالية" : "CURRENT TRACKS"; color: Theme.silver; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true }
-                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: String(cockpit.publicFlightTrackCount); color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: 20; font.bold: true }
+                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: String(page.filteredTracks.length) + " / " + String(cockpit.publicFlightTrackCount); color: Theme.signalCyan; font.family: Theme.mono; font.pixelSize: 20; font.bold: true }
                     }
                 }
             }
@@ -61,13 +118,20 @@ Item {
                 Layout.minimumWidth: 760
                 spacing: 8
                 StrategicAirMap {
+                    id: airMap
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    publicTracks: cockpit.publicFlightTracks
+                    publicTracks: page.filteredTracks
                     aegisTracks: []
                     bases: []
                     rtl: cockpit.rtl
                     modeLabel: cockpit.rtl ? "تتبع الرحلات العامة" : "PUBLIC FLIGHT TRACKING"
+                    Component.onCompleted: {
+                        if (page.selectedTrack && page.selectedTrack.icao24)
+                            selectedPublicTrackId = String(page.selectedTrack.icao24).toLowerCase()
+                    }
+                    onPublicTrackSelected: function(track) { page.selectTrack(track, false) }
+                    onAircraftDetailsRequested: function(track) { page.selectTrack(track, true) }
                 }
                 Rectangle {
                     Layout.fillWidth: true
@@ -81,16 +145,17 @@ Item {
                         anchors.margins: 7
                         orientation: ListView.Horizontal
                         spacing: 7
-                        model: cockpit.publicFlightTracks
+                        model: page.filteredTracks
                         clip: true
                         delegate: Rectangle {
                             required property var modelData
                             width: 218
                             height: ListView.view.height
                             color: Theme.panel2
-                            border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
+                            border.color: page.selectedTrack && String(page.selectedTrack.icao24) === String(modelData.icao24) ? Theme.royalGold : Theme.border
+                            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: page.selectTrack(modelData, true) }
                             ColumnLayout {
                                 anchors.fill: parent
                                 anchors.margins: 8
@@ -117,6 +182,15 @@ Item {
                 Layout.fillHeight: true
                 spacing: 8
 
+                AircraftDetailsPanel {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    visible: page.detailsOpen
+                    track: page.selectedTrack
+                    rtl: cockpit.rtl
+                    onCloseRequested: page.detailsOpen = false
+                }
+
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 176
@@ -124,6 +198,7 @@ Item {
                     border.color: Theme.royalGold
                     border.width: 1
                     radius: Theme.radius
+                    visible: !page.detailsOpen
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 9
@@ -172,6 +247,7 @@ Item {
                     border.color: Theme.border
                     border.width: 1
                     radius: Theme.radius
+                    visible: !page.detailsOpen
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 9
@@ -185,7 +261,7 @@ Item {
                         ListView {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            model: cockpit.publicFlightTracks
+                            model: page.filteredTracks
                             clip: true
                             spacing: 5
                             delegate: Rectangle {
@@ -197,6 +273,7 @@ Item {
                                 border.color: Theme.borderSoft
                                 border.width: 1
                                 radius: Theme.radius
+                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: page.selectTrack(modelData, true) }
                                 ColumnLayout {
                                     anchors.fill: parent
                                     anchors.margins: 7
@@ -221,6 +298,7 @@ Item {
                     peakFrequencyMhz: cockpit.rfPeakFrequencyMhz
                     peakLevelDbm: cockpit.rfPeakLevelDbm
                     rtl: cockpit.rtl
+                    visible: !page.detailsOpen
                 }
             }
         }

@@ -1,7 +1,13 @@
 #include "qt/CockpitBridge.hpp"
+#include <QCoreApplication>
 #include <QTemporaryFile>
 #include <QVariantMap>
+
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 #include <cassert>
+
 using namespace nexvary::avionics;
 namespace {
 QVariantMap findRow(const QVariantList& rows, const QString& id) {
@@ -12,7 +18,8 @@ QVariantMap findRow(const QVariantList& rows, const QString& id) {
     return {};
 }
 }
-int main() {
+int main(int argc, char** argv) {
+    QCoreApplication app(argc, argv);
     CockpitBridge b;
     assert(b.platformProfiles().size() == 4);
     assert(b.activePlatformId() == "generic-jet");
@@ -61,7 +68,7 @@ int main() {
         "records":[{"icao24":"4ca123","registration":"QT-REG","operatorName":"QT Test Operator","route":"TEST-A → TEST-B"}]
     })";
     assert(enrichmentFile.write(enrichmentPayload) == enrichmentPayload.size());
-    enrichmentFile.flush();
+    assert(enrichmentFile.flush());
     assert(b.loadPublicFlightEnrichmentFile(enrichmentFile.fileName()));
     assert(b.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
     assert(b.publicFlightEnrichmentStatus().contains("LICENSED"));
@@ -91,7 +98,7 @@ int main() {
         "runways":[{"airportIcao":"HECA","runway":"05R/23L","state":"OPEN","surface":"ASPHALT","runwayConditionCode":6,"closed":false}]
     })";
     assert(aerodromeFile.write(aerodromePayload) == aerodromePayload.size());
-    aerodromeFile.flush();
+    assert(aerodromeFile.flush());
     assert(b.loadAerodromeConditionFile(aerodromeFile.fileName()));
     assert(b.aerodromeWeatherCount() == 1);
     assert(b.runwayConditionCount() == 1);

@@ -1,88 +1,81 @@
 # NEXVARY Avionics Lab — Work Project Handover
 
-Last updated: 2026-09-15  
-Repository: `nexvary/NEXVARY-Avionics-Lab`  
-Branch: `main`  
-Stable implementation commit: `031017e90cc4073c5047d0a80e0f6d049a7c41b9`  
-Release identity: `v3.5.0 / Stage 1980`
+Last updated: 2026-09-15
+Repository: `nexvary/NEXVARY-Avionics-Lab`
+Branch: `main`
+Stable implementation commit: `ddef84435091e3e649dd30c5a91920eb2065243a`
+Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 1990 aircraft-intelligence batch`
 
 ## Current stable state
 
-Stage 1980 continues from the verified Stage 1970 ministerial interface without restarting or removing existing capabilities. It preserves the approved Deep Black + Royal Gold identity, professional aircraft engineering views, dominant Command Overview, animated passive C-UAS radar, public ADS-B awareness, AEGIS integration, Force Management, engineering, diagnostics, verification, replay, reports, ten locales and Presentation Mode.
+Stage 1990 continues directly from the verified Stage 1980 implementation. It preserves the approved Deep Black + Royal Gold visual system, all existing Air Operations, Force Management, Space Domain, C-UAS awareness, avionics engineering, diagnostics, verification, replay, reports, ten locales and Presentation Mode.
 
-The final application and workflow tree was verified on pull-request head `348b40573d7cc5bf7476bc94ce827a5df05e9458`, then squash-merged without application changes to `main` as `031017e90cc4073c5047d0a80e0f6d049a7c41b9`.
+The Stage 1990 application was verified on pull-request head `4fc9a7024204b0a3b7e515aab189164d09b1fdec` and squash-merged to `main` as `ddef84435091e3e649dd30c5a91920eb2065243a` through PR #3.
 
-## Stage 1980 implementation
+## Stage 1990 aircraft-intelligence implementation
 
-- Added an independent Space Domain Awareness workspace rather than another executive-dashboard card.
-- Added an animated MEO orbital picture with three orbital planes, object identity, altitude, inclination, period, access windows, source health and analytical conjunction review.
-- Added `Public Orbital Elements` and passive `Open Drone ID` provider contracts to the C++ registry and Data Sources UI.
-- Added explicit radar, weather, airspace and route layer controls to the Common Air Picture.
-- Added weather cells with temperature/wind evidence while preserving the map-first command hierarchy.
-- Added passive Remote ID correlation to the AEGIS C-UAS awareness surface.
-- Expanded Air Operations navigation and back-stack restoration through the new Space Domain route.
-- Added a runtime orbital-motion assertion alongside the existing radar-motion assertion.
-- Expanded the QML runtime matrix from 50 to 52 cases.
-- Expanded the real screenshot gate from 28 to 30 application captures, including Space Domain in English and Arabic.
-- Reworked Data Sources to a responsive 3×3 provider grid at command resolution so all nine providers, including Open Drone ID, are visible without clipping.
-- Added pull-request execution to the Windows packaging workflow so installer verification is not dependent on connector-originated push events.
-- Recorded open-source visual/architectural references and license boundaries in `docs/OPEN-SOURCE-VISUAL-REFERENCES-STAGE1980.md`.
+- Rewrote About System in English and Arabic to describe the actual integrated air-force management platform: command overview, common air picture, readiness, bases, sustainment, training, C-UAS awareness, space-domain awareness and digital engineering.
+- Replaced the limited public-flight selection with a compact professional aircraft popup and a full aircraft intelligence drawer.
+- Added identification, operator, route, telemetry, airframe and provenance sections with explicit `N/A` handling instead of invented values.
+- Extended the OpenSky parser for position time, last contact, barometric/geometric altitude, velocity, heading, vertical rate, squawk, category and position source.
+- Added an extensible normalized metadata contract for aircraft registration/model/operator/route enrichment while keeping unavailable data empty.
+- Added freshness states for recent, delayed, stale and synthetic data, with source/mode/last-update provenance.
+- Added callsign/flight/registration/ICAO/type/operator/source search plus aircraft-type and altitude filters.
+- Added selected-aircraft highlighting, short history trails, heading-oriented markers and load-sensitive decluttering.
+- Preserved Arabic RTL and mirrored the flight-details composition correctly.
+- Added `--aircraft-details-smoke`, expanded the QML runtime matrix from 52 to 53 checks, and expanded the real screenshot gate from 30 to 34 captures.
+- No API keys or private datasets were added. The synthetic training feed is labelled explicitly and is never presented as live data.
 
 ## Visual review
 
-The generated application screenshots were opened and reviewed manually. The review covered:
+The final real application captures were opened and reviewed manually after CI. The Stage 1990 review specifically covered:
 
-- Command Overview: English 1920×1080, Arabic 1920×1080 and Arabic 2560×1440.
-- Common Air Picture and operator layer controls.
-- C-UAS Detection/Awareness with animated passive radar, Remote ID and RF evidence.
-- Space Domain Awareness in English and Arabic.
-- Data Sources, aircraft variants, Fleet, Bases/Airfields, Data Hub, Route Lab and Diagnostics.
-- Ten-locale captures: AR, EN, TR, ES, DE, IT, FR, UR, FA and RU.
+- Flight Tracking aircraft intelligence in English and Arabic at 1920×1080.
+- About System in English and Arabic at 1920×1080.
+- Correct RTL mirroring, readable type sizes, selection hierarchy, drawer/map balance and provenance visibility.
+- Regression coverage across the inherited 30 Stage 1980 captures, including 2560×1440 and all ten locales.
 
-The first Stage 1980 screenshot set exposed one real defect: the ninth provider was below the visible 1920×1080 Data Sources area. The provider surface was changed from a fixed two-column list to a responsive 3×3 command-resolution grid, CI was rerun, and the final screenshot confirms all nine providers are visible and balanced.
+The first capture exposed overlap between the compact popup and the expanded details drawer. The popup was made mutually exclusive with the drawer and repositioned dynamically. A second review exposed dense About text; two excess lines were removed and the capability/comparison type floor was raised before the final verified captures.
 
 ## Verified gates
 
 | Gate | Result |
 |---|---:|
-| Linux C++20 Release build, 29 CTest cases and release smoke | PASS |
-| Windows C++20 Release build, 29 CTest cases and release smoke | PASS |
-| Qt 6 Release build and Qt-enabled CTest | 30/30 PASS |
-| QML routes, workspaces, Back, RTL, ten locales, radar and orbit motion | 52/52 PASS |
-| Stage 1980 real screenshot gate | 30/30 PASS |
-| ASan/UBSan suite | 29/29 PASS |
+| Linux C++20 Release build, CTest and release smoke | PASS |
+| Windows C++20 Release build, CTest and release smoke | PASS |
+| Qt 6 Release build and Qt-enabled CTest | PASS |
+| QML routes, workspaces, Back, RTL, ten locales, radar/orbit motion and aircraft details | 53/53 PASS |
+| Real application screenshot gate | 34/34 PASS |
+| ASan/UBSan suite | PASS |
 | Source security baseline | PASS |
 | CodeQL C++ analysis | PASS |
-| Windows MSVC/Qt package verification | 30/30 + 52/52 PASS |
+| Windows MSVC/Qt package verification | PASS |
 | Portable ZIP and installer generation | PASS |
 
 Final verified runs:
 
-- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34923093171
-- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34923093004
-- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34923093706
+- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440885
+- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440978
+- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440765
 
 ## Real screenshot artifact
 
-- Name: `nexvary-avionics-stage1980-space-air-command-ui-release-gate`
-- Artifact ID: `10378149262`
-- Size: `9,902,038 bytes`
-- SHA-256: `dc67368c84c83a0ecd058724eaf80c73a1b14df9b565c5cf1695365b3b843810`
-- Contents: 30 real PNG captures at 1920×1080, 2560×1440 and 1720×1000.
+- Name: `nexvary-avionics-stage1990-aircraft-intelligence-ui-release-gate`
+- Artifact ID: `10390857858`
+- Size: `11,110,474 bytes`
+- SHA-256: `f0104893ace85fd64077594179fc11d03b5f836b5661d946e40e2c5ecba1106d`
+- Contents: 34 real PNG captures, including the four new aircraft-intelligence/About EN/AR captures.
 
 ## Windows deliverables
 
 - Artifact: `NEXVARY-Avionics-Lab-Windows-v3.5.0-Stage1980`
-- Artifact ID: `10379230606`
-- Artifact size: `57,050,770 bytes`
-- Artifact SHA-256: `dcc940d5cdfc70b745f9512afa2d3d12675c37bc08b68cbe325c3d014f63d0ed`
-- Installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
-  - Size: `23,212,241 bytes`
-  - SHA-256: `440aa31cbd583a9b111990efb2559306e6171ff538926d3755308a78430ae4e1`
-- Portable ZIP: `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
-  - Size: `34,946,618 bytes`
-  - SHA-256: `90103535cbdc1a8255aa2f0da3ff599246549b5e8f060dc458c70e0a46c91d75`
-  - Archive integrity: PASS; 1,337 files; uncompressed size `87,769,054 bytes`.
+- Artifact ID: `10390043709`
+- Artifact size: `57,074,953 bytes`
+- Artifact SHA-256: `98c2f2dd8d957a913eb119e058515252a1256bf7615c0da688e542980c631812`
+- Contents include:
+  - `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
+  - `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
+- The package filename retains the Stage 1980 release identity, but the artifact was built and tested from the final Stage 1990 PR head `4fc9a7024204b0a3b7e515aab189164d09b1fdec`.
 
 Expected build-tree paths:
 
@@ -92,19 +85,16 @@ Expected build-tree paths:
 - Windows installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
 - Windows portable ZIP: `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
 
-## Open-source reference decisions
+## Public-data and safety boundaries
 
-- KeepTrack (AGPL-3.0): orbital information hierarchy and dominant-globe composition only; no code or assets copied.
-- CesiumJS (Apache-2.0): layer-driven geospatial architecture only; no Cesium runtime or assets embedded.
-- OpenSpace (project-specific license): presentation-scale visual study only.
-- Open Drone ID Core C (Apache-2.0): passive identification terminology and provider separation only; no transmitter or control path.
-
-## Safety boundary
-
-Stage 1980 remains limited to awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis. It contains no autonomous engagement, weapons assignment, fire control, live-aircraft control, orbital maneuver control, jammer control, spoofing, takeover or destructive interception. External network connectors and API keys are disabled by default.
+- OpenSky live state vectors provide telemetry and callsign fields; rich aircraft/operator/route fields are exposed through the normalized provider contract but remain `N/A` until a licensed metadata provider is connected.
+- Only short visual trails are implemented in this batch; persisted 5/15/30/60-minute histories are a future provider/cache task.
+- The application remains limited to awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis.
+- It contains no autonomous engagement, weapons assignment, fire control, live-aircraft control, jammer control, spoofing, takeover or destructive interception.
+- External connectors and API keys remain disabled by default.
 
 ## Continuation point
 
-Continue from Stage 1980 without repeating the Stage 1970/1980 audits. Preserve the Deep Black + Royal Gold hierarchy, restrained semantic colors, typography floor, Arabic RTL, 30-image visual gate, 52-case QML gate and independent Windows pull-request package verification.
+Continue from Stage 1990 without repeating completed Stage 1970–1990 work. Preserve the Deep Black + Royal Gold hierarchy, restrained semantic colors, typography floor, Arabic RTL, 34-image visual gate, 53-case QML gate and independent Windows packaging verification.
 
-The next useful functional batch is a real read-only weather provider adapter with cache/freshness behavior and an airfield/runway condition provider, followed by route-specific screenshots and the same test → build → visual review → fix → commit → push → handover sequence.
+The next useful functional batch is to connect a legally usable read-only aircraft metadata/route provider with cache and provenance, then add persisted history windows and operator/source filter controls. After that, continue with the real weather and airfield/runway condition providers using the same test → build → visual review → fix → commit → push → handover sequence.

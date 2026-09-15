@@ -28,6 +28,9 @@ def main():
     require(root / "stage1980-command-overview-en-1920x1080.png", (1920, 1080))
     require(root / "stage1980-command-overview-ar-1920x1080.png", (1920, 1080))
     require(root / "stage1980-command-overview-ar-2560x1440.png", (2560, 1440))
+    require(root / "stage2060-command-overview-en-1440x900.png", (1440, 900))
+    require(root / "stage2060-command-overview-en-1366x768.png", (1366, 768))
+    require(root / "stage2060-command-overview-ar-1366x768.png", (1366, 768))
     require(root / "stage1980-airspace-ar.png", (1920, 1080))
     require(root / "stage1980-common-air-picture-en.png", (1920, 1080))
     require(root / "stage1980-flight-tracking-en.png", (1920, 1080))
@@ -35,6 +38,7 @@ def main():
     require(root / "stage1990-aircraft-intelligence-ar.png", (1920, 1080))
     require(root / "stage1990-about-system-en.png", (1920, 1080))
     require(root / "stage1990-about-system-ar.png", (1920, 1080))
+    require(root / "stage2060-about-system-en-1366x768.png", (1366, 768))
     require(root / "stage1980-route-lab-en.png", (1920, 1080))
     require(root / "stage1980-aeronautical-data-en.png", (1920, 1080))
     require(root / "stage1980-aircraft-visual-en.png", (1920, 1080))
@@ -47,13 +51,14 @@ def main():
     require(root / "stage1980-cuas-detection-en.png", (1920, 1080))
     require(root / "stage2000-professional-radar-en.png", (1920, 1080))
     require(root / "stage2000-professional-radar-ar.png", (1920, 1080))
+    require(root / "stage2060-professional-radar-en-1366x768.png", (1366, 768))
     require(root / "stage1980-space-domain-en.png", (1920, 1080))
     require(root / "stage1980-space-domain-ar.png", (1920, 1080))
     require(root / "stage1980-data-sources-en.png", (1920, 1080))
     require(root / "stage1980-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
         require(root / f"stage1980-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 2000 preserves the Stage 1990 command gate and verifies the bilingual professional passive radar scope, aircraft intelligence details, the integrated About System brief, Arabic RTL and ten-locale rendering.")
+    print("UI RELEASE GATE PASS: Stage 2060 preserves the Stage 2000/1990 evidence set and verifies Command Overview at 1440x900 and 1366x768 in English/Arabic, About at 1366x768, professional radar at 1366x768, Arabic RTL and ten-locale rendering.")
 
 
 if __name__ == "__main__":

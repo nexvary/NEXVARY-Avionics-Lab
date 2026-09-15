@@ -38,6 +38,11 @@ struct PublicFlightTrack {
     std::string telemetrySource{"PUBLIC ADS-B"};
     std::string metadataSource;
     std::string routeSource;
+    std::string metadataLicense;
+    std::string metadataSourceUrl;
+    std::string routeLicense;
+    std::string routeSourceUrl;
+    std::string enrichmentCacheState;
     std::string positionSource;
     double latitude{0.0};
     double longitude{0.0};
@@ -50,6 +55,8 @@ struct PublicFlightTrack {
     std::optional<double> signalQualityPercent;
     std::optional<long long> lastContactEpoch;
     std::optional<long long> dataAgeSeconds;
+    std::optional<long long> enrichmentCachedAtEpoch;
+    std::optional<long long> enrichmentExpiresAtEpoch;
     std::string squawk;
     int category{0};
     bool onGround{false};

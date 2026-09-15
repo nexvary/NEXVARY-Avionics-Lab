@@ -128,6 +128,13 @@ int main(int argc, char* argv[]) {
     auto* window = qobject_cast<QQuickWindow*>(root);
     if (!window) return 6;
 
+    // The release quality gate includes 1366x768. QML historically declared an
+    // 800px minimum height, which made that gate impossible even though the
+    // layouts can run on modern compact laptop displays. Keep a conservative
+    // desktop floor while allowing the required 768px viewport.
+    window->setMinimumWidth(1280);
+    window->setMinimumHeight(720);
+
     const int pageIndex = arguments.indexOf(QStringLiteral("--page"));
     if (pageIndex >= 0 && pageIndex + 1 < arguments.size()) {
         bool ok = false;
@@ -172,15 +179,23 @@ int main(int argc, char* argv[]) {
     if (widthIndex >= 0 && widthIndex + 1 < arguments.size()) {
         bool ok = false;
         const int value = arguments.at(widthIndex + 1).toInt(&ok);
-        if (ok && value >= 1360 && value <= 7680) requestedWidth = value;
+        if (ok && value >= 1280 && value <= 7680) requestedWidth = value;
     }
     const int heightIndex = arguments.indexOf(QStringLiteral("--height"));
     if (heightIndex >= 0 && heightIndex + 1 < arguments.size()) {
         bool ok = false;
         const int value = arguments.at(heightIndex + 1).toInt(&ok);
-        if (ok && value >= 800 && value <= 4320) requestedHeight = value;
+        if (ok && value >= 720 && value <= 4320) requestedHeight = value;
     }
     window->resize(requestedWidth, requestedHeight);
+
+    if (arguments.contains(QStringLiteral("--viewport-smoke"))) {
+        QTimer::singleShot(250, &app, [window, requestedWidth, requestedHeight]() {
+            const bool sizeAccepted = window->width() == requestedWidth && window->height() == requestedHeight;
+            QCoreApplication::exit(sizeAccepted ? 0 : 16);
+        });
+        return app.exec();
+    }
 
     if (arguments.contains(QStringLiteral("--navigation-smoke"))) {
         auto* qmlContext = QQmlEngine::contextForObject(root);

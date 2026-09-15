@@ -7,32 +7,32 @@ Item {
     id: page
 
     property var featureCards: [
-        {"code":"DT", "en":"DIGITAL TWIN", "ar":"التوأم الرقمي", "descEn":"Platform-specific synthetic system model with health, topology and state correlation.", "descAr":"نموذج رقمي صناعي خاص بكل منصة يربط الحالة والصحة والطوبولوجيا الهندسية."},
-        {"code":"TM", "en":"TELEMETRY + REPLAY", "ar":"القياسات وإعادة التشغيل", "descEn":"Time-correlated telemetry capture, trend analysis, archive and deterministic replay.", "descAr":"تسجيل القياسات زمنيًا وتحليل الاتجاهات وحفظ الجلسات وإعادة تشغيلها بصورة حتمية."},
-        {"code":"FL", "en":"FAULT LAB", "ar":"مختبر الأعطال", "descEn":"Controlled synthetic fault injection with recovery and verification workflows.", "descAr":"إدخال أعطال تدريبية صناعية بصورة محكومة مع الاستعادة والتحقق بعد الإصلاح."},
-        {"code":"DX", "en":"DIAGNOSTIC INTELLIGENCE", "ar":"الذكاء التشخيصي", "descEn":"Evidence correlation, confidence scoring, priority ranking and root-cause guidance.", "descAr":"ربط الأدلة ودرجة الثقة وترتيب الأولوية وتوجيه تحليل السبب الجذري."},
-        {"code":"VR", "en":"VERIFICATION CENTER", "ar":"مركز التحقق", "descEn":"Release, evidence, recovery and session-integrity verification in one workspace.", "descAr":"التحقق من الإصدار والأدلة والاستعادة وسلامة الجلسة داخل مساحة عمل واحدة."},
-        {"code":"PL", "en":"MULTI-PLATFORM LIBRARY", "ar":"مكتبة متعددة المنصات", "descEn":"Generic Jet, Turboprop, Helicopter and UAV profiles share one engineering framework.", "descAr":"ملفات تدريبية للطائرة النفاثة والتوربينية والمروحية والطائرة غير المأهولة على محرك هندسي واحد."},
-        {"code":"EV", "en":"EVIDENCE CHAIN", "ar":"سلسلة الأدلة", "descEn":"Events, findings, history, recurrence and report fingerprints remain traceable.", "descAr":"ربط الأحداث والنتائج والتاريخ والتكرار وبصمة التقرير داخل سلسلة قابلة للمراجعة."},
-        {"code":"RP", "en":"ENGINEERING REPORTING", "ar":"التقارير الهندسية", "descEn":"Structured diagnostic output for technical review, comparison and case follow-up.", "descAr":"مخرجات تشخيص منظمة للمراجعة الفنية والمقارنة ومتابعة الحالة الهندسية."}
+        {"code":"CP", "en":"COMMON AIR PICTURE", "ar":"الصورة الجوية المشتركة", "descEn":"Geographic air picture combining public ADS-B, AEGIS awareness, bases, airspace, routes and weather constraints.", "descAr":"صورة جوية جغرافية تجمع ADS-B العام ووعي AEGIS والقواعد والمجال الجوي والمسارات وقيود الطقس."},
+        {"code":"FR", "en":"FORCE READINESS", "ar":"جاهزية القوة", "descEn":"Fleet, squadron, crew and training readiness with assignment, availability and constraint context.", "descAr":"جاهزية الأسطول والأسراب والأطقم والتدريب مع سياق التكليف والتوافر والقيود."},
+        {"code":"AO", "en":"AIR OPERATIONS", "ar":"العمليات الجوية", "descEn":"Airspace, public flight tracking, route analysis, aeronautical data and incident review workspaces.", "descAr":"مساحات للمجال الجوي وتتبع الرحلات العامة وتحليل المسارات والبيانات الملاحية ومراجعة الحوادث."},
+        {"code":"MS", "en":"MAINTENANCE + SUSTAINMENT", "ar":"الصيانة والإدامة", "descEn":"Open work, due inspections, platform priority and maintenance planning tied to readiness impact.", "descAr":"أعمال الصيانة المفتوحة والفحوص المستحقة وأولوية المنصة والتخطيط المرتبط بأثر الجاهزية."},
+        {"code":"CU", "en":"C-UAS AWARENESS", "ar":"الوعي المضاد للمسيّرات", "descEn":"Passive detection, classification, confidence, geofence, evidence, incident and coordination views.", "descAr":"عرض سلبي للاكتشاف والتصنيف والثقة والسياج الجغرافي والأدلة والحوادث والتنسيق."},
+        {"code":"SD", "en":"SPACE DOMAIN", "ar":"المجال الفضائي", "descEn":"Public orbital elements, replay and synthetic training providers for space-domain awareness and analysis.", "descAr":"عناصر مدارية عامة ومصادر إعادة تشغيل وتدريب صناعي للوعي والتحليل في المجال الفضائي."},
+        {"code":"DT", "en":"DIGITAL ENGINEERING", "ar":"الهندسة الرقمية", "descEn":"Aircraft visual system, digital twins, telemetry, diagnostics, fault lab, replay, trends and verification.", "descAr":"نظام بصري للطائرات وتوأم رقمي وقياسات وتشخيص ومختبر أعطال وإعادة تشغيل واتجاهات وتحقق."},
+        {"code":"GV", "en":"DATA GOVERNANCE", "ar":"حوكمة البيانات", "descEn":"Provider source, mode, health, freshness, audit evidence and reporting remain visible and traceable.", "descAr":"يبقى مصدر المزود ونمطه وصحته وحداثته وأدلة التدقيق والتقارير واضحة وقابلة للتتبع."}
     ]
 
     property var comparisonCards: [
-        {"titleEn":"TRADITIONAL FLIGHT SIMULATOR", "titleAr":"محاكي طيران تقليدي", "bodyEn":"Primarily focuses on pilot interaction, flight dynamics and cockpit experience.", "bodyAr":"يركز أساسًا على تجربة الطيار وديناميكا الطيران والتفاعل مع قمرة القيادة."},
-        {"titleEn":"MAINTENANCE / DIAGNOSTIC TOOL", "titleAr":"أداة صيانة أو تشخيص", "bodyEn":"Usually focuses on fault codes, maintenance procedures or one equipment family.", "bodyAr":"تركز عادة على أكواد الأعطال وإجراءات الصيانة أو عائلة محددة من المعدات."},
-        {"titleEn":"DIGITAL-TWIN / DATA TOOL", "titleAr":"أداة توأم رقمي أو بيانات", "bodyEn":"Often focuses on modelling or analytics without an integrated fault-to-verification workflow.", "bodyAr":"تركز غالبًا على النمذجة أو التحليل دون دورة متكاملة من العطل حتى التحقق."},
-        {"titleEn":"NEXVARY AVIONICS LAB", "titleAr":"NEXVARY Avionics Lab", "bodyEn":"Combines synthetic simulation, platform profiles, telemetry, fault injection, diagnostics, evidence, replay and verification in one engineering workflow.", "bodyAr":"يجمع المحاكاة الصناعية وملفات المنصات والقياسات وحقن الأعطال والتشخيص والأدلة وإعادة التشغيل والتحقق في دورة هندسية واحدة."}
+        {"titleEn":"STANDALONE FLIGHT TRACKER", "titleAr":"متعقب رحلات مستقل", "bodyEn":"Shows aircraft movement, but normally lacks readiness, maintenance, training, engineering and governance context.", "bodyAr":"يعرض حركة الطائرات، لكنه يفتقر عادة إلى سياق الجاهزية والصيانة والتدريب والهندسة والحوكمة."},
+        {"titleEn":"FORCE / MRO INFORMATION TOOL", "titleAr":"أداة قوة أو صيانة", "bodyEn":"Manages assets or work orders, but rarely connects them to one common air and operational picture.", "bodyAr":"يدير الأصول أو أوامر العمل، لكنه نادرًا ما يربطها بصورة جوية وتشغيلية مشتركة واحدة."},
+        {"titleEn":"ENGINEERING LAB", "titleAr":"مختبر هندسي", "bodyEn":"Explains platform systems and faults, but does not usually include command-level force and airspace management.", "bodyAr":"يفسر أنظمة المنصة وأعطالها، لكنه لا يشمل عادة إدارة القوة والمجال الجوي على مستوى القيادة."},
+        {"titleEn":"NEXVARY INTEGRATED PLATFORM", "titleAr":"منصة NEXVARY المتكاملة", "bodyEn":"Connects command overview, air and space awareness, force readiness, sustainment, training and digital engineering through governed provider architecture.", "bodyAr":"تربط نظرة القيادة والوعي الجوي والفضائي وجاهزية القوة والإدامة والتدريب والهندسة الرقمية عبر معمارية مزودات محكومة."}
     ]
 
     property var workflow: [
-        {"en":"SIMULATE", "ar":"المحاكاة"},
-        {"en":"DETECT", "ar":"الاكتشاف"},
-        {"en":"DIAGNOSE", "ar":"التشخيص"},
-        {"en":"RANK", "ar":"ترتيب الأسباب"},
-        {"en":"ISOLATE", "ar":"العزل"},
-        {"en":"RECOVER", "ar":"الاستعادة"},
-        {"en":"VERIFY", "ar":"التحقق"},
-        {"en":"REPORT", "ar":"التقرير"}
+        {"en":"OBSERVE", "ar":"الرصد"},
+        {"en":"CORRELATE", "ar":"الربط"},
+        {"en":"ASSESS", "ar":"التقييم"},
+        {"en":"PRIORITIZE", "ar":"الأولوية"},
+        {"en":"COORDINATE", "ar":"التنسيق"},
+        {"en":"TRAIN", "ar":"التدريب"},
+        {"en":"MAINTAIN", "ar":"الصيانة"},
+        {"en":"VERIFY", "ar":"التحقق"}
     ]
 
     property var executiveMessages: [
@@ -40,28 +40,28 @@ Item {
             "number":"01",
             "titleEn":"WHAT IS THE SYSTEM?",
             "titleAr":"ما النظام؟",
-            "bodyEn":"A multi-platform digital engineering laboratory that simulates systems, sensors and data flows in a safe training and analysis environment.",
-            "bodyAr":"مختبر هندسي رقمي متعدد المنصات يحاكي الأنظمة والحساسات وتدفقات البيانات داخل بيئة آمنة للتدريب والتحليل.",
-            "noteEn":"UNDERSTAND THE PLATFORM BEFORE, DURING AND AFTER A FAULT.",
-            "noteAr":"فهم المنظومة قبل العطل وأثناءه وبعده."
+            "bodyEn":"An integrated air-force management platform for command overview, air and space awareness, force readiness, bases, sustainment, training and avionics engineering.",
+            "bodyAr":"منصة متكاملة لإدارة القوة الجوية تجمع نظرة القيادة والوعي الجوي والفضائي وجاهزية القوة والقواعد والإدامة والتدريب وهندسة إلكترونيات الطيران.",
+            "noteEn":"ONE GOVERNED PICTURE FROM COMMAND READINESS TO ENGINEERING EVIDENCE.",
+            "noteAr":"صورة محكومة واحدة من جاهزية القيادة حتى الأدلة الهندسية."
         },
         {
             "number":"02",
             "titleEn":"WHY IS IT DIFFERENT?",
             "titleAr":"لماذا يختلف؟",
-            "bodyEn":"It unifies digital twin, telemetry, fault injection, diagnostics, evidence, recovery and verification in one engineering workflow.",
-            "bodyAr":"يجمع التوأم الرقمي والقياسات وحقن الأعطال والتشخيص والأدلة والاستعادة والتحقق في دورة هندسية واحدة.",
-            "noteEn":"ONE WORKFLOW — NOT A COLLECTION OF DISCONNECTED TOOLS.",
-            "noteAr":"دورة واحدة بدل مجموعة أدوات منفصلة."
+            "bodyEn":"It connects public, replay and synthetic providers to the common air picture, readiness decisions, maintenance, incident review and digital-twin verification.",
+            "bodyAr":"تربط المصادر العامة وإعادة التشغيل والبيانات الصناعية بالصورة الجوية وقرارات الجاهزية والصيانة ومراجعة الحوادث والتحقق بالتوأم الرقمي.",
+            "noteEn":"SOURCE, MODE, HEALTH, FRESHNESS AND EVIDENCE STAY VISIBLE.",
+            "noteAr":"يبقى المصدر والنمط والصحة والحداثة والأدلة ظاهرة."
         },
         {
             "number":"03",
             "titleEn":"WHAT VALUE DOES IT DELIVER?",
             "titleAr":"ما القيمة التي يقدمها؟",
-            "bodyEn":"It turns synthetic scenarios into traceable engineering decisions, shortening the path from anomaly to explanation, recovery and verification.",
-            "bodyAr":"يحوّل السيناريو الصناعي إلى قرار هندسي قابل للتتبع، ويختصر الطريق من اكتشاف الخلل إلى تفسيره واستعادته والتحقق منه.",
-            "noteEn":"FASTER TRAINING • CLEARER ANALYSIS • REVIEWABLE EVIDENCE.",
-            "noteAr":"تدريب أسرع • تحليل أوضح • أدلة قابلة للمراجعة."
+            "bodyEn":"It supports faster executive briefing, clearer readiness priorities, coordinated training and sustainment, and traceable operational and engineering review.",
+            "bodyAr":"تدعم إحاطة تنفيذية أسرع وأولويات جاهزية أوضح وتنسيق التدريب والإدامة ومراجعة تشغيلية وهندسية قابلة للتتبع.",
+            "noteEn":"AWARENESS • MANAGEMENT • TRAINING • MAINTENANCE • ANALYSIS.",
+            "noteAr":"وعي • إدارة • تدريب • صيانة • تحليل."
         }
     ]
 
@@ -106,7 +106,7 @@ Item {
                             horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                         }
                         Text {
-                            text: cockpit.rtl ? "ثلاث إجابات تنفيذية للعرض الوزاري" : "THREE EXECUTIVE ANSWERS FOR MINISTERIAL PRESENTATION"
+                            text: cockpit.rtl ? "منصة إدارة ووعي وجاهزية وهندسة للقوة الجوية" : "AIR-FORCE MANAGEMENT • AWARENESS • READINESS • ENGINEERING"
                             color: Theme.accent
                             font.pixelSize: 12
                             font.bold: true
@@ -138,12 +138,10 @@ Item {
                             anchors.margins: 10
                             spacing: 2
                             Text { text: "MINISTERIAL BRIEF"; color: Theme.platinum; font.pixelSize: Theme.secondaryPx; font.bold: true }
-                            Text { text: cockpit.activePlatformName.toUpperCase(); color: Theme.accent; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
-                            Text { text: "v3.5.0 / STAGE 1980"; color: Theme.silver; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
-                            Text { text: "EXECUTIVE READABILITY PASS"; color: Theme.amber; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "INTEGRATED PLATFORM BRIEF"; color: Theme.amber; font.pixelSize: Theme.smallPx; font.bold: true }
                             Item { Layout.fillHeight: true }
-                            Text { text: "TRAINING / SIMULATION"; color: Theme.green; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
-                            Text { text: "NO LIVE AIRCRAFT CONTROL"; color: Theme.muted; font.pixelSize: Theme.smallPx }
+                            Text { text: "AWARENESS / MANAGEMENT / TRAINING"; color: Theme.green; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true }
+                            Text { text: "NO ENGAGEMENT OR LIVE CONTROL"; color: Theme.muted; font.pixelSize: Theme.smallPx }
                         }
                     }
                 }
@@ -287,7 +285,7 @@ Item {
                                 Text {
                                     text: cockpit.rtl ? modelData.ar : modelData.en
                                     color: Theme.platinum
-                                    font.pixelSize: 10
+                                    font.pixelSize: 11
                                     font.bold: true
                                     Layout.fillWidth: true
                                     horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -298,7 +296,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.descAr : modelData.descEn
                                 color: Theme.silver
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
@@ -311,7 +309,7 @@ Item {
             }
 
             Text {
-                text: cockpit.rtl ? "ما الذي يميزه عن الحلول المشابهة؟" : "WHAT MAKES THE ENGINEERING APPROACH DIFFERENT?"
+                text: cockpit.rtl ? "ما الذي يميز المنصة المتكاملة؟" : "WHAT MAKES THE INTEGRATED PLATFORM DIFFERENT?"
                 color: Theme.platinum
                 font.pixelSize: 12
                 font.bold: true
@@ -345,7 +343,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.titleAr : modelData.titleEn
                                 color: index === 3 ? Theme.accent : Theme.platinum
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 font.bold: true
                                 Layout.fillWidth: true
                                 wrapMode: Text.WordWrap
@@ -355,7 +353,7 @@ Item {
                             Text {
                                 text: cockpit.rtl ? modelData.bodyAr : modelData.bodyEn
                                 color: Theme.silver
-                                font.pixelSize: 10
+                                font.pixelSize: 11
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 wrapMode: Text.WordWrap
@@ -380,7 +378,7 @@ Item {
                     anchors.margins: 10
                     spacing: 6
 
-                    Text { text: cockpit.rtl ? "دورة العمل التشخيصية" : "DIAGNOSTIC WORKFLOW"; color: Theme.platinum; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
+                    Text { text: cockpit.rtl ? "دورة القرار والمراجعة" : "DECISION AND REVIEW WORKFLOW"; color: Theme.platinum; font.pixelSize: 13; font.bold: true; Layout.fillWidth: true; horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft }
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
 
                     RowLayout {
@@ -467,7 +465,7 @@ Item {
                             Text { text: cockpit.rtl ? "حدود الاستخدام" : "USAGE BOUNDARY"; color: Theme.platinum; font.pixelSize: 10; font.bold: true }
                             Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                             Text {
-                                text: cockpit.rtl ? "النظام مخصص للتدريب والمحاكاة والتحليل والتحقق الهندسي باستخدام بيانات صناعية. أكواد التشخيص NEXVARY تدريبية وليست أكواد مصنع أو اعتماد صلاحية طيران. لا توجد واجهة تحكم بطائرة حقيقية أو مسار أسلحة أو تشغيل حي." : "The system is intended for training, simulation, analysis and engineering verification using synthetic data. NEXVARY diagnostic codes are training codes, not OEM or airworthiness codes. There is no live-aircraft control interface, weapons path or operational control channel."
+                                text: cockpit.rtl ? "المنصة مخصصة للوعي والإدارة والتدريب والمحاكاة والتشخيص والجاهزية والصيانة والتحليل. يمكنها عرض بيانات طيران ومدارات عامة بصورة سلبية مع إظهار المصدر والحداثة. لا توفر تحكمًا حيًا بالطائرات أو اشتباكًا ذاتيًا أو تخصيص أسلحة أو تحكمًا بالتشويش أو الانتحال أو الاستيلاء." : "The platform is intended for awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis. It may display public flight and orbital data passively with visible provenance and freshness. It provides no live-aircraft control, autonomous engagement, weapons assignment, jammer control, spoofing or takeover."
                                 color: Theme.silver
                                 font.pixelSize: 10
                                 Layout.fillWidth: true
@@ -476,7 +474,7 @@ Item {
                                 verticalAlignment: Text.AlignTop
                                 horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
                             }
-                            Text { text: cockpit.rtl ? "هذا الفصل الواضح بين التدريب والتشغيل الحقيقي جزء من تصميم السلامة للمنصة." : "This explicit separation between training and real operation is part of the platform safety design."; color: Theme.accent; font.pixelSize: 10; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                            Text { text: cockpit.rtl ? "حدود الاستخدام المقروءة ومصدر كل معلومة جزء من حوكمة وسلامة المنصة." : "Visible usage boundaries and provenance for every information source are part of platform governance and safety."; color: Theme.accent; font.pixelSize: 11; font.bold: true; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         }
                     }
                 }

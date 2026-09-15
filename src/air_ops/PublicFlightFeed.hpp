@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <filesystem>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -11,11 +12,46 @@ struct PublicFlightTrack {
     std::string icao24;
     std::string callsign;
     std::string country;
+    std::string flightNumber;
+    std::string aircraftTypeCode;
+    std::string registration;
+    std::string aircraftModel;
+    std::string manufacturer;
+    std::string serialNumber;
+    std::string operatorName;
+    std::string marketingOperator;
+    std::string operatorIcao;
+    std::string operatorIata;
+    std::string originAirportIcao;
+    std::string originAirportIata;
+    std::string destinationAirportIcao;
+    std::string destinationAirportIata;
+    std::string route;
+    std::string scheduledDeparture;
+    std::string estimatedArrival;
+    std::string aircraftFamily;
+    std::string variant;
+    std::string engineType;
+    std::string yearBuilt;
+    std::string registrationStatus;
+    std::string registrationCountry;
+    std::string telemetrySource{"PUBLIC ADS-B"};
+    std::string metadataSource;
+    std::string routeSource;
+    std::string positionSource;
     double latitude{0.0};
     double longitude{0.0};
-    double altitudeMeters{0.0};
-    double velocityMetersPerSecond{0.0};
-    double headingDegrees{0.0};
+    std::optional<double> altitudeMeters;
+    std::optional<double> geometricAltitudeMeters;
+    std::optional<double> velocityMetersPerSecond;
+    std::optional<double> trueAirspeedMetersPerSecond;
+    std::optional<double> headingDegrees;
+    std::optional<double> verticalRateMetersPerSecond;
+    std::optional<double> signalQualityPercent;
+    std::optional<long long> lastContactEpoch;
+    std::optional<long long> dataAgeSeconds;
+    std::string squawk;
+    int category{0};
     bool onGround{false};
 };
 

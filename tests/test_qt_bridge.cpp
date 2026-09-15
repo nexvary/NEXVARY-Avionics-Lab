@@ -32,6 +32,12 @@ int main() {
     assert(b.publicFlightTrackCount() == 4);
     assert(b.publicFlightTracks().size() == 4);
     assert(b.publicFlightFeedSource() == "PUBLIC ADS-B / DEMO");
+    const auto publicTrack = b.publicFlightTracks().at(0).toMap();
+    assert(publicTrack.value("icao24").toString() == "4ca123");
+    assert(publicTrack.value("aircraftTypeCode").toString() == "A320");
+    assert(publicTrack.value("registration").toString() == "DEMO-101");
+    assert(publicTrack.value("telemetrySource").toString() == "SYNTHETIC TRAINING ADS-B");
+    assert(publicTrack.value("dataAgeSeconds").toLongLong() == 2);
     assert(b.rfSpectrumBins().size() == 64);
     assert(b.rfSpectrumMode() == "PASSIVE / SYNTHETIC");
     assert(b.rfPeakFrequencyMhz() >= 100.0);

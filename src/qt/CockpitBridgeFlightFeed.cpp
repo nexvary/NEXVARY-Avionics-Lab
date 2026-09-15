@@ -21,6 +21,11 @@ constexpr double kRfStepMhz = 6.25;
 constexpr qint64 kMaximumFeedPayloadBytes = 2 * 1024 * 1024;
 constexpr qint64 kMaximumEnrichmentPayloadBytes = 4 * 1024 * 1024;
 
+QString licensedProviderStatus(const PublicFlightProviderCache& cache) {
+    if (!cache.available()) return QString::fromStdString(cache.statusText());
+    return QStringLiteral("LICENSED / %1").arg(QString::fromStdString(cache.statusText()));
+}
+
 // Synthetic, receive-only spectrum used for UI/training. It performs no RF transmission,
 // demodulation, identification, jamming or active control.
 double rfLevelFor(qulonglong tick, double frequencyMhz) {
@@ -123,7 +128,7 @@ int CockpitBridge::publicFlightTrackCount() const noexcept {
 }
 
 QString CockpitBridge::publicFlightEnrichmentProvider() const {
-    const auto& name = publicFlightEnrichment_.provider().name;
+    const auto& name = publicFlightProviderCache_.provider().name;
     return name.empty() ? QStringLiteral("NONE") : QString::fromStdString(name);
 }
 
@@ -193,6 +198,23 @@ void CockpitBridge::initializePublicFlightPersistence() {
     QString basePath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
     if (basePath.isEmpty()) basePath = QDir::tempPath() + QStringLiteral("/NEXVARY-Avionics-Lab");
     publicFlightHistoryPath_ = QDir(basePath).filePath(QStringLiteral("public-flight-history.json"));
+    publicFlightProviderCachePath_ = QDir(basePath).filePath(QStringLiteral("public-flight-provider-last-good.json"));
+
+    const auto now = QDateTime::currentSecsSinceEpoch();
+    if (QFileInfo::exists(publicFlightProviderCachePath_)) {
+        if (publicFlightProviderCache_.restoreLastGood(publicFlightProviderCachePath_.toStdString(), now)) {
+            auto snapshot = publicFlightFeed_.snapshot();
+            const auto applied = publicFlightProviderCache_.apply(snapshot, now);
+            publicFlightFeed_ = PublicFlightFeed(std::move(snapshot));
+            publicFlightEnrichmentStatus_ = QStringLiteral("%1 / STARTUP RESTORE / %2 OF %3 TRACKS ENRICHED")
+                .arg(licensedProviderStatus(publicFlightProviderCache_))
+                .arg(static_cast<qulonglong>(applied))
+                .arg(publicFlightTrackCount());
+        } else {
+            publicFlightEnrichmentStatus_ = QStringLiteral("PROVIDER CACHE RESTORE FAILED / %1")
+                .arg(QString::fromStdString(publicFlightProviderCache_.statusText()));
+        }
+    }
 
     if (QFileInfo::exists(publicFlightHistoryPath_)) {
         try {
@@ -200,7 +222,6 @@ void CockpitBridge::initializePublicFlightPersistence() {
             publicFlightHistoryStatus_ = QStringLiteral("HISTORY LOADED / %1 POINTS / %2 MIN RETENTION")
                 .arg(static_cast<qulonglong>(publicFlightHistory_.totalPointCount()))
                 .arg(publicFlightHistory_.retentionMinutes());
-            return;
         } catch (const std::exception& error) {
             publicFlightHistoryStatus_ = QStringLiteral("HISTORY LOAD ERROR / %1").arg(QString::fromUtf8(error.what()));
         }
@@ -226,12 +247,13 @@ void CockpitBridge::applyPublicFlightEnrichmentAndRecord() {
     const auto now = QDateTime::currentSecsSinceEpoch();
     auto snapshot = publicFlightFeed_.snapshot();
     std::size_t applied = 0;
-    if (!publicFlightEnrichment_.empty()) applied = publicFlightEnrichment_.apply(snapshot, now);
+    if (publicFlightProviderCache_.available()) applied = publicFlightProviderCache_.apply(snapshot, now);
     publicFlightFeed_ = PublicFlightFeed(std::move(snapshot));
     publicFlightHistory_.record(publicFlightFeed_.snapshot(), now);
     savePublicFlightHistory();
-    if (!publicFlightEnrichment_.empty()) {
-        publicFlightEnrichmentStatus_ = QStringLiteral("%1 / %2 TRACKS ENRICHED / PROVENANCE ATTACHED")
+    if (publicFlightProviderCache_.available()) {
+        publicFlightEnrichmentStatus_ = QStringLiteral("%1 / %2 OF %3 TRACKS ENRICHED / PROVENANCE ATTACHED")
+            .arg(licensedProviderStatus(publicFlightProviderCache_))
             .arg(static_cast<qulonglong>(applied))
             .arg(publicFlightTrackCount());
     }
@@ -304,26 +326,28 @@ void CockpitBridge::resetPublicFlightDemo() {
 }
 
 bool CockpitBridge::loadPublicFlightEnrichmentFile(const QString& path) {
-    try {
-        publicFlightEnrichment_ = PublicFlightEnrichmentCache::fromFile(path.toStdString());
-        applyPublicFlightEnrichmentAndRecord();
-        const auto& provider = publicFlightEnrichment_.provider();
-        publicFlightEnrichmentStatus_ = QStringLiteral("LICENSED ENRICHMENT LOADED / %1 / %2 RECORDS")
-            .arg(QString::fromStdString(provider.name))
-            .arg(static_cast<qulonglong>(publicFlightEnrichment_.size()));
-        emit dataChanged();
-        return true;
-    } catch (const std::exception& error) {
-        publicFlightEnrichmentStatus_ = QStringLiteral("ENRICHMENT REJECTED: %1").arg(QString::fromUtf8(error.what()));
+    initializePublicFlightPersistence();
+    const auto now = QDateTime::currentSecsSinceEpoch();
+    if (!publicFlightProviderCache_.refreshFromFile(path.toStdString(), now)) {
+        publicFlightEnrichmentStatus_ = licensedProviderStatus(publicFlightProviderCache_);
         emit dataChanged();
         return false;
     }
+
+    if (!publicFlightProviderCachePath_.isEmpty()) {
+        publicFlightProviderCache_.persistLastGood(publicFlightProviderCachePath_.toStdString());
+    }
+    applyPublicFlightEnrichmentAndRecord();
+    emit dataChanged();
+    return true;
 }
 
 void CockpitBridge::fetchPublicFlightEnrichment(const QString& urlText) {
+    initializePublicFlightPersistence();
     QUrl url;
     if (!validHttpsUrl(urlText, url)) {
-        publicFlightEnrichmentStatus_ = QStringLiteral("URL REJECTED / HTTPS LICENSED PROVIDER REQUIRED");
+        publicFlightProviderCache_.noteRefreshFailure("HTTPS licensed provider URL required");
+        publicFlightEnrichmentStatus_ = licensedProviderStatus(publicFlightProviderCache_);
         emit dataChanged();
         return;
     }
@@ -332,13 +356,17 @@ void CockpitBridge::fetchPublicFlightEnrichment(const QString& urlText) {
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("NEXVARY-Avionics-Lab/3.5 read-only-enrichment"));
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-    publicFlightEnrichmentStatus_ = QStringLiteral("FETCHING LICENSED READ-ONLY ENRICHMENT");
+    publicFlightEnrichmentStatus_ = publicFlightProviderCache_.available()
+        ? QStringLiteral("FETCHING LICENSED READ-ONLY ENRICHMENT / LAST GOOD RETAINED UNTIL VERIFIED")
+        : QStringLiteral("FETCHING LICENSED READ-ONLY ENRICHMENT");
     emit dataChanged();
 
     QNetworkReply* reply = publicFlightNetwork_->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() != QNetworkReply::NoError) {
-            publicFlightEnrichmentStatus_ = QStringLiteral("ENRICHMENT ERROR: %1").arg(reply->errorString());
+            publicFlightProviderCache_.noteRefreshFailure(
+                QStringLiteral("network error: %1").arg(reply->errorString()).toStdString());
+            publicFlightEnrichmentStatus_ = licensedProviderStatus(publicFlightProviderCache_);
             reply->deleteLater();
             emit dataChanged();
             return;
@@ -346,20 +374,23 @@ void CockpitBridge::fetchPublicFlightEnrichment(const QString& urlText) {
         const QByteArray payload = reply->readAll();
         reply->deleteLater();
         if (payload.size() > kMaximumEnrichmentPayloadBytes) {
-            publicFlightEnrichmentStatus_ = QStringLiteral("ENRICHMENT REJECTED / PAYLOAD TOO LARGE");
+            publicFlightProviderCache_.noteRefreshFailure("provider payload exceeds configured cache limit");
+            publicFlightEnrichmentStatus_ = licensedProviderStatus(publicFlightProviderCache_);
             emit dataChanged();
             return;
         }
-        try {
-            publicFlightEnrichment_ = PublicFlightEnrichmentCache::fromJson(payload.toStdString());
-            applyPublicFlightEnrichmentAndRecord();
-            const auto& provider = publicFlightEnrichment_.provider();
-            publicFlightEnrichmentStatus_ = QStringLiteral("LICENSED HTTPS ENRICHMENT ACTIVE / %1 / %2 RECORDS")
-                .arg(QString::fromStdString(provider.name))
-                .arg(static_cast<qulonglong>(publicFlightEnrichment_.size()));
-        } catch (const std::exception& error) {
-            publicFlightEnrichmentStatus_ = QStringLiteral("ENRICHMENT PARSE ERROR: %1").arg(QString::fromUtf8(error.what()));
+
+        const auto now = QDateTime::currentSecsSinceEpoch();
+        if (!publicFlightProviderCache_.refreshFromJson(payload.toStdString(), now)) {
+            publicFlightEnrichmentStatus_ = licensedProviderStatus(publicFlightProviderCache_);
+            emit dataChanged();
+            return;
         }
+
+        if (!publicFlightProviderCachePath_.isEmpty()) {
+            publicFlightProviderCache_.persistLastGood(publicFlightProviderCachePath_.toStdString());
+        }
+        applyPublicFlightEnrichmentAndRecord();
         emit dataChanged();
     });
 }

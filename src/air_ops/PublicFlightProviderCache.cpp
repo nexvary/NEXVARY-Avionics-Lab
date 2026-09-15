@@ -97,6 +97,10 @@ bool PublicFlightProviderCache::persistLastGood(const std::filesystem::path& pat
     }
 }
 
+void PublicFlightProviderCache::noteRefreshFailure(std::string reason) noexcept {
+    markRefreshFailure(std::move(reason));
+}
+
 std::size_t PublicFlightProviderCache::apply(PublicFlightSnapshot& snapshot,
                                              long long nowEpoch) const {
     return available() ? cache_.apply(snapshot, nowEpoch) : 0;

@@ -18,6 +18,7 @@ public:
     bool refreshFromFile(const std::filesystem::path& path, long long nowEpoch) noexcept;
     bool restoreLastGood(const std::filesystem::path& path, long long nowEpoch) noexcept;
     bool persistLastGood(const std::filesystem::path& path) noexcept;
+    void noteRefreshFailure(std::string reason) noexcept;
 
     std::size_t apply(PublicFlightSnapshot& snapshot, long long nowEpoch) const;
 

@@ -4,6 +4,7 @@
 #include "air_ops/AirOperationsIntegration.hpp"
 #include "air_ops/PublicFlightEnrichment.hpp"
 #include "air_ops/PublicFlightFeed.hpp"
+#include "air_ops/PublicFlightProviderCache.hpp"
 #include "app/AvionicsLab.hpp"
 #include "diagnostics/DiagnosticHistory.hpp"
 #include "diagnostics/DiagnosticTypes.hpp"
@@ -275,7 +276,7 @@ private:
     DiagnosticHistory diagnosticHistory_;
     AirOperationsIntegration airOperations_{AirOperationsIntegration::demo()};
     PublicFlightFeed publicFlightFeed_{PublicFlightFeed::demo()};
-    PublicFlightEnrichmentCache publicFlightEnrichment_;
+    PublicFlightProviderCache publicFlightProviderCache_;
     PublicFlightHistoryStore publicFlightHistory_{60};
     AerodromeConditionFeed publicAerodromeWeather_;
     AerodromeConditionFeed licensedAerodromeConditions_;
@@ -289,6 +290,7 @@ private:
     QString aerodromeWeatherStatus_{QStringLiteral("PUBLIC METAR NOT LOADED")};
     QString runwayConditionStatus_{QStringLiteral("NO LICENSED RUNWAY CONDITION SOURCE")};
     QString publicFlightHistoryPath_;
+    QString publicFlightProviderCachePath_;
     bool publicFlightPersistenceInitialized_{false};
     std::string activePlatformId_{"generic-jet"};
     bool replayMode_{false};

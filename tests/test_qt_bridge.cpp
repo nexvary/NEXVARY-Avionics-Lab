@@ -1,5 +1,8 @@
 #include "qt/CockpitBridge.hpp"
 #include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QVariantMap>
 
@@ -20,6 +23,10 @@ QVariantMap findRow(const QVariantList& rows, const QString& id) {
 }
 int main(int argc, char** argv) {
     QCoreApplication app(argc, argv);
+    QStandardPaths::setTestModeEnabled(true);
+    const QString testDataPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    if (!testDataPath.isEmpty()) QDir(testDataPath).removeRecursively();
+
     CockpitBridge b;
     assert(b.platformProfiles().size() == 4);
     assert(b.activePlatformId() == "generic-jet");
@@ -40,6 +47,7 @@ int main(int argc, char** argv) {
     assert(b.publicFlightTrackCount() == 4);
     assert(b.publicFlightTracks().size() == 4);
     assert(b.publicFlightFeedSource() == "PUBLIC ADS-B / DEMO");
+    assert(b.publicFlightEnrichmentProvider() == "NONE");
     const auto publicTrack = b.publicFlightTracks().at(0).toMap();
     assert(publicTrack.value("icao24").toString() == "4ca123");
     assert(publicTrack.value("aircraftTypeCode").toString() == "A320");
@@ -72,6 +80,7 @@ int main(int argc, char** argv) {
     assert(b.loadPublicFlightEnrichmentFile(enrichmentFile.fileName()));
     assert(b.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
     assert(b.publicFlightEnrichmentStatus().contains("LICENSED"));
+    assert(b.publicFlightEnrichmentStatus().contains("PERSISTED"));
     const auto enrichedTrack = b.publicFlightTracks().at(0).toMap();
     assert(enrichedTrack.value("registration").toString() == "QT-REG");
     assert(enrichedTrack.value("operatorName").toString() == "QT Test Operator");
@@ -80,6 +89,35 @@ int main(int argc, char** argv) {
     assert(enrichedTrack.value("metadataLicense").toString() == "QT-TEST-LICENSE");
     assert(enrichedTrack.value("enrichmentCacheState").toString() == "FRESH");
     assert(!b.publicFlightHistory("4ca123", 15).isEmpty());
+
+    const QString providerCachePath = QDir(testDataPath).filePath(QStringLiteral("public-flight-provider-last-good.json"));
+    assert(QFileInfo::exists(providerCachePath));
+    assert(QFileInfo(providerCachePath).size() == enrichmentPayload.size());
+
+    CockpitBridge restoredBridge;
+    assert(restoredBridge.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("LICENSED"));
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("FALLBACK"));
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("STARTUP RESTORE"));
+    const auto restoredTrack = restoredBridge.publicFlightTracks().at(0).toMap();
+    assert(restoredTrack.value("registration").toString() == "QT-REG");
+    assert(restoredTrack.value("metadataSource").toString() == "QT TEST PROVIDER");
+    assert(restoredTrack.value("metadataLicense").toString() == "QT-TEST-LICENSE");
+
+    QTemporaryFile invalidEnrichmentFile;
+    assert(invalidEnrichmentFile.open());
+    const QByteArray invalidPayload = QByteArrayLiteral("{not-valid-json");
+    assert(invalidEnrichmentFile.write(invalidPayload) == invalidPayload.size());
+    assert(invalidEnrichmentFile.flush());
+    assert(!restoredBridge.loadPublicFlightEnrichmentFile(invalidEnrichmentFile.fileName()));
+    assert(restoredBridge.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("FALLBACK"));
+    assert(restoredBridge.publicFlightTracks().at(0).toMap().value("registration").toString() == "QT-REG");
+
+    restoredBridge.fetchPublicFlightEnrichment("http://example.invalid/enrichment");
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("FALLBACK"));
+    assert(restoredBridge.publicFlightEnrichmentStatus().contains("HTTPS"));
+    assert(restoredBridge.publicFlightEnrichmentProvider() == "QT TEST PROVIDER");
 
     assert(b.aerodromeWeatherCount() == 0);
     assert(b.runwayConditionCount() == 0);
@@ -169,5 +207,7 @@ int main(int argc, char** argv) {
     assert(!findRow(b.diagnosticFindings(), "NXP-HEL-701").isEmpty());
     b.setLanguage("ar");
     assert(b.rtl());
+
+    if (!testDataPath.isEmpty()) QDir(testDataPath).removeRecursively();
     return 0;
 }

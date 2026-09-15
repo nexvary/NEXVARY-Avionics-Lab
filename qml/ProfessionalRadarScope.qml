@@ -27,7 +27,7 @@ Item {
     function trackPoint(track, plotWidth, plotHeight) {
         var cx = plotWidth * .48
         var cy = plotHeight * .53
-        var radius = Math.max(40, Math.min(plotWidth * .40, plotHeight * .42))
+        var radius = Math.max(40, Math.min(plotWidth * .40, plotHeight * .45))
         var latitude = Number(track.latitude)
         var longitude = Number(track.longitude)
         var dxKm = (longitude - centerLongitude) * 96.4
@@ -115,7 +115,7 @@ Item {
             if (w < 20 || h < 20) return
             var cx = w * .48
             var cy = h * .53
-            var radius = Math.max(40, Math.min(w * .40, h * .42))
+            var radius = Math.max(40, Math.min(w * .40, h * .45))
 
             c.fillStyle = "#030707"
             c.fillRect(0, 0, w, h)
@@ -255,9 +255,9 @@ Item {
 
                 var boxWidth = 178
                 var boxHeight = 48
-                var labelOnLeft = i % 2 === 1 || tx > cx + radius * .42
-                var labelX = labelOnLeft ? tx - boxWidth - 18 : tx + 18
-                var labelY = ty - boxHeight / 2 + (i - 1) * 5
+                var labelOnLeft = i % 2 === 1
+                var labelX = labelOnLeft ? cx - radius * .52 - boxWidth : cx + radius * .52
+                var labelY = i < 2 ? cy - radius * .40 : cy + radius * .20
                 labelX = Math.max(7, Math.min(w - boxWidth - 7, labelX))
                 labelY = Math.max(78, Math.min(h - boxHeight - 10, labelY))
                 c.strokeStyle = selected ? Theme.royalGold : color

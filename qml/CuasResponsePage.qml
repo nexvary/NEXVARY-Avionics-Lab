@@ -202,15 +202,15 @@ Item {
                     ListView {
                         Layout.fillWidth: true
                         Layout.fillHeight: page.selectedSection === 3
-                        Layout.preferredHeight: page.selectedSection < 2 ? 236 : (page.selectedSection === 2 ? 90 : 420)
-                        Layout.minimumHeight: page.selectedSection === 2 ? 78 : 180
+                        Layout.preferredHeight: page.selectedSection < 2 ? 182 : (page.selectedSection === 2 ? 90 : 420)
+                        Layout.minimumHeight: page.selectedSection === 2 ? 78 : 150
                         model: page.entryModel()
                         clip: true
                         spacing: 4
                         delegate: Rectangle {
                             required property var modelData
                             width: ListView.view.width
-                            height: 78
+                            height: page.selectedSection < 2 ? 56 : 78
                             color: Theme.panel2
                             border.color: Theme.border
                             border.width: 1
@@ -220,7 +220,9 @@ Item {
                                 anchors.margins: 7
                                 spacing: 8
                                 Rectangle {
-                                    width: 48; height: 48; radius: 5
+                                    width: page.selectedSection < 2 ? 38 : 48
+                                    height: width
+                                    radius: 5
                                     color: Theme.panel3
                                     border.color: Theme.border
                                     border.width: 2

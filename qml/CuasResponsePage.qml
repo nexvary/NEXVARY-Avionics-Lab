@@ -7,6 +7,7 @@ Item {
     id: page
     clip: true
     property int selectedSection: 0
+    property bool compactHeight: height < 700
 
     function sectionColor() {
         return [Theme.signalCyan, Theme.rfViolet, Theme.warmOrange, Theme.radarGreen][selectedSection]
@@ -89,21 +90,21 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 10
-        spacing: 7
+        anchors.margins: page.compactHeight ? 7 : 10
+        spacing: page.compactHeight ? 5 : 7
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 76
-            Layout.minimumHeight: 76
-            Layout.maximumHeight: 76
+            Layout.preferredHeight: page.compactHeight ? 60 : 76
+            Layout.minimumHeight: page.compactHeight ? 60 : 76
+            Layout.maximumHeight: page.compactHeight ? 60 : 76
             color: Theme.panel
             border.color: Theme.border
             border.width: 1
             radius: Theme.radius
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 10
+                anchors.margins: page.compactHeight ? 7 : 10
                 spacing: 12
                 ColumnLayout {
                     Layout.fillWidth: true
@@ -111,7 +112,7 @@ Item {
                     Text {
                         text: page.sectionTitle()
                         color: Theme.platinum
-                        font.pixelSize: Theme.pageTitlePx
+                        font.pixelSize: page.compactHeight ? Theme.titlePx : Theme.pageTitlePx
                         font.bold: true
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
@@ -127,8 +128,8 @@ Item {
                     }
                 }
                 Rectangle {
-                    Layout.preferredWidth: 255
-                    Layout.preferredHeight: 48
+                    Layout.preferredWidth: page.compactHeight ? 230 : 255
+                    Layout.preferredHeight: page.compactHeight ? 42 : 48
                     color: Theme.panel2
                     border.color: Theme.border
                     border.width: 1
@@ -146,9 +147,9 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 92
-            Layout.minimumHeight: 92
-            Layout.maximumHeight: 92
+            Layout.preferredHeight: page.compactHeight ? 68 : 92
+            Layout.minimumHeight: page.compactHeight ? 68 : 92
+            Layout.maximumHeight: page.compactHeight ? 68 : 92
             spacing: 7
             Repeater {
                 model: [
@@ -167,10 +168,10 @@ Item {
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 9
-                        spacing: 2
+                        anchors.margins: page.compactHeight ? 6 : 9
+                        spacing: page.compactHeight ? 0 : 2
                         Text { text: modelData.title; color: Theme.silver; font.pixelSize: Theme.smallPx; font.bold: true }
-                        Text { text: String(modelData.value); color: modelData.color; font.family: Theme.mono; font.pixelSize: 20; font.bold: true }
+                        Text { text: String(modelData.value); color: modelData.color; font.family: Theme.mono; font.pixelSize: page.compactHeight ? 17 : 20; font.bold: true }
                         Text { text: cockpit.airOperationsMode; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
                 }
@@ -191,8 +192,8 @@ Item {
                 radius: Theme.radius
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 9
-                    spacing: 6
+                    anchors.margins: page.compactHeight ? 6 : 9
+                    spacing: page.compactHeight ? 4 : 6
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: page.sectionTitle(); color: Theme.platinum; font.pixelSize: Theme.sectionPx; font.bold: true; Layout.fillWidth: true }
@@ -202,25 +203,25 @@ Item {
                     ListView {
                         Layout.fillWidth: true
                         Layout.fillHeight: page.selectedSection === 3
-                        Layout.preferredHeight: page.selectedSection < 2 ? 200 : (page.selectedSection === 2 ? 90 : 420)
-                        Layout.minimumHeight: page.selectedSection === 2 ? 78 : 150
+                        Layout.preferredHeight: page.selectedSection < 2 ? (page.compactHeight ? 128 : 200) : (page.selectedSection === 2 ? 90 : 420)
+                        Layout.minimumHeight: page.selectedSection === 2 ? 78 : (page.compactHeight ? 112 : 150)
                         model: page.entryModel()
                         clip: true
-                        spacing: 4
+                        spacing: page.compactHeight ? 3 : 4
                         delegate: Rectangle {
                             required property var modelData
                             width: ListView.view.width
-                            height: page.selectedSection < 2 ? 62 : 78
+                            height: page.selectedSection < 2 ? (page.compactHeight ? 48 : 62) : 78
                             color: Theme.panel2
                             border.color: Theme.border
                             border.width: 1
                             radius: Theme.radius
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.margins: 7
+                                anchors.margins: page.compactHeight ? 5 : 7
                                 spacing: 8
                                 Rectangle {
-                                    width: page.selectedSection < 2 ? 38 : 48
+                                    width: page.selectedSection < 2 ? (page.compactHeight ? 32 : 38) : 48
                                     height: width
                                     radius: 5
                                     color: Theme.panel3
@@ -233,13 +234,13 @@ Item {
                                     spacing: 1
                                     Text { text: page.entryTitle(modelData); color: Theme.platinum; font.pixelSize: Theme.bodyPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
                                     Text { text: page.entrySummary(modelData); color: page.sectionColor(); font.family: Theme.mono; font.pixelSize: Theme.secondaryPx; Layout.fillWidth: true; elide: Text.ElideRight }
-                                    Text { text: page.entryDetail(modelData); color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    Text { visible: !page.compactHeight; text: page.entryDetail(modelData); color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; elide: Text.ElideRight }
                                 }
                                 ColumnLayout {
-                                    Layout.preferredWidth: 130
+                                    Layout.preferredWidth: page.compactHeight ? 96 : 130
                                     spacing: 1
                                     Text { text: page.selectedSection === 3 ? String(modelData.status) : String(modelData.threatLevel || modelData.peakThreatLevel || "REVIEW").toUpperCase(); color: page.entrySeverity(modelData); font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                                    Text { text: "AWARENESS"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                                    Text { visible: !page.compactHeight; text: "AWARENESS"; color: Theme.muted; font.family: Theme.mono; font.pixelSize: Theme.smallPx; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                                 }
                             }
                         }
@@ -258,7 +259,7 @@ Item {
                         ProfessionalRadarScope {
                             id: tacticalPlot
                             anchors.fill: parent
-                            anchors.margins: 7
+                            anchors.margins: page.compactHeight ? 4 : 7
                             tracks: cockpit.airOperationsTracks
                             rtl: cockpit.rtl
                             classificationMode: page.selectedSection === 1
@@ -269,21 +270,21 @@ Item {
                             visible: page.selectedSection === 0 || page.selectedSection === 1
                             anchors.right: parent.right
                             anchors.top: parent.top
-                            anchors.margins: 12
-                            width: 276
-                            height: 62
+                            anchors.margins: page.compactHeight ? 8 : 12
+                            width: page.compactHeight ? 226 : 276
+                            height: page.compactHeight ? 48 : 62
                             color: "#E80A0A0A"
                             border.color: Theme.signalCyan
                             border.width: 1
                             radius: 5
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.margins: 8
+                                anchors.margins: page.compactHeight ? 6 : 8
                                 spacing: 8
                                 Rectangle {
-                                    width: 32
-                                    height: 32
-                                    radius: 16
+                                    width: page.compactHeight ? 26 : 32
+                                    height: width
+                                    radius: width / 2
                                     color: "#142CCEFF"
                                     border.color: Theme.signalCyan
                                     border.width: 1
@@ -302,9 +303,9 @@ Item {
                         RfSpectrumMini {
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
-                            anchors.margins: 12
-                            width: Math.min(320, parent.width * .27)
-                            height: 148
+                            anchors.margins: page.compactHeight ? 8 : 12
+                            width: Math.min(page.compactHeight ? 220 : 320, parent.width * .27)
+                            height: page.compactHeight ? 96 : 148
                             bins: cockpit.rfSpectrumBins
                             peakFrequencyMhz: cockpit.rfPeakFrequencyMhz
                             peakLevelDbm: cockpit.rfPeakLevelDbm
@@ -391,23 +392,23 @@ Item {
             }
 
             ColumnLayout {
-                Layout.preferredWidth: 410
-                Layout.minimumWidth: 410
-                Layout.maximumWidth: 410
+                Layout.preferredWidth: page.compactHeight ? 340 : 410
+                Layout.minimumWidth: page.compactHeight ? 330 : 410
+                Layout.maximumWidth: page.compactHeight ? 360 : 410
                 Layout.fillHeight: true
-                spacing: 7
+                spacing: page.compactHeight ? 5 : 7
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 245
+                    Layout.preferredHeight: page.compactHeight ? 188 : 245
                     color: Theme.panel
                     border.color: Theme.royalGold
                     border.width: 1
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 9
-                        spacing: 5
+                        anchors.margins: page.compactHeight ? 7 : 9
+                        spacing: page.compactHeight ? 3 : 5
                         Text { text: cockpit.rtl ? "سير الاستجابة التدريبية" : "TRAINING RESPONSE WORKFLOW"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         Repeater {
@@ -416,14 +417,14 @@ Item {
                                 required property int index
                                 required property var modelData
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 34
+                                Layout.preferredHeight: page.compactHeight ? 28 : 34
                                 color: (page.selectedSection === 0 && index === 0) || (page.selectedSection === 1 && index === 1) || (page.selectedSection === 2 && index === 4) || (page.selectedSection === 3 && index === 3) ? Theme.panel3 : Theme.panel2
                                 border.color: Theme.border
                                 border.width: (page.selectedSection === 0 && index === 0) || (page.selectedSection === 1 && index === 1) || (page.selectedSection === 2 && index === 4) || (page.selectedSection === 3 && index === 3) ? 2 : 1
                                 radius: Theme.radius
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.margins: 6
+                                    anchors.margins: page.compactHeight ? 4 : 6
                                     Text { text: modelData.step; color: modelData.color; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.preferredWidth: 30 }
                                     Text { text: modelData.title; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true }
                                     Text { text: modelData.status; color: modelData.status === "REVIEW" ? Theme.royalGold : Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.smallPx }
@@ -442,8 +443,8 @@ Item {
                     radius: Theme.radius
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 9
-                        spacing: 5
+                        anchors.margins: page.compactHeight ? 7 : 9
+                        spacing: page.compactHeight ? 3 : 5
                         Text { text: cockpit.rtl ? "الحوادث والسجل" : "INCIDENT REVIEW"; color: Theme.platinum; font.pixelSize: Theme.smallPx; font.bold: true }
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.borderSoft }
                         ListView {
@@ -455,7 +456,7 @@ Item {
                             delegate: Rectangle {
                                 required property var modelData
                                 width: ListView.view.width
-                                height: 54
+                                height: page.compactHeight ? 46 : 54
                                 color: Theme.panel2
                                 border.color: Theme.border
                                 border.width: 1

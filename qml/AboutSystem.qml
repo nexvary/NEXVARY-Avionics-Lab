@@ -273,9 +273,14 @@ Item {
                             spacing: 4
                             RowLayout {
                                 Layout.fillWidth: true
+                                spacing: 7
                                 Rectangle {
-                                    width: 34
-                                    height: 26
+                                    Layout.preferredWidth: 34
+                                    Layout.minimumWidth: 34
+                                    Layout.maximumWidth: 34
+                                    Layout.preferredHeight: 26
+                                    Layout.minimumHeight: 26
+                                    Layout.maximumHeight: 26
                                     color: Theme.panel3
                                     border.color: Theme.accent
                                     border.width: Theme.frameWidth

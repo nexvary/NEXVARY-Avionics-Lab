@@ -6,6 +6,7 @@ import "Theme.js" as Theme
 Item {
     id: page
     clip: true
+    property bool compactWidth: width < 1200
 
     function readinessColor(value) {
         var v = Number(value)
@@ -32,10 +33,6 @@ Item {
 
         Rectangle {
             Layout.fillWidth: true
-            // Noto Kufi Arabic, Urdu and Persian have a taller three-line
-            // executive brief than the Latin fonts.  Preserve the approved
-            // type scale instead of allowing the safety line to bleed into
-            // the Common Air Picture at 1920x1080.
             Layout.preferredHeight: cockpit.rtl ? 110 : 96
             color: Theme.shell
             border.color: Theme.border
@@ -58,23 +55,24 @@ Item {
                 anchors.rightMargin: 18
                 anchors.topMargin: 10
                 anchors.bottomMargin: 10
-                spacing: 16
+                spacing: page.compactWidth ? 10 : 16
                 layoutDirection: cockpit.rtl ? Qt.RightToLeft : Qt.LeftToRight
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    Layout.minimumWidth: 440
+                    Layout.minimumWidth: page.compactWidth ? 360 : 440
                     spacing: 3
 
                     Text {
                         text: cockpit.rtl ? "موجز قيادة القوة الجوية" : "AIR FORCE COMMAND OVERVIEW"
                         color: Theme.platinum
                         font.family: Theme.uiFont(cockpit.rtl)
-                        font.pixelSize: Theme.titlePx
+                        font.pixelSize: page.compactWidth ? 22 : Theme.titlePx
                         font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPixelSize: 18
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                        elide: Text.ElideRight
                     }
                     Text {
                         text: cockpit.rtl
@@ -84,9 +82,10 @@ Item {
                         font.family: Theme.uiFont(cockpit.rtl)
                         font.pixelSize: Theme.secondaryPx
                         font.bold: true
+                        fontSizeMode: Text.Fit
+                        minimumPixelSize: 9
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                        elide: Text.ElideRight
                     }
                     Text {
                         text: cockpit.rtl
@@ -95,9 +94,10 @@ Item {
                         color: Theme.silver
                         font.family: Theme.uiFont(cockpit.rtl)
                         font.pixelSize: Theme.smallPx
+                        fontSizeMode: Text.Fit
+                        minimumPixelSize: 8
                         Layout.fillWidth: true
                         horizontalAlignment: cockpit.rtl ? Text.AlignRight : Text.AlignLeft
-                        elide: Text.ElideRight
                     }
                 }
 
@@ -123,7 +123,7 @@ Item {
 
                         delegate: Item {
                             required property var modelData
-                            Layout.preferredWidth: 118
+                            Layout.preferredWidth: page.compactWidth ? 104 : 118
                             Layout.preferredHeight: 68
 
                             Rectangle {
@@ -171,7 +171,7 @@ Item {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.minimumWidth: 760
+                Layout.minimumWidth: page.compactWidth ? 620 : 760
                 spacing: 10
 
                 Rectangle {
@@ -386,9 +386,9 @@ Item {
             }
 
             ColumnLayout {
-                Layout.preferredWidth: Math.max(410, Math.min(510, commandBody.width * 0.31))
-                Layout.minimumWidth: 390
-                Layout.maximumWidth: 530
+                Layout.preferredWidth: page.compactWidth ? Math.max(320, Math.min(390, commandBody.width * 0.30)) : Math.max(410, Math.min(510, commandBody.width * 0.31))
+                Layout.minimumWidth: page.compactWidth ? 315 : 390
+                Layout.maximumWidth: page.compactWidth ? 400 : 530
                 Layout.fillHeight: true
                 spacing: 10
 

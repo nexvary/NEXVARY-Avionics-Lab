@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
     assert(b.forceMaintenancePlanRows().size() == 4);
     assert(b.forceExecutiveReports().size() == 4);
     assert(b.forceCrewRows().size() == 4);
-    assert(b.dataSourceRows().size() == 7);
+    assert(b.dataSourceRows().size() == 9);
     assert(findRow(b.dataSourceRows(), "public-adsb").value("readOnly").toBool());
     assert(b.forceAvailableBaseCount() == 2);
     assert(b.forceAssignedPlatformCount() == 26);

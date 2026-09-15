@@ -130,16 +130,45 @@ QVariantList CockpitBridge::dataSourceRows() const {
             row[QStringLiteral("records")] = recordedFrames();
             row[QStringLiteral("freshness")] = replayMode_ ? QStringLiteral("ACTIVE") : QStringLiteral("CURRENT");
         } else if (id == QStringLiteral("weather")) {
-            row[QStringLiteral("source")] = QStringLiteral("FORCE TRAINING SNAPSHOT");
-            row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
-            row[QStringLiteral("health")] = forceWeatherConstraintCount() > 0 ? QStringLiteral("LIMITED") : QStringLiteral("NOMINAL");
+            if (aerodromeWeatherCount() > 0) {
+                row[QStringLiteral("source")] = aerodromeWeatherSource();
+                row[QStringLiteral("mode")] = aerodromeWeatherStatus();
+                row[QStringLiteral("records")] = aerodromeWeatherCount();
+                row[QStringLiteral("freshness")] = aerodromeWeatherStatus().contains(QStringLiteral("ACTIVE"), Qt::CaseInsensitive)
+                    || aerodromeWeatherStatus().contains(QStringLiteral("LOADED"), Qt::CaseInsensitive)
+                    ? QStringLiteral("LIVE / READ ONLY") : QStringLiteral("CHECK STATUS");
+            } else {
+                row[QStringLiteral("source")] = QStringLiteral("FORCE TRAINING SNAPSHOT");
+                row[QStringLiteral("mode")] = aerodromeWeatherStatus();
+                row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+                row[QStringLiteral("freshness")] = QStringLiteral("SYNTHETIC FALLBACK");
+            }
+            if (aerodromeWeatherStatus().contains(QStringLiteral("ERROR"), Qt::CaseInsensitive)
+                || aerodromeWeatherStatus().contains(QStringLiteral("REJECTED"), Qt::CaseInsensitive)) {
+                row[QStringLiteral("health")] = QStringLiteral("DEGRADED");
+            } else {
+                row[QStringLiteral("health")] = forceWeatherConstraintCount() > 0 ? QStringLiteral("LIMITED") : QStringLiteral("NOMINAL");
+            }
         } else if (id == QStringLiteral("airspace")) {
             row[QStringLiteral("source")] = QStringLiteral("VERSIONED TRAINING SECTORS");
             row[QStringLiteral("records")] = 4;
             row[QStringLiteral("freshness")] = QStringLiteral("STATIC / VERIFIED");
         } else if (id == QStringLiteral("airfields")) {
-            row[QStringLiteral("source")] = QStringLiteral("FORCE MANAGEMENT");
-            row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+            if (runwayConditionCount() > 0) {
+                row[QStringLiteral("source")] = runwayConditionSource();
+                row[QStringLiteral("mode")] = runwayConditionStatus();
+                row[QStringLiteral("records")] = runwayConditionCount();
+                row[QStringLiteral("freshness")] = QStringLiteral("LICENSED / READ ONLY");
+            } else {
+                row[QStringLiteral("source")] = QStringLiteral("FORCE MANAGEMENT");
+                row[QStringLiteral("mode")] = runwayConditionStatus();
+                row[QStringLiteral("records")] = static_cast<int>(forceManagement_.bases().size());
+                row[QStringLiteral("freshness")] = QStringLiteral("SYNTHETIC FALLBACK");
+            }
+            if (runwayConditionStatus().contains(QStringLiteral("ERROR"), Qt::CaseInsensitive)
+                || runwayConditionStatus().contains(QStringLiteral("REJECTED"), Qt::CaseInsensitive)) {
+                row[QStringLiteral("health")] = QStringLiteral("DEGRADED");
+            }
         } else if (id == QStringLiteral("public-orbital-elements")) {
             row[QStringLiteral("source")] = QStringLiteral("PUBLIC EPHEMERIS / TRAINING REPLAY");
             row[QStringLiteral("mode")] = QStringLiteral("MEO AWARENESS / READ ONLY");

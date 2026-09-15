@@ -1,5 +1,6 @@
 #pragma once
 
+#include "air_ops/AerodromeConditions.hpp"
 #include "air_ops/AirOperationsIntegration.hpp"
 #include "air_ops/PublicFlightEnrichment.hpp"
 #include "air_ops/PublicFlightFeed.hpp"
@@ -50,6 +51,14 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QString publicFlightEnrichmentProvider READ publicFlightEnrichmentProvider NOTIFY dataChanged)
     Q_PROPERTY(QString publicFlightEnrichmentStatus READ publicFlightEnrichmentStatus NOTIFY dataChanged)
     Q_PROPERTY(QString publicFlightHistoryStatus READ publicFlightHistoryStatus NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList aerodromeWeatherRows READ aerodromeWeatherRows NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList runwayConditionRows READ runwayConditionRows NOTIFY dataChanged)
+    Q_PROPERTY(QString aerodromeWeatherSource READ aerodromeWeatherSource NOTIFY dataChanged)
+    Q_PROPERTY(QString aerodromeWeatherStatus READ aerodromeWeatherStatus NOTIFY dataChanged)
+    Q_PROPERTY(QString runwayConditionSource READ runwayConditionSource NOTIFY dataChanged)
+    Q_PROPERTY(QString runwayConditionStatus READ runwayConditionStatus NOTIFY dataChanged)
+    Q_PROPERTY(int aerodromeWeatherCount READ aerodromeWeatherCount NOTIFY dataChanged)
+    Q_PROPERTY(int runwayConditionCount READ runwayConditionCount NOTIFY dataChanged)
     Q_PROPERTY(QVariantList rfSpectrumBins READ rfSpectrumBins NOTIFY dataChanged)
     Q_PROPERTY(QString rfSpectrumMode READ rfSpectrumMode NOTIFY dataChanged)
     Q_PROPERTY(double rfPeakFrequencyMhz READ rfPeakFrequencyMhz NOTIFY dataChanged)
@@ -140,6 +149,14 @@ public:
     QString publicFlightEnrichmentProvider() const;
     QString publicFlightEnrichmentStatus() const;
     QString publicFlightHistoryStatus() const;
+    QVariantList aerodromeWeatherRows() const;
+    QVariantList runwayConditionRows() const;
+    QString aerodromeWeatherSource() const;
+    QString aerodromeWeatherStatus() const;
+    QString runwayConditionSource() const;
+    QString runwayConditionStatus() const;
+    int aerodromeWeatherCount() const noexcept;
+    int runwayConditionCount() const noexcept;
     QVariantList rfSpectrumBins() const;
     QString rfSpectrumMode() const;
     double rfPeakFrequencyMhz() const noexcept;
@@ -222,6 +239,10 @@ public:
     Q_INVOKABLE bool loadPublicFlightEnrichmentFile(const QString& path);
     Q_INVOKABLE void fetchPublicFlightEnrichment(const QString& url);
     Q_INVOKABLE QVariantList publicFlightHistory(const QString& icao24, int minutes);
+    Q_INVOKABLE void fetchPublicAerodromeWeather(const QString& airportIdsCsv);
+    Q_INVOKABLE bool loadAerodromeConditionFile(const QString& path);
+    Q_INVOKABLE void fetchLicensedAerodromeConditions(const QString& url);
+    Q_INVOKABLE void clearAerodromeConditions();
 
 signals:
     void dataChanged();
@@ -256,6 +277,8 @@ private:
     PublicFlightFeed publicFlightFeed_{PublicFlightFeed::demo()};
     PublicFlightEnrichmentCache publicFlightEnrichment_;
     PublicFlightHistoryStore publicFlightHistory_{60};
+    AerodromeConditionFeed publicAerodromeWeather_;
+    AerodromeConditionFeed licensedAerodromeConditions_;
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
     DataSourceRegistry dataSources_{DataSourceRegistry::operationalDefaults()};
     QNetworkAccessManager* publicFlightNetwork_{nullptr};
@@ -263,6 +286,8 @@ private:
     QString publicFlightFeedStatus_{QStringLiteral("DEMO / PUBLIC-FEED READY")};
     QString publicFlightEnrichmentStatus_{QStringLiteral("NO ENRICHMENT PROVIDER / LICENSED SOURCE REQUIRED")};
     QString publicFlightHistoryStatus_{QStringLiteral("HISTORY NOT LOADED")};
+    QString aerodromeWeatherStatus_{QStringLiteral("PUBLIC METAR NOT LOADED")};
+    QString runwayConditionStatus_{QStringLiteral("NO LICENSED RUNWAY CONDITION SOURCE")};
     QString publicFlightHistoryPath_;
     bool publicFlightPersistenceInitialized_{false};
     std::string activePlatformId_{"generic-jet"};

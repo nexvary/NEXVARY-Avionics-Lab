@@ -74,6 +74,45 @@ int main() {
     assert(enrichedTrack.value("enrichmentCacheState").toString() == "FRESH");
     assert(!b.publicFlightHistory("4ca123", 15).isEmpty());
 
+    assert(b.aerodromeWeatherCount() == 0);
+    assert(b.runwayConditionCount() == 0);
+    assert(b.aerodromeWeatherSource() == "NONE");
+    assert(b.runwayConditionSource() == "NONE");
+    b.fetchPublicAerodromeWeather("BAD");
+    assert(b.aerodromeWeatherStatus().contains("REJECTED"));
+    b.fetchLicensedAerodromeConditions("http://example.invalid/conditions");
+    assert(b.runwayConditionStatus().contains("HTTPS"));
+
+    QTemporaryFile aerodromeFile;
+    assert(aerodromeFile.open());
+    const QByteArray aerodromePayload = R"({
+        "provider":{"name":"QT AERODROME PROVIDER","license":"QT-AERODROME-LICENSE","sourceUrl":"https://licensed.example.test/aerodrome","defaultTtlSeconds":300},
+        "weather":[{"airportIcao":"HECA","rawMetar":"HECA QT TEST","flightCategory":"VFR","windDirectionDegrees":310,"windSpeedKnots":11,"visibilityStatuteMiles":6.0}],
+        "runways":[{"airportIcao":"HECA","runway":"05R/23L","state":"OPEN","surface":"ASPHALT","runwayConditionCode":6,"closed":false}]
+    })";
+    assert(aerodromeFile.write(aerodromePayload) == aerodromePayload.size());
+    aerodromeFile.flush();
+    assert(b.loadAerodromeConditionFile(aerodromeFile.fileName()));
+    assert(b.aerodromeWeatherCount() == 1);
+    assert(b.runwayConditionCount() == 1);
+    assert(b.aerodromeWeatherSource() == "QT AERODROME PROVIDER");
+    assert(b.runwayConditionSource() == "QT AERODROME PROVIDER");
+    const auto weatherRow = b.aerodromeWeatherRows().at(0).toMap();
+    assert(weatherRow.value("icao").toString() == "HECA");
+    assert(weatherRow.value("flightCategory").toString() == "VFR");
+    assert(weatherRow.value("source").toString() == "QT AERODROME PROVIDER");
+    assert(weatherRow.value("license").toString() == "QT-AERODROME-LICENSE");
+    const auto runwayRow = b.runwayConditionRows().at(0).toMap();
+    assert(runwayRow.value("icao").toString() == "HECA");
+    assert(runwayRow.value("runway").toString() == "05R/23L");
+    assert(runwayRow.value("runwayConditionCode").toInt() == 6);
+    assert(!runwayRow.value("closed").toBool());
+    assert(findRow(b.dataSourceRows(), "weather").value("source").toString() == "QT AERODROME PROVIDER");
+    assert(findRow(b.dataSourceRows(), "airfields").value("source").toString() == "QT AERODROME PROVIDER");
+    b.clearAerodromeConditions();
+    assert(b.aerodromeWeatherCount() == 0);
+    assert(b.runwayConditionCount() == 0);
+
     assert(b.readinessAssets().size() == 4);
     assert(b.readinessMaintenanceRows().size() == 5);
     assert(b.readinessFleetPercent() == 87);

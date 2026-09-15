@@ -70,7 +70,11 @@ Rectangle {
         if (requestDetails) aircraftDetailsRequested(track)
     }
     onPublicTracksChanged: {
-        if (selectedPublicTrackId === "" && publicTracks.length > 0) return
+        if (selectedPublicTrackId === "" && publicTracks.length > 0) {
+            selectedPublicTrackId = trackId(publicTracks[0])
+            selectedPublicTrack = publicTracks[0]
+            return
+        }
         for (var i = 0; i < publicTracks.length; ++i) {
             if (trackId(publicTracks[i]) === selectedPublicTrackId) {
                 selectedPublicTrack = publicTracks[i]

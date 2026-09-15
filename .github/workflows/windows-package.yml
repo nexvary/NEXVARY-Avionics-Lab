@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
     paths: ['qml/**','src/**','tests/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml','scripts/qml_runtime_gate.py','scripts/verify_manifest.py','scripts/verify_diagnostics.py']
+  pull_request:
+    branches: [main]
+    paths: ['qml/**','src/**','tests/**','CMakeLists.txt','packaging/windows/**','.github/workflows/windows-package.yml','scripts/qml_runtime_gate.py','scripts/verify_manifest.py','scripts/verify_diagnostics.py']
 jobs:
   package-windows:
     runs-on: windows-latest

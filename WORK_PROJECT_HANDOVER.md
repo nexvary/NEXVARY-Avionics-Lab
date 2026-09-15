@@ -3,14 +3,26 @@
 Last updated: 2026-09-15
 Repository: `nexvary/NEXVARY-Avionics-Lab`
 Branch: `main`
-Stable implementation commit: `ddef84435091e3e649dd30c5a91920eb2065243a`
-Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 1990 aircraft-intelligence batch`
+Stable implementation commit: `fe9b69a85e09d310fa9e8ef0cff89e8bb815e441`
+Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2000 professional-radar batch`
 
 ## Current stable state
 
-Stage 1990 continues directly from the verified Stage 1980 implementation. It preserves the approved Deep Black + Royal Gold visual system, all existing Air Operations, Force Management, Space Domain, C-UAS awareness, avionics engineering, diagnostics, verification, replay, reports, ten locales and Presentation Mode.
+Stage 2000 continues directly from the verified Stage 1990 implementation. It preserves the approved Deep Black + Royal Gold visual system, all existing Air Operations, Force Management, Space Domain, C-UAS awareness, avionics engineering, diagnostics, verification, replay, reports, ten locales and Presentation Mode.
 
-The Stage 1990 application was verified on pull-request head `4fc9a7024204b0a3b7e515aab189164d09b1fdec` and squash-merged to `main` as `ddef84435091e3e649dd30c5a91920eb2065243a` through PR #3.
+The Stage 2000 application was verified on pull-request head `4535f7978f4c73ab385eafd7f8484145dd4812f1` and squash-merged to `main` as `fe9b69a85e09d310fa9e8ef0cff89e8bb815e441` through PR #4.
+
+## Stage 2000 professional-radar implementation
+
+- Replaced the primitive C-UAS radar canvas with reusable `ProfessionalRadarScope.qml`.
+- Added a 360-degree PPI bezel, five-degree azimuth ticks, 30-degree labels and five-kilometre range-ring labels.
+- Added alternating azimuth sectors, a restrained phosphor background and a seven-band animated sweep afterglow.
+- Added classification-specific symbols for drone, aircraft, bird and unknown tracks.
+- Added time-faded history dots, predicted velocity vectors and selected-track emphasis.
+- Added distributed track data blocks with identity, classification, confidence, altitude, speed and heading.
+- Added mouse selection plus calculated bearing/range/confidence summary for analytical review.
+- Increased the radar's visual priority and corrected track-list clipping discovered during screenshot review.
+- Added real 1920×1080 English and Arabic radar screenshots while preserving the passive-awareness/no-targeting safety boundary.
 
 ## Stage 1990 aircraft-intelligence implementation
 
@@ -34,8 +46,9 @@ The final real application captures were opened and reviewed manually after CI. 
 - About System in English and Arabic at 1920×1080.
 - Correct RTL mirroring, readable type sizes, selection hierarchy, drawer/map balance and provenance visibility.
 - Regression coverage across the inherited 30 Stage 1980 captures, including 2560×1440 and all ten locales.
+- Professional C-UAS radar in English and Arabic at 1920×1080, including PPI geometry, labels, trails, RF overlay and RTL composition.
 
-The first capture exposed overlap between the compact popup and the expanded details drawer. The popup was made mutually exclusive with the drawer and repositioned dynamically. A second review exposed dense About text; two excess lines were removed and the capability/comparison type floor was raised before the final verified captures.
+The first Stage 2000 capture showed that the PPI remained too small and its labels clustered near the centre. The radar area was enlarged and the labels were distributed around the scope with leader lines. The second capture exposed slight clipping in the condensed track rows; row height was corrected before the final gate.
 
 ## Verified gates
 
@@ -45,7 +58,7 @@ The first capture exposed overlap between the compact popup and the expanded det
 | Windows C++20 Release build, CTest and release smoke | PASS |
 | Qt 6 Release build and Qt-enabled CTest | PASS |
 | QML routes, workspaces, Back, RTL, ten locales, radar/orbit motion and aircraft details | 53/53 PASS |
-| Real application screenshot gate | 34/34 PASS |
+| Real application screenshot gate | 36/36 PASS |
 | ASan/UBSan suite | PASS |
 | Source security baseline | PASS |
 | CodeQL C++ analysis | PASS |
@@ -54,28 +67,28 @@ The first capture exposed overlap between the compact popup and the expanded det
 
 Final verified runs:
 
-- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440885
-- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440978
-- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34954440765
+- CI: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34957519332
+- CodeQL Security: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34957519318
+- Windows Package: https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/34957519312
 
 ## Real screenshot artifact
 
-- Name: `nexvary-avionics-stage1990-aircraft-intelligence-ui-release-gate`
-- Artifact ID: `10390857858`
-- Size: `11,110,474 bytes`
-- SHA-256: `f0104893ace85fd64077594179fc11d03b5f836b5661d946e40e2c5ecba1106d`
-- Contents: 34 real PNG captures, including the four new aircraft-intelligence/About EN/AR captures.
+- Name: `nexvary-avionics-stage2000-professional-radar-ui-release-gate`
+- Artifact ID: `10391708878`
+- Size: `11,888,155 bytes`
+- SHA-256: `353aaa46f2654f815a7da16a450d039ea13720a14f3dd3889ad3b402e385d739`
+- Contents: 36 real PNG captures, including the Stage 2000 professional-radar EN/AR captures.
 
 ## Windows deliverables
 
 - Artifact: `NEXVARY-Avionics-Lab-Windows-v3.5.0-Stage1980`
-- Artifact ID: `10390043709`
-- Artifact size: `57,074,953 bytes`
-- Artifact SHA-256: `98c2f2dd8d957a913eb119e058515252a1256bf7615c0da688e542980c631812`
+- Artifact ID: `10391962190`
+- Artifact size: `57,081,877 bytes`
+- Artifact SHA-256: `76095eb9c7a774e844de227c803d9db849a7736d7a8a13f29ca8ac3e7ca020e8`
 - Contents include:
   - `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
   - `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
-- The package filename retains the Stage 1980 release identity, but the artifact was built and tested from the final Stage 1990 PR head `4fc9a7024204b0a3b7e515aab189164d09b1fdec`.
+- The package filename retains the Stage 1980 release identity, but the artifact was built and tested from the final Stage 2000 PR head `4535f7978f4c73ab385eafd7f8484145dd4812f1`.
 
 Expected build-tree paths:
 
@@ -95,6 +108,6 @@ Expected build-tree paths:
 
 ## Continuation point
 
-Continue from Stage 1990 without repeating completed Stage 1970–1990 work. Preserve the Deep Black + Royal Gold hierarchy, restrained semantic colors, typography floor, Arabic RTL, 34-image visual gate, 53-case QML gate and independent Windows packaging verification.
+Continue from Stage 2000 without repeating completed Stage 1970–2000 work. Preserve the Deep Black + Royal Gold hierarchy, restrained semantic colors, typography floor, Arabic RTL, 36-image visual gate, 53-case QML gate and independent Windows packaging verification.
 
 The next useful functional batch is to connect a legally usable read-only aircraft metadata/route provider with cache and provenance, then add persisted history windows and operator/source filter controls. After that, continue with the real weather and airfield/runway condition providers using the same test → build → visual review → fix → commit → push → handover sequence.

@@ -46,6 +46,7 @@ int main() {
     assert(b.rfPeakLevelDbm() < -30.0);
     b.fetchPublicFlightFeed("http://example.invalid/feed");
     assert(b.publicFlightFeedStatus().contains("HTTPS"));
+    assert(!b.publicFlightFeedBusy());
     b.resetPublicFlightDemo();
     assert(b.publicFlightTrackCount() == 4);
 

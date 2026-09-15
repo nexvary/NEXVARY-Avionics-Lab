@@ -101,6 +101,10 @@ QString CockpitBridge::publicFlightFeedStatus() const {
     return publicFlightFeedStatus_;
 }
 
+bool CockpitBridge::publicFlightFeedBusy() const noexcept {
+    return !publicFlightReply_.isNull();
+}
+
 int CockpitBridge::publicFlightTrackCount() const noexcept {
     return static_cast<int>(publicFlightFeed_.trackCount());
 }
@@ -159,6 +163,12 @@ bool CockpitBridge::loadPublicFlightFeedFile(const QString& path) {
 }
 
 void CockpitBridge::fetchPublicFlightFeed(const QString& urlText) {
+    if (publicFlightReply_) {
+        publicFlightFeedStatus_ = QStringLiteral("FETCH ALREADY IN PROGRESS");
+        emit dataChanged();
+        return;
+    }
+
     const QUrl url(urlText);
     if (!url.isValid() || url.scheme().compare(QStringLiteral("https"), Qt::CaseInsensitive) != 0) {
         publicFlightFeedStatus_ = QStringLiteral("URL REJECTED / HTTPS PUBLIC FEED REQUIRED");
@@ -171,14 +181,18 @@ void CockpitBridge::fetchPublicFlightFeed(const QString& urlText) {
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("NEXVARY-Avionics-Lab/3.2 public-awareness-feed"));
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
-
-    publicFlightFeedStatus_ = QStringLiteral("FETCHING PUBLIC HTTPS FEED");
-    emit dataChanged();
+    request.setTransferTimeout(8000);
 
     QNetworkReply* reply = publicFlightNetwork_->get(request);
+    publicFlightReply_ = reply;
+    publicFlightFeedStatus_ = QStringLiteral("FETCHING PUBLIC HTTPS FEED");
+    emit dataChanged();
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        if (publicFlightReply_ == reply) publicFlightReply_.clear();
         if (reply->error() != QNetworkReply::NoError) {
-            publicFlightFeedStatus_ = QStringLiteral("FEED ERROR: %1").arg(reply->errorString());
+            publicFlightFeedStatus_ = reply->error() == QNetworkReply::TimeoutError
+                ? QStringLiteral("FEED TIMEOUT / DEMO DATA PRESERVED")
+                : QStringLiteral("FEED ERROR: %1").arg(reply->errorString());
             reply->deleteLater();
             emit dataChanged();
             return;
@@ -203,6 +217,12 @@ void CockpitBridge::fetchPublicFlightFeed(const QString& urlText) {
 }
 
 void CockpitBridge::resetPublicFlightDemo() {
+    if (publicFlightReply_) {
+        QObject::disconnect(publicFlightReply_, nullptr, this, nullptr);
+        publicFlightReply_->abort();
+        publicFlightReply_->deleteLater();
+        publicFlightReply_.clear();
+    }
     publicFlightFeed_ = PublicFlightFeed::demo();
     publicFlightFeedStatus_ = QStringLiteral("DEMO / PUBLIC-FEED READY");
     emit dataChanged();

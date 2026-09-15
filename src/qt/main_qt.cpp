@@ -2,6 +2,7 @@
 #include <QColor>
 #include <QCoreApplication>
 #include <QDir>
+#include <QDebug>
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QIcon>
@@ -11,12 +12,23 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlExpression>
+#include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
 #include <QVariantMap>
+#include <algorithm>
 #include <cmath>
 
 namespace {
+QQuickItem* findQuickItem(QQuickItem* parent, const QString& objectName) {
+    if (!parent) return nullptr;
+    if (parent->objectName() == objectName) return parent;
+    for (QQuickItem* child : parent->childItems()) {
+        if (QQuickItem* match = findQuickItem(child, objectName)) return match;
+    }
+    return nullptr;
+}
+
 QIcon makeAvionicsIcon() {
     QPixmap pixmap(128, 128);
     pixmap.fill(Qt::transparent);
@@ -182,6 +194,24 @@ int main(int argc, char* argv[]) {
     }
     window->resize(requestedWidth, requestedHeight);
 
+    const bool flightPopupView = arguments.contains(QStringLiteral("--flight-popup-view")) ||
+        arguments.contains(QStringLiteral("--flight-popup-layout-smoke"));
+    if (flightPopupView) {
+        const auto trackingPages = root->findChildren<QObject*>(QStringLiteral("flightTrackingPage"));
+        if (trackingPages.isEmpty()) return 16;
+        for (QObject* trackingPage : trackingPages) {
+            trackingPage->setProperty("detailsOpen", false);
+            QObject* trackingMap = trackingPage->findChild<QObject*>(QStringLiteral("flightTrackingAirMap"));
+            if (!trackingMap) continue;
+            const QVariantList tracks = trackingMap->property("publicTracks").toList();
+            if (tracks.isEmpty()) continue;
+            const QVariantMap firstTrack = tracks.constFirst().toMap();
+            trackingMap->setProperty("selectedPublicTrack", firstTrack);
+            trackingMap->setProperty("selectedPublicTrackId", firstTrack.value(QStringLiteral("icao24")).toString().toLower());
+        }
+        QCoreApplication::processEvents();
+    }
+
     if (arguments.contains(QStringLiteral("--navigation-smoke"))) {
         auto* qmlContext = QQmlEngine::contextForObject(root);
         if (!qmlContext) return 8;
@@ -236,6 +266,40 @@ int main(int argc, char* argv[]) {
         if (track.value(QStringLiteral("icao24")).toString().isEmpty()) return 15;
         if (track.value(QStringLiteral("telemetrySource")).toString().isEmpty()) return 15;
         return 0;
+    }
+
+    if (arguments.contains(QStringLiteral("--flight-popup-layout-smoke"))) {
+        QTimer::singleShot(120, &app, [root]() {
+            QQuickItem* trackingMap = nullptr;
+            QQuickItem* popup = nullptr;
+            const auto trackingPages = root->findChildren<QObject*>(QStringLiteral("flightTrackingPage"));
+            for (QObject* trackingPage : trackingPages) {
+                auto* candidateMap = trackingPage->findChild<QQuickItem*>(QStringLiteral("flightTrackingAirMap"));
+                auto* candidatePopup = findQuickItem(candidateMap, QStringLiteral("publicAircraftPopup_0"));
+                if (candidateMap && candidatePopup && candidatePopup->isVisible()) {
+                    trackingMap = candidateMap;
+                    popup = candidatePopup;
+                    break;
+                }
+            }
+            auto* dataBadge = findQuickItem(trackingMap, QStringLiteral("airMapDataBadge"));
+            auto* toolbar = findQuickItem(trackingMap, QStringLiteral("airMapLayerToolbar"));
+            if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
+                qWarning() << "Flight popup gate objects"
+                           << trackingMap << popup << dataBadge << toolbar
+                           << (popup ? popup->isVisible() : false);
+                QCoreApplication::exit(16);
+                return;
+            }
+            const qreal popupBottom = popup->mapToScene(QPointF(0.0, popup->height())).y();
+            const qreal protectedTop = std::min(
+                dataBadge->mapToScene(QPointF(0.0, 0.0)).y(),
+                toolbar->mapToScene(QPointF(0.0, 0.0)).y()
+            );
+            qInfo() << "Flight popup gate geometry" << popupBottom << protectedTop;
+            QCoreApplication::exit(popupBottom + 1.0 < protectedTop ? 0 : 16);
+        });
+        return app.exec();
     }
 
     if (screenshotIndex >= 0) {

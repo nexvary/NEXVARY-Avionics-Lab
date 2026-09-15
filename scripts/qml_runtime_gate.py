@@ -63,6 +63,7 @@ def main() -> None:
         ["--radar-motion-smoke", "--page", "11", "--air-ops-workspace", "6", "--cuas-section", "0", "--language", "en"],
         ["--orbit-motion-smoke", "--page", "11", "--air-ops-workspace", "7", "--language", "en"],
         ["--aircraft-details-smoke", "--page", "11", "--air-ops-workspace", "5", "--language", "en"],
+        ["--flight-popup-layout-smoke", "--page", "11", "--air-ops-workspace", "5", "--language", "en"],
     ])
 
     with tempfile.TemporaryDirectory(prefix="nexvary-qml-") as runtime_dir:
@@ -70,7 +71,7 @@ def main() -> None:
         for args in cases:
             run_case(executable, args, runtime_dir)
 
-    print(f"QML RUNTIME GATE PASS: {len(cases)} route, workspace, locale, back-stack and RTL cases")
+    print(f"QML RUNTIME GATE PASS: {len(cases)} route, workspace, locale, interaction, back-stack and RTL cases")
 
 
 if __name__ == "__main__":

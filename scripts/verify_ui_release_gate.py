@@ -33,6 +33,8 @@ def main():
     require(root / "stage1980-flight-tracking-en.png", (1920, 1080))
     require(root / "stage1990-aircraft-intelligence-en.png", (1920, 1080))
     require(root / "stage1990-aircraft-intelligence-ar.png", (1920, 1080))
+    require(root / "stage2010-flight-popup-layout-en.png", (1920, 1080))
+    require(root / "stage2010-flight-popup-layout-ar.png", (1920, 1080))
     require(root / "stage1990-about-system-en.png", (1920, 1080))
     require(root / "stage1990-about-system-ar.png", (1920, 1080))
     require(root / "stage1980-route-lab-en.png", (1920, 1080))
@@ -53,7 +55,7 @@ def main():
     require(root / "stage1980-diagnostic-ar.png", (1920, 1080))
     for code in LANGS:
         require(root / f"stage1980-lang-{code}.png", (1720, 1000))
-    print("UI RELEASE GATE PASS: Stage 2000 preserves the Stage 1990 command gate and verifies the bilingual professional passive radar scope, aircraft intelligence details, the integrated About System brief, Arabic RTL and ten-locale rendering.")
+    print("UI RELEASE GATE PASS: Stage 2010 verifies the bilingual flight-map interaction layout and preserves the Stage 2000 professional passive radar, command, About System, RTL and ten-locale gates.")
 
 
 if __name__ == "__main__":

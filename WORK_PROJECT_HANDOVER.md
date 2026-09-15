@@ -3,68 +3,71 @@
 Last updated: 2026-09-15
 Repository: `nexvary/NEXVARY-Avionics-Lab`
 Branch: `main`
-Stable implementation commit: `8bda7f74d6a4d66f3513b66aa8f993f7a84af9dc`
-Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2070 provider-cache closure`
+Stable implementation commit: `007209d2b317ce29cf95237e607b8ecde3801f14`
+Release identity: `v3.5.0 / Stage 1980 packaging identity + Stage 2071 Qt provider-runtime closure`
 
 ## Current stable state
 
-Stage 2070 continues directly from the verified Stage 2061 responsive-visual closure. It preserves the approved Deep Black + Royal Gold visual system, Air Operations, Force Management, Space Domain, C-UAS awareness, avionics engineering, diagnostics, verification, replay, reports, ten locales, Arabic RTL, Presentation Mode, compact 1366×768 support and the inherited real-screenshot release gate.
+Stage 2071 continues directly from the verified Stage 2070 provider-cache closure. It preserves the approved Deep Black + Royal Gold visual system, Air Operations, Force Management, avionics engineering, diagnostics, telemetry, verification, replay, reports, ten locales, Arabic RTL, Presentation Mode, responsive 1366×768 / 1440×900 coverage and the inherited real-application screenshot gate.
 
-The stable implementation commit is `8bda7f74d6a4d66f3513b66aa8f993f7a84af9dc` on `main`.
+The stable implementation commit is `007209d2b317ce29cf95237e607b8ecde3801f14` on `main`.
 
-## Stage 2070 — last-known-good aircraft provider cache
+## Stage 2071 — Qt runtime last-known-good provider integration
 
-Stage 2070 adds a bounded, transactional cache layer for read-only aircraft metadata and route providers without changing telemetry coordinates, kinematics or the platform safety boundary.
+Stage 2071 wires the Stage 2070 transactional `PublicFlightProviderCache` into the live Qt runtime path instead of leaving it as an isolated core primitive.
 
-Implemented files:
+### Completed work
+
+- Qt runtime now restores `public-flight-provider-last-good.json` automatically during `CockpitBridge` startup.
+- A restored provider is explicitly marked as `CACHE FALLBACK / LAST GOOD` and is never presented as a newly fetched live provider.
+- Restored metadata/route records are applied immediately to the current public-flight snapshot with provider name, license, source URL and TTL/cache provenance preserved.
+- Successful provider-file imports pass through the transactional provider cache and persist only after validation succeeds.
+- Successful HTTPS provider refreshes persist only after the new payload parses and validates successfully.
+- Malformed JSON, invalid provider payloads and oversized payloads do not replace the existing last-known-good provider.
+- HTTPS URL validation and network failures now mark the existing provider explicitly as fallback while keeping it active.
+- During a refresh, status states that the last-known-good provider is retained until the replacement is verified.
+- Public-flight telemetry coordinates and kinematics remain separate from metadata/route enrichment; the cache remains read-only.
+- Public-flight history persistence and 5/15/30/60-minute windows continue unchanged.
+
+### Changed files
 
 - `src/air_ops/PublicFlightProviderCache.hpp`
 - `src/air_ops/PublicFlightProviderCache.cpp`
-- `tests/test_public_flight_provider_cache.cpp`
-- `CMakeLists.txt` updated to compile and test the new component.
+- `src/qt/CockpitBridge.hpp`
+- `src/qt/CockpitBridge.cpp`
+- `src/qt/CockpitBridgeFlightFeed.cpp`
+- `tests/test_qt_bridge.cpp`
 
-Implemented behavior:
+### Qt bridge verification added
 
-- Maximum provider payload is bounded; oversized or empty payloads are rejected before replacing active data.
-- Valid refreshes are parsed through the existing `PublicFlightEnrichmentCache`, so provider name, license, source URL, TTL, metadata provenance and route provenance remain attached.
-- Refresh is transactional: a malformed/new failed refresh never replaces an already valid provider snapshot.
-- When a refresh fails after a valid snapshot exists, the cache explicitly enters a `FALLBACK / LAST GOOD` state and continues serving the prior licensed snapshot.
-- The last-known-good raw provider payload can be persisted to local storage through a temporary-file + replace flow.
-- A new application/process can restore that last-known-good payload and marks it explicitly as cache fallback rather than pretending it is newly fetched data.
-- Cache status exposes availability, fallback state, record count, payload size, last refresh epoch and sanitized failure reason.
-- Enrichment application remains read-only and reuses the existing FRESH/STALE TTL handling.
+The Qt bridge test now uses an isolated `QStandardPaths` test location and verifies:
 
-The release-safe unit test does not rely on side-effecting `assert(...)` expressions. It verifies valid refresh, enrichment/provenance, disk persistence, malformed-refresh fallback, last-good restore, continued enrichment from fallback and payload-limit rejection.
+- no provider exists in a clean startup state;
+- valid licensed provider import enriches tracks and persists the exact last-good payload;
+- a second `CockpitBridge` process restores the provider automatically at startup;
+- startup-restored status includes `LICENSED`, `FALLBACK` and `STARTUP RESTORE`;
+- provider source/license provenance survives restart;
+- malformed provider refresh returns failure without replacing the last-good provider;
+- invalid non-HTTPS refresh request preserves the last-good provider and exposes the HTTPS failure reason;
+- existing enriched track values remain available during fallback.
 
-## Existing aircraft enrichment/history foundation preserved
+## Existing foundations preserved
 
-The pre-existing Stage 2061 code already provides:
+- `PublicFlightProviderCache` remains bounded and transactional.
+- `PublicFlightEnrichmentCache` continues to parse provider records and attach FRESH/STALE TTL state.
+- `PublicFlightHistoryStore` retains persisted public-flight history with 5/15/30/60-minute windows.
+- Flight Tracking retains search, type, altitude, operator and source filters.
+- Public ADS-B/synthetic telemetry remains distinct from licensed metadata/route provenance.
+- NOAA/NWS Aviation Weather Center public METAR support and licensed runway-condition ingress from Stages 2030–2040 remain present and must not be duplicated.
 
-- `PublicFlightEnrichmentCache` for licensed metadata/route records with TTL and explicit provenance.
-- Aircraft registration, type/model, manufacturer, operator, route, origin/destination and schedule fields when a legally usable provider supplies them.
-- Explicit `N/A`/empty behavior instead of inventing unavailable metadata.
-- `PublicFlightHistoryStore` with persistent track points and selectable 5/15/30/60-minute windows.
-- Flight Tracking search plus aircraft-type, altitude, operator and source filters.
-- HTTPS-only read-only feed/enrichment acquisition in the Qt bridge.
-- Public/synthetic telemetry kept separate from metadata/route provenance.
-
-Stage 2070 deliberately adds the missing last-known-good cache/failure-fallback primitive instead of duplicating those existing features.
-
-## Stage 2061 responsive visual closure preserved
-
-- Arabic Command Overview heading clipping at 1366×768 was corrected.
-- About System capability-card code/title collision was corrected.
-- The C-UAS compact-height composition was rebalanced so the professional radar remains the primary technical visualization.
-- Final compact screenshots were manually opened and reviewed after CI.
-- 1366×768 and 1440×900 remain part of the viewport/release verification matrix.
-
-## Verified gates — Stage 2070
+## Verified gates — Stage 2071
 
 | Gate | Result |
 |---|---:|
 | Linux C++20 Release build, CTest and release smoke | PASS |
 | Windows C++20 Release build, CTest and release smoke | PASS |
 | Qt 6 Release build and Qt-enabled CTest | PASS |
+| Stage 2071 startup restore / persistence / failure fallback Qt tests | PASS |
 | QML routes/workspaces/Back/RTL/ten locales/viewport matrix | 55/55 PASS |
 | Responsive real-application screenshot gate | PASS |
 | ASan/UBSan suite | PASS |
@@ -74,28 +77,28 @@ Stage 2070 deliberately adds the missing last-known-good cache/failure-fallback 
 | Portable ZIP generation | PASS |
 | One-click Windows installer generation | PASS |
 
-Final verified runs for stable implementation commit `8bda7f74d6a4d66f3513b66aa8f993f7a84af9dc`:
+Final verified runs for stable implementation commit `007209d2b317ce29cf95237e607b8ecde3801f14`:
 
-- CI: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35001808034`
-- CodeQL Security: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35001809327`
-- Windows Package: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35001808093`
+- CI: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805262`
+- CodeQL Security: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805296`
+- Windows Package: `https://github.com/nexvary/NEXVARY-Avionics-Lab/actions/runs/35016805381`
 
 ## Real screenshot artifact
 
 - Name: `nexvary-avionics-stage2060-responsive-ui-release-gate`
-- Artifact ID: `10410476248`
-- Size: `12,982,558 bytes`
-- SHA-256: `069d9c5516960a4287bc085e833dd4852637aabe9b1ecfef857b2515d1d70d3c`
-- Head SHA: `8bda7f74d6a4d66f3513b66aa8f993f7a84af9dc`
-- The workflow/artifact name retains the Stage 2060 naming, but the captures were regenerated and verified from the Stage 2070 head.
+- Artifact ID: `10416366228`
+- Size: `12,980,971 bytes`
+- SHA-256: `2802822d79a8133a9cf12c1f9bf61e817e2e12b349745fcea3663f4842ad0153`
+- Head SHA: `007209d2b317ce29cf95237e607b8ecde3801f14`
+- The inherited workflow artifact name retains Stage 2060 naming, but this artifact was regenerated successfully from the Stage 2071 head.
 
 ## Windows deliverables
 
 - Artifact: `NEXVARY-Avionics-Lab-Windows-v3.5.0-Stage1980`
-- Artifact ID: `10410411970`
-- Artifact size: `57,209,643 bytes`
-- Artifact SHA-256: `114454312c9a20eae787f2f569d6567db849f1832e54372477502af70d479b6b`
-- Built and verified from Stage 2070 stable implementation commit `8bda7f74d6a4d66f3513b66aa8f993f7a84af9dc`.
+- Artifact ID: `10416331992`
+- Artifact size: `57,224,221 bytes`
+- Artifact SHA-256: `57e39e4b63ae857be603cab62773cb867ea6298cc861ab5fae0e0f0becc4908b`
+- Head SHA: `007209d2b317ce29cf95237e607b8ecde3801f14`
 - Contents include:
   - `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
   - `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
@@ -108,17 +111,37 @@ Expected build-tree paths:
 - Windows installer: `dist-installer/NEXVARY-Avionics-Lab-Setup.exe`
 - Windows portable ZIP: `NEXVARY-Avionics-Lab-v3.5.0-Portable.zip`
 
+## Tests not performed / external verification boundary
+
+- No external licensed aircraft metadata/route provider endpoint was contacted in Stage 2071 because no legally usable licensed endpoint/credentials were supplied.
+- Therefore live external-provider availability and provider-specific response compatibility are not claimed as verified.
+- Runtime acquisition, transactional validation, persistence, startup restore and failure fallback are verified using deterministic local licensed-provider fixtures and the Qt runtime tests.
+
+## Known issues / constraints
+
+- No known build, test, QML, sanitizer, security or packaging regression remains in Stage 2071.
+- The runtime has no default third-party aircraft metadata/route provider configured; a legally usable licensed provider must be supplied before external live enrichment can be validated.
+- External API keys/connectors remain disabled by default.
+
 ## Public-data and safety boundaries
 
 - Public flight telemetry and legally usable metadata/route sources remain read-only.
 - Provider provenance, license, cache state and freshness remain visible and auditable.
 - Synthetic/replay data is labelled explicitly and is never represented as live data.
 - The application remains limited to awareness, management, training, simulation, diagnostics, readiness, maintenance and analysis.
-- It contains no autonomous engagement, weapons assignment, fire control, live-aircraft control, jammer control, spoofing, takeover or destructive interception.
-- External API keys/connectors remain disabled by default.
+- It contains no autonomous engagement, weapons assignment, fire control, strike planning, live-aircraft control, jammer control, spoofing, takeover or destructive interception.
 
-## Continuation point
+## Exact continuation point
 
-Continue after Stage 2070 without repeating completed Stage 1970–2070 work. Preserve the Deep Black + Royal Gold hierarchy, Arabic RTL, 55-case QML gate, compact 1366×768/1440×900 coverage, real-screenshot review, CodeQL/security gates and independent Windows packaging verification.
+Continue after Stage 2071 without repeating completed Stage 1970–2071 work.
 
-The next implementation batch is Stage 2071: wire `PublicFlightProviderCache` into the Qt runtime path so the application restores the persisted last-known-good licensed provider at startup, persists only successful provider refreshes, and keeps the prior cache active with an explicit fallback status when network/parse refresh fails. Add Qt bridge tests for startup restore, successful refresh persistence and failure fallback before continuing to weather/airfield provider expansion.
+### Stage 2080 — exact next step
+
+Extend the same last-known-good transactional runtime model to the existing aerodrome-provider path without rebuilding the weather/airfield modules already completed in Stages 2030–2040:
+
+1. Preserve the existing NOAA/NWS Aviation Weather Center public METAR connector and provenance.
+2. Add bounded startup restore and explicit stale/fallback state for the existing aerodrome weather cache where appropriate.
+3. Persist licensed runway-condition refreshes only after successful validation; never persist a failed replacement over a valid last-good runway dataset.
+4. Keep public METAR and licensed runway-condition provenance separate and visible in Aeronautical Data Hub / Data Sources.
+5. Add Qt bridge tests for startup restore, successful persistence and network/parse fallback for aerodrome/runway providers.
+6. Run Linux, Windows, Qt CTest, QML 55-case gate, responsive screenshots, ASan/UBSan, security, CodeQL and independent Windows packaging before closing the batch.

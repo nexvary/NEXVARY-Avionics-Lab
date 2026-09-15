@@ -197,16 +197,18 @@ int main(int argc, char* argv[]) {
     const bool flightPopupView = arguments.contains(QStringLiteral("--flight-popup-view")) ||
         arguments.contains(QStringLiteral("--flight-popup-layout-smoke"));
     if (flightPopupView) {
-        QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
-        if (!trackingPage) return 16;
-        trackingPage->setProperty("detailsOpen", false);
-        QObject* trackingMap = trackingPage->findChild<QObject*>(QStringLiteral("flightTrackingAirMap"));
-        if (!trackingMap) return 16;
-        const QVariantList tracks = trackingMap->property("publicTracks").toList();
-        if (tracks.isEmpty()) return 16;
-        const QVariantMap firstTrack = tracks.constFirst().toMap();
-        trackingMap->setProperty("selectedPublicTrack", firstTrack);
-        trackingMap->setProperty("selectedPublicTrackId", firstTrack.value(QStringLiteral("icao24")).toString().toLower());
+        const auto trackingPages = root->findChildren<QObject*>(QStringLiteral("flightTrackingPage"));
+        if (trackingPages.isEmpty()) return 16;
+        for (QObject* trackingPage : trackingPages) {
+            trackingPage->setProperty("detailsOpen", false);
+            QObject* trackingMap = trackingPage->findChild<QObject*>(QStringLiteral("flightTrackingAirMap"));
+            if (!trackingMap) continue;
+            const QVariantList tracks = trackingMap->property("publicTracks").toList();
+            if (tracks.isEmpty()) continue;
+            const QVariantMap firstTrack = tracks.constFirst().toMap();
+            trackingMap->setProperty("selectedPublicTrack", firstTrack);
+            trackingMap->setProperty("selectedPublicTrackId", firstTrack.value(QStringLiteral("icao24")).toString().toLower());
+        }
         QCoreApplication::processEvents();
     }
 
@@ -268,14 +270,23 @@ int main(int argc, char* argv[]) {
 
     if (arguments.contains(QStringLiteral("--flight-popup-layout-smoke"))) {
         QTimer::singleShot(120, &app, [root]() {
-            QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
-            auto* trackingMap = trackingPage ? trackingPage->findChild<QQuickItem*>(QStringLiteral("flightTrackingAirMap")) : nullptr;
-            auto* popup = findQuickItem(trackingMap, QStringLiteral("publicAircraftPopup_0"));
+            QQuickItem* trackingMap = nullptr;
+            QQuickItem* popup = nullptr;
+            const auto trackingPages = root->findChildren<QObject*>(QStringLiteral("flightTrackingPage"));
+            for (QObject* trackingPage : trackingPages) {
+                auto* candidateMap = trackingPage->findChild<QQuickItem*>(QStringLiteral("flightTrackingAirMap"));
+                auto* candidatePopup = findQuickItem(candidateMap, QStringLiteral("publicAircraftPopup_0"));
+                if (candidateMap && candidatePopup && candidatePopup->isVisible()) {
+                    trackingMap = candidateMap;
+                    popup = candidatePopup;
+                    break;
+                }
+            }
             auto* dataBadge = findQuickItem(trackingMap, QStringLiteral("airMapDataBadge"));
             auto* toolbar = findQuickItem(trackingMap, QStringLiteral("airMapLayerToolbar"));
             if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
                 qWarning() << "Flight popup gate objects"
-                           << trackingPage << popup << dataBadge << toolbar
+                           << trackingMap << popup << dataBadge << toolbar
                            << (popup ? popup->isVisible() : false);
                 QCoreApplication::exit(16);
                 return;

@@ -8,6 +8,8 @@ The aircraft visual system renders original multi-part engineering silhouettes f
 
 Stage 1980 adds a dedicated Space Domain Awareness workspace for public/replay MEO ephemeris visualization, animated orbital planes, pass windows, source health and analytical conjunction review. The common air picture gains operator-controlled radar, weather, airspace and route layers. C-UAS awareness now exposes passive Open Drone ID / Remote ID correlation alongside AEGIS and RF evidence. These surfaces are read-only awareness and training tools; they do not issue orbital maneuver, engagement, jamming, spoofing or takeover commands.
 
+Open-source visual and architectural references, license boundaries and the no-copy decision record are documented in [`docs/OPEN-SOURCE-VISUAL-REFERENCES-STAGE1980.md`](docs/OPEN-SOURCE-VISUAL-REFERENCES-STAGE1980.md).
+
 The approved identity remains Deep Black + Royal Gold + Platinum + Metallic Silver. Electric blue, radar green, amber, red and RF violet are reserved for operational meaning rather than decorative borders. F11 or the PRESENT control opens a distraction-reduced presentation mode.
 
 Existing Fleet, Squadrons, Bases, Personnel/Crews, Training, Maintenance, Digital Twin, Diagnostics, Fault Lab, Verification, Replay, Trends, public ADS-B, provider registry, reports and AEGIS awareness capabilities remain available.

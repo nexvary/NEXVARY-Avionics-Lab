@@ -126,6 +126,7 @@ Item {
                     bases: []
                     rtl: cockpit.rtl
                     modeLabel: cockpit.rtl ? "تتبع الرحلات العامة" : "PUBLIC FLIGHT TRACKING"
+                    showSelectedPublicPopup: !page.detailsOpen
                     Component.onCompleted: {
                         if (page.selectedTrack && page.selectedTrack.icao24)
                             selectedPublicTrackId = String(page.selectedTrack.icao24).toLowerCase()

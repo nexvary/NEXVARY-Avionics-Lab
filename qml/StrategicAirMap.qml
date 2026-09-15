@@ -22,6 +22,7 @@ Rectangle {
     property string selectedPublicTrackId: ""
     property var selectedPublicTrack: ({})
     property int publicLodStride: publicTracks.length > 1000 ? 4 : (publicTracks.length > 400 ? 2 : 1)
+    property bool showSelectedPublicPopup: true
     signal publicTrackSelected(var track)
     signal aircraftDetailsRequested(var track)
 
@@ -386,9 +387,9 @@ Rectangle {
             Rectangle {
                 id: trackPopup
                 objectName: publicPoint.selected ? "selectedAircraftPopup" : ""
-                visible: pma.containsMouse || publicPoint.selected
-                x: publicPoint.x > root.width - 350 ? -330 : 20
-                y: publicPoint.y > root.height - 330 ? -306 : 20
+                visible: pma.containsMouse || (publicPoint.selected && root.showSelectedPublicPopup)
+                x: publicPoint.x < 540 ? root.width - publicPoint.x - 330 : (publicPoint.x > root.width - 350 ? -330 : 20)
+                y: publicPoint.y < 330 ? 108 - publicPoint.y : (publicPoint.y > root.height - 330 ? -306 : 20)
                 width: 316
                 height: 288
                 radius: Theme.radius

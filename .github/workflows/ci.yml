@@ -70,9 +70,9 @@ jobs:
         run: cmake --build build-qt --config Release
       - name: Run tests with Qt configuration
         run: ctest --test-dir build-qt --output-on-failure
-      - name: QML runtime, route, back-stack, RTL and ten-locale gate
+      - name: QML runtime, route, back-stack, RTL, ten-locale and viewport gate
         run: python scripts/qml_runtime_gate.py ./build-qt/nexvary_avionics_hmi
-      - name: Capture Stage 1980 space and air command UI release gate
+      - name: Capture responsive air command UI release gate
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
@@ -80,6 +80,9 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-en-1920x1080.png --page 0 --language en --aircraft-profile generic-jet --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-ar-1920x1080.png --page 0 --language ar --aircraft-profile generic-jet --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-command-overview-ar-2560x1440.png --page 0 --language ar --aircraft-profile generic-uav --width 2560 --height 1440
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2060-command-overview-en-1440x900.png --page 0 --language en --aircraft-profile generic-jet --width 1440 --height 900
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2060-command-overview-en-1366x768.png --page 0 --language en --aircraft-profile generic-jet --width 1366 --height 768
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2060-command-overview-ar-1366x768.png --page 0 --language ar --aircraft-profile generic-jet --width 1366 --height 768
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-airspace-ar.png --page 11 --air-ops-workspace 0 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-common-air-picture-en.png --page 11 --air-ops-workspace 1 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-flight-tracking-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
@@ -87,6 +90,7 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-aircraft-intelligence-ar.png --page 11 --air-ops-workspace 5 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-about-system-en.png --page 13 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2060-about-system-en-1366x768.png --page 13 --language en --width 1366 --height 768
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aeronautical-data-en.png --page 11 --air-ops-workspace 2 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-aircraft-visual-en.png --page 11 --air-ops-workspace 4 --language en --width 1920 --height 1080
@@ -99,6 +103,7 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-cuas-detection-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2000-professional-radar-en.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2000-professional-radar-ar.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2060-professional-radar-en-1366x768.png --page 11 --air-ops-workspace 6 --cuas-section 0 --language en --width 1366 --height 768
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-en.png --page 11 --air-ops-workspace 7 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-space-domain-ar.png --page 11 --air-ops-workspace 7 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-data-sources-en.png --page 15 --language en --width 1920 --height 1080
@@ -109,6 +114,6 @@ jobs:
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage2000-professional-radar-ui-release-gate
+          name: nexvary-avionics-stage2060-responsive-ui-release-gate
           path: build-qt/stage*.png
           if-no-files-found: error

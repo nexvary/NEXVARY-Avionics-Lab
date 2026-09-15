@@ -716,9 +716,13 @@ Item {
                 }
 
                 Button {
+                    id: publicFeedFetchButton
                     Layout.preferredWidth: 112
                     Layout.preferredHeight: 34
-                    text: cockpit.rtl ? "جلب HTTPS" : "FETCH HTTPS"
+                    enabled: !cockpit.publicFlightFeedBusy
+                    text: cockpit.publicFlightFeedBusy
+                          ? (cockpit.rtl ? "جارٍ الجلب…" : "FETCHING…")
+                          : (cockpit.rtl ? "جلب HTTPS" : "FETCH HTTPS")
                     onClicked: cockpit.fetchPublicFlightFeed(apiField.text)
                     contentItem: Text {
                         text: parent.text
@@ -729,8 +733,8 @@ Item {
                         verticalAlignment: Text.AlignVCenter
                     }
                     background: Rectangle {
-                        color: Theme.deepBlue
-                        border.color: Theme.signalCyan
+                        color: publicFeedFetchButton.enabled ? Theme.deepBlue : Theme.panel3
+                        border.color: publicFeedFetchButton.enabled ? Theme.signalCyan : Theme.border
                         border.width: 1
                         radius: Theme.radius
                     }

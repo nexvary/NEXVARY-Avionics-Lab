@@ -11,9 +11,11 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlExpression>
+#include <QQuickItem>
 #include <QQuickWindow>
 #include <QTimer>
 #include <QVariantMap>
+#include <algorithm>
 #include <cmath>
 
 namespace {
@@ -182,6 +184,15 @@ int main(int argc, char* argv[]) {
     }
     window->resize(requestedWidth, requestedHeight);
 
+    const bool flightPopupView = arguments.contains(QStringLiteral("--flight-popup-view")) ||
+        arguments.contains(QStringLiteral("--flight-popup-layout-smoke"));
+    if (flightPopupView) {
+        QObject* trackingPage = root->findChild<QObject*>(QStringLiteral("flightTrackingPage"));
+        if (!trackingPage) return 16;
+        trackingPage->setProperty("detailsOpen", false);
+        QCoreApplication::processEvents();
+    }
+
     if (arguments.contains(QStringLiteral("--navigation-smoke"))) {
         auto* qmlContext = QQmlEngine::contextForObject(root);
         if (!qmlContext) return 8;
@@ -236,6 +247,25 @@ int main(int argc, char* argv[]) {
         if (track.value(QStringLiteral("icao24")).toString().isEmpty()) return 15;
         if (track.value(QStringLiteral("telemetrySource")).toString().isEmpty()) return 15;
         return 0;
+    }
+
+    if (arguments.contains(QStringLiteral("--flight-popup-layout-smoke"))) {
+        QTimer::singleShot(120, &app, [root]() {
+            auto* popup = root->findChild<QQuickItem*>(QStringLiteral("selectedAircraftPopup"));
+            auto* dataBadge = root->findChild<QQuickItem*>(QStringLiteral("airMapDataBadge"));
+            auto* toolbar = root->findChild<QQuickItem*>(QStringLiteral("airMapLayerToolbar"));
+            if (!popup || !dataBadge || !toolbar || !popup->isVisible()) {
+                QCoreApplication::exit(16);
+                return;
+            }
+            const qreal popupBottom = popup->mapToScene(QPointF(0.0, popup->height())).y();
+            const qreal protectedTop = std::min(
+                dataBadge->mapToScene(QPointF(0.0, 0.0)).y(),
+                toolbar->mapToScene(QPointF(0.0, 0.0)).y()
+            );
+            QCoreApplication::exit(popupBottom + 1.0 < protectedTop ? 0 : 16);
+        });
+        return app.exec();
     }
 
     if (screenshotIndex >= 0) {

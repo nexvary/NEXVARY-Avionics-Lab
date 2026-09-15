@@ -10,11 +10,13 @@
 #include "hmi/CockpitViewModel.hpp"
 #include "hmi/UiLocale.hpp"
 #include <QObject>
+#include <QPointer>
 #include <QStringList>
 #include <QVariantList>
 #include <string>
 
 class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace nexvary::avionics {
 
@@ -45,6 +47,7 @@ class CockpitBridge final : public QObject {
     Q_PROPERTY(QVariantList publicFlightTracks READ publicFlightTracks NOTIFY dataChanged)
     Q_PROPERTY(QString publicFlightFeedSource READ publicFlightFeedSource NOTIFY dataChanged)
     Q_PROPERTY(QString publicFlightFeedStatus READ publicFlightFeedStatus NOTIFY dataChanged)
+    Q_PROPERTY(bool publicFlightFeedBusy READ publicFlightFeedBusy NOTIFY dataChanged)
     Q_PROPERTY(int publicFlightTrackCount READ publicFlightTrackCount NOTIFY dataChanged)
     Q_PROPERTY(QVariantList rfSpectrumBins READ rfSpectrumBins NOTIFY dataChanged)
     Q_PROPERTY(QString rfSpectrumMode READ rfSpectrumMode NOTIFY dataChanged)
@@ -132,6 +135,7 @@ public:
     QVariantList publicFlightTracks() const;
     QString publicFlightFeedSource() const;
     QString publicFlightFeedStatus() const;
+    bool publicFlightFeedBusy() const noexcept;
     int publicFlightTrackCount() const noexcept;
     QVariantList rfSpectrumBins() const;
     QString rfSpectrumMode() const;
@@ -244,6 +248,7 @@ private:
     ForceManagementSnapshot forceManagement_{ForceManagementSnapshot::syntheticTraining()};
     DataSourceRegistry dataSources_{DataSourceRegistry::operationalDefaults()};
     QNetworkAccessManager* publicFlightNetwork_{nullptr};
+    QPointer<QNetworkReply> publicFlightReply_;
     QString airOperationsStatus_{QStringLiteral("DEMO / REPLAY READY")};
     QString publicFlightFeedStatus_{QStringLiteral("DEMO / PUBLIC-FEED READY")};
     std::string activePlatformId_{"generic-jet"};

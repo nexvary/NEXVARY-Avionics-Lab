@@ -55,6 +55,14 @@ Rectangle {
     function numberOrNa(value, decimals, suffix) {
         return available(value) && !isNaN(Number(value)) ? Number(value).toFixed(decimals) + suffix : "N/A"
     }
+    function popupTopFor(pointY, popupHeight) {
+        var safeTop = 14
+        var safeBottom = height - 78
+        var candidate = pointY + 22
+        if (candidate + popupHeight > safeBottom)
+            candidate = pointY - popupHeight - 24
+        return clamp(candidate, safeTop, Math.max(safeTop, safeBottom - popupHeight))
+    }
     function selectPublicTrack(track, requestDetails) {
         selectedPublicTrackId = trackId(track)
         selectedPublicTrack = track
@@ -389,7 +397,7 @@ Rectangle {
                 objectName: publicPoint.selected ? "selectedAircraftPopup" : ""
                 visible: pma.containsMouse || (publicPoint.selected && root.showSelectedPublicPopup)
                 x: publicPoint.x < 540 ? root.width - publicPoint.x - 330 : (publicPoint.x > root.width - 350 ? -330 : 20)
-                y: publicPoint.y < 330 ? 108 - publicPoint.y : (publicPoint.y > root.height - 330 ? -306 : 20)
+                y: root.popupTopFor(publicPoint.y, height) - publicPoint.y
                 width: 316
                 height: 288
                 radius: Theme.radius
@@ -706,6 +714,7 @@ Rectangle {
     }
 
     Rectangle {
+        objectName: "airMapDataBadge"
         visible: root.showDataBadge
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -777,6 +786,7 @@ Rectangle {
     }
 
     Rectangle {
+        objectName: "airMapLayerToolbar"
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.margins: 14

@@ -5,6 +5,7 @@ import "Theme.js" as Theme
 
 Item {
     id: page
+    objectName: "flightTrackingPage"
     clip: true
     property var selectedTrack: cockpit.publicFlightTracks.length > 0 ? cockpit.publicFlightTracks[0] : ({})
     property bool detailsOpen: cockpit.publicFlightTracks.length > 0
@@ -221,12 +222,16 @@ Item {
                             Layout.fillWidth: true
                             spacing: 6
                             Button {
+                                id: fetchButton
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 34
-                                text: cockpit.rtl ? "جلب HTTPS" : "FETCH HTTPS"
+                                enabled: !cockpit.publicFlightFeedBusy
+                                text: cockpit.publicFlightFeedBusy
+                                      ? (cockpit.rtl ? "جارٍ الجلب…" : "FETCHING…")
+                                      : (cockpit.rtl ? "جلب HTTPS" : "FETCH HTTPS")
                                 onClicked: cockpit.fetchPublicFlightFeed(apiField.text)
                                 contentItem: Text { text: parent.text; color: Theme.platinum; font.family: Theme.uiFont(cockpit.rtl); font.pixelSize: Theme.smallPx; font.bold: true; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-                                background: Rectangle { color: Theme.deepBlue; border.color: Theme.signalCyan; border.width: 1; radius: Theme.radius }
+                                background: Rectangle { color: fetchButton.enabled ? Theme.deepBlue : Theme.panel3; border.color: fetchButton.enabled ? Theme.signalCyan : Theme.border; border.width: 1; radius: Theme.radius }
                             }
                             Button {
                                 Layout.preferredWidth: 82
@@ -237,7 +242,32 @@ Item {
                                 background: Rectangle { color: Theme.panel2; border.color: Theme.royalGold; border.width: 1; radius: Theme.radius }
                             }
                         }
-                        Text { text: cockpit.publicFlightFeedStatus; color: Theme.radarGreen; font.family: Theme.mono; font.pixelSize: Theme.smallPx; font.bold: true; Layout.fillWidth: true; elide: Text.ElideRight }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 7
+                            BusyIndicator {
+                                Layout.preferredWidth: 16
+                                Layout.preferredHeight: 16
+                                running: cockpit.publicFlightFeedBusy
+                                visible: running
+                            }
+                            Rectangle {
+                                visible: !cockpit.publicFlightFeedBusy
+                                width: 8
+                                height: 8
+                                radius: 4
+                                color: cockpit.publicFlightFeedStatus.indexOf("ERROR") >= 0 || cockpit.publicFlightFeedStatus.indexOf("TIMEOUT") >= 0 ? Theme.amber : Theme.radarGreen
+                            }
+                            Text {
+                                text: cockpit.publicFlightFeedStatus
+                                color: cockpit.publicFlightFeedStatus.indexOf("ERROR") >= 0 || cockpit.publicFlightFeedStatus.indexOf("TIMEOUT") >= 0 ? Theme.amber : (cockpit.publicFlightFeedBusy ? Theme.signalCyan : Theme.radarGreen)
+                                font.family: Theme.mono
+                                font.pixelSize: Theme.smallPx
+                                font.bold: true
+                                Layout.fillWidth: true
+                                elide: Text.ElideRight
+                            }
+                        }
                     }
                 }
 

@@ -85,6 +85,8 @@ jobs:
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-flight-tracking-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-aircraft-intelligence-en.png --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-aircraft-intelligence-ar.png --page 11 --air-ops-workspace 5 --language ar --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2010-flight-popup-layout-en.png --flight-popup-view --page 11 --air-ops-workspace 5 --language en --width 1920 --height 1080
+          ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage2010-flight-popup-layout-ar.png --flight-popup-view --page 11 --air-ops-workspace 5 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-about-system-en.png --page 13 --language en --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1990-about-system-ar.png --page 13 --language ar --width 1920 --height 1080
           ./build-qt/nexvary_avionics_hmi --screenshot build-qt/stage1980-route-lab-en.png --page 11 --air-ops-workspace 3 --language en --width 1920 --height 1080
@@ -109,6 +111,6 @@ jobs:
           python scripts/verify_ui_release_gate.py build-qt
       - uses: actions/upload-artifact@v4
         with:
-          name: nexvary-avionics-stage2000-professional-radar-ui-release-gate
+          name: nexvary-avionics-stage2010-flight-map-interaction-ui-release-gate
           path: build-qt/stage*.png
           if-no-files-found: error

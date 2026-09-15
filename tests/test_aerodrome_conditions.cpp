@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <stdexcept>
 #include <string>
 
 using namespace nexvary::avionics;
